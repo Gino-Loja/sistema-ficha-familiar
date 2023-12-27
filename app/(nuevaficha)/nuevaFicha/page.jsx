@@ -1,19 +1,19 @@
 "use client";
-import { useSession } from "next-auth/react";
 import Nav from "@/app/components/nav";
-import { useRouter } from "next/navigation";
 import Modal from "@/app/components/modal";
-
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 function NuevaFicha() {
-  const router = useRouter();
 
+
+  const router = useRouter();
   const handlePusAgregarPersona = () => {
-    router.push("/agregarPersona");
+    router.push("/nuevaFicha/agregarPersona");
+    
   };
   const handlePushaAgregarInformacionVivienda = () => {
     router.push("/agregarInformacionVivienda");
   };
-  
+
   //IsUser(username, password);
 
   return (

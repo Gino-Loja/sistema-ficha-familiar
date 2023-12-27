@@ -1,23 +1,29 @@
 import {
   getEtnia,
   getInstruccion,
+  getNacionalidad,
   getOcupacion,
   getParentesco,
   getPueblos,
   saveFamilia,
 } from "@/app/action";
+import IndexBiologicos from "@/app/components/biologicos";
+import IndexEmbarazada from "@/app/components/embarazada";
 import InfoPersonal from "@/app/components/infoPersonal";
 import Modal from "@/app/components/modal";
+import IndexPrioritarios from "@/app/components/prioritarios";
+import Prioritario from "@/app/components/prioritarios/prioritarios";
+import IndexRiesgos from "@/app/components/riesgos";
 import Vacuna from "@/app/components/vacunas/vacuna";
 
 export default async function AgregarPersona({ params, searchParams }) {
-  
+
   const etnias = await getEtnia();
   const ocupaciones = await getOcupacion();
   const instrucciones = await getInstruccion();
   const pueblos = await getPueblos();
   const parentescos = await getParentesco();
-
+  //const nacionalidades = await getNacionalidad()
   return (
     <>
       <div className="container-fluid vh-100 d-flex flex-column p-3">
@@ -79,12 +85,12 @@ export default async function AgregarPersona({ params, searchParams }) {
           <li className="nav-item" role="presentation">
             <button
               className="nav-link"
-              id="pills-contact-tab"
+              id="pills-prioritario-tab"
               data-bs-toggle="pill"
-              data-bs-target="#pills-contact"
+              data-bs-target="#pills-prioritario"
               type="button"
               role="tab"
-              aria-controls="pills-contact"
+              aria-controls="pills-prioritario"
               aria-selected="false"
             >
               Prioritario
@@ -93,12 +99,12 @@ export default async function AgregarPersona({ params, searchParams }) {
           <li className="nav-item" role="presentation">
             <button
               className="nav-link"
-              id="pills-contact-tab"
+              id="pills-biologicos-tab"
               data-bs-toggle="pill"
-              data-bs-target="#pills-contact"
+              data-bs-target="#pills-biologicos"
               type="button"
               role="tab"
-              aria-controls="pills-contact"
+              aria-controls="pills-biologicos"
               aria-selected="false"
             >
               Riesgos Biologicos
@@ -112,7 +118,7 @@ export default async function AgregarPersona({ params, searchParams }) {
               data-bs-target="#pills-embarazada"
               type="button"
               role="tab"
-              aria-controls="pills-contact"
+              aria-controls="pills-embarazada"
               aria-selected="false"
             >
               Embarazadas
@@ -134,13 +140,11 @@ export default async function AgregarPersona({ params, searchParams }) {
               pueblos={pueblos}
               parentescos={parentescos}
               saveFamilia={saveFamilia}
+           
             >
               <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
                 <button className="btn btn-danger">Cerrar</button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                >
+                <button type="submit" className="btn btn-primary">
                   Continuar
                 </button>
               </div>
@@ -162,16 +166,36 @@ export default async function AgregarPersona({ params, searchParams }) {
             aria-labelledby="pills-contact-tab"
             tabIndex="0"
           >
-            ...
+            <IndexRiesgos>
+              
+            </IndexRiesgos>
           </div>
           <div
             className="tab-pane fade"
-            id="pills-disabled"
+            id="pills-prioritario"
             role="tabpanel"
-            aria-labelledby="pills-disabled-tab"
+            aria-labelledby="pills-prioritario-tab"
             tabIndex="0"
           >
-            ...
+            <IndexPrioritarios></IndexPrioritarios>
+          </div>
+          <div
+            className="tab-pane fade"
+            id="pills-biologicos"
+            role="tabpanel"
+            aria-labelledby="pills-biologicos-tab"
+            tabIndex="0"
+          >
+            <IndexBiologicos></IndexBiologicos>
+          </div>
+          <div
+            className="tab-pane fade"
+            id="pills-embarazada"
+            role="tabpanel"
+            aria-labelledby="pills-embarazada-tab"
+            tabIndex="0"
+          >
+            <IndexEmbarazada></IndexEmbarazada>
           </div>
         </div>
       </div>

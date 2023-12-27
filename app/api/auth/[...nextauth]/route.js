@@ -28,7 +28,7 @@ export const authOptions = {
         return {
           id: userFound.rows[0].csctbpersonalid,
           name: userFound.rows[0].nombresp,
-          email:'1'
+          email: null,
         };
       },
     }),
@@ -36,7 +36,15 @@ export const authOptions = {
   pages: {
     signIn: "/login",
   },
-  
+  callbacks: {
+    jwt({ token, trigger, session }) {
+      if (trigger === "update") {
+        token.email = session.email
+      }
+
+      return token;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);

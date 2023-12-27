@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
-
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 function Nav(props) {
   useEffect(() => {
     require("bootstrap/dist/js/bootstrap.bundle.min.js");
   }, []);
+  const router = useRouter();
+
+  const seachParams = useSearchParams();
+  const pathname = usePathname();
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary navbar fixed-top bg-body-tertiary">
+    <nav className="navbar navbar-expand-lg bg-body-tertiary navbar  bg-body-tertiary">
       <div className="container-fluid">
         <a
           className="navbar-brand d-flex justify-content-between align-items-center"
@@ -35,18 +40,10 @@ function Nav(props) {
         </button>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav">
-            <a className="nav-link active" aria-current="page" href="#">
-              Home
-            </a>
-            <a className="nav-link" href="#">
-              Features
-            </a>
-            <a className="nav-link" href="#">
-              Pricing
-            </a>
-            <a className="nav-link disabled" aria-disabled="true">
-              Disabled
-            </a>
+            <Link className="nav-link active" href={"/"}>
+              Inicio
+            </Link>
+            
           </div>
         </div>
       </div>

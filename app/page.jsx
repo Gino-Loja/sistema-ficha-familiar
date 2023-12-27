@@ -18,6 +18,11 @@ export default function Home() {
     router.push("/nuevaFicha");
     router.refresh();
   };
+  const handleBuscarPersona = () => {
+    router.push("/buscarFicha");
+    router.refresh();
+  };
+
 
   //IsUser(username, password);
 
@@ -86,7 +91,7 @@ export default function Home() {
               >
                 Nueva Ficha
               </button>
-              <button type="button" className="btn btn-primary">
+              <button onClick={handleBuscarPersona} type="button" className="btn btn-primary">
                 Buscar Ficha
               </button>
               <button type="button" className="btn btn-primary">

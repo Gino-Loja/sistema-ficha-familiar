@@ -1,27 +1,69 @@
 "use client";
-import { guardarVacunas } from "@/app/action";
+import { guardarEnfermedadVacunas } from "@/app/action";
 import { useForm } from "react-hook-form";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-import ModalVacuna from "../modal/modal";
+import { useEffect, useState } from "react";
+import ModalGenerico from "../modal/modalGenerico";
+import { useSession } from "next-auth/react";
 
-export default function CheckVacuna({ enfermedades, result }) {
+export default function CheckVacuna({ enfermedades, vacunas }) {
+  const { data: session, status } = useSession();
+
   const [modalShow, setModalShow] = useState(false);
   const [enfer, setEnferme] = useState({});
   const [listaEnfermedades, setListaEnfermdades] = useState([]);
+  const [listaVacunas, setListaVacunas] = useState([]);
+  useEffect(() => {
+    if (status == "authenticated") {
+      if (session.user.email?.id) {
+        //console.log(session.user)
+        const { anios, meses, dias } = session.user.email;
+        obtenerVacunas(anios, meses, dias).then((data) => {
+          setListaVacunas(data);
+        });
+      }
+    }
+  }, [status]);
+
+  const obtenerVacunas = async (anios, meses, dias) => {
+    return await vacunas(anios, meses, dias);
+  };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const onSubmit = handleSubmit(async (data) => {
-    const resul = await guardarVacunas(data, listaEnfermedades );
+    const result = await guardarEnfermedadVacunas(
+      data,
+      listaEnfermedades,
+      session.user.email.id_familia
+    );
+    if (result.error) {
+      console.log(result.errors);
+    } else {
+      const tabs = document.querySelectorAll(".nav-link");
+      const content = document.querySelectorAll(".tab-pane");
+      const modal = document.getElementById("modalGuardar");
 
+      var indexTab = 0;
+      const activeTabIndex = tabs.forEach((tab, index) => {
+        if (tab.classList.contains("active")) {
+          indexTab = index;
+        }
+      });
+
+      tabs[indexTab].classList.remove("active");
+      tabs[indexTab + 1].classList.add("active");
+      content[indexTab].classList.remove("active", "show");
+      content[indexTab + 1].classList.add("active", "show");
+    }
   });
   const seachParams = useSearchParams();
   const pathname = usePathname();
-  const { replace , refresh} = useRouter();
-  
+  const { replace, refresh } = useRouter();
+
   const handleOnchange = (termino) => {
     const params = new URLSearchParams(seachParams);
     if (termino) {
@@ -30,12 +72,11 @@ export default function CheckVacuna({ enfermedades, result }) {
       params.delete("query");
     }
     replace(`${pathname}?${params.toString()}`);
-    
   };
 
   return (
     <form onSubmit={onSubmit}>
-      <ModalVacuna
+      <ModalGenerico
         show={modalShow}
         tittle={
           "Desea agregar la enfermedad: " + enfer.nom_enfermedad
@@ -60,19 +101,31 @@ export default function CheckVacuna({ enfermedades, result }) {
             Continuar
           </button>
         </div>
-      </ModalVacuna>
-
+      </ModalGenerico>
+      <div className="d-flex justify-content-center">
+        <p className="fw-bold fs-4">Vacunas</p>
+      </div>
       <div className="row">
         <div className="col-12">
           <a
-            className="btn btn-primary mb-2"
+            className="btn btn-info mb-2"
             data-bs-toggle="collapse"
             href="#collapseExample"
             role="button"
             aria-expanded="false"
             aria-controls="collapseExample"
           >
-            Link with href
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-plus"
+              viewBox="0 0 16 16"
+            >
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+            </svg>
+            Vacunas
           </a>
 
           <div className="collapse" id="collapseExample">
@@ -87,7 +140,7 @@ export default function CheckVacuna({ enfermedades, result }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {result.map((vacunas) => (
+                  {listaVacunas.map((vacunas) => (
                     <tr key={vacunas.csctbvacunasid}>
                       <td>{vacunas.csctbvacunasid}</td>
                       <td>{vacunas.rango_edad}</td>
@@ -155,7 +208,7 @@ export default function CheckVacuna({ enfermedades, result }) {
               <h6 className="alert alert-light" key={index}>
                 {enfermedad.nom_enfermedad + " " + enfermedad.cog_enfermedad}{" "}
                 {listaEnfermedades.length == index + 1 ? (
-                  <span class="badge bg-secondary">New</span>
+                  <span className="badge bg-secondary">New</span>
                 ) : null}
               </h6>
             );
@@ -163,7 +216,9 @@ export default function CheckVacuna({ enfermedades, result }) {
         </div>
       </div>
       <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
-        <button className="btn btn-danger">Cerrar</button>
+        <button type="button" className="btn btn-danger">
+          Cerrar
+        </button>
         <button type="submit" className="btn btn-primary">
           Continuar
         </button>

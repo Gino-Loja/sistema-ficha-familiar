@@ -2,9 +2,11 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function InfoPersonal(props) {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
+  const { refresh } = useRouter();
 
   const {
     register,
@@ -22,15 +24,44 @@ export default function InfoPersonal(props) {
     saveFamilia,
   } = props;
   const onSubmit = handleSubmit(async (data) => {
-    const resul = await saveFamilia(data);
-
+    const resul = await saveFamilia(data, session.user.email?.id);
     if (resul.errors) {
       console.log(resul.errors);
     } else {
-      session.user.image = {
-        id: resul[0].csctbfamiliaid,
-        edad: 49,
-      };
+      const { anios, meses, dias } = data;
+      console.log(resul, "qqqqqqqqqqq");
+      if (session.user.email?.id == null) {
+        update({
+          email: {
+            anios,
+            meses,
+            dias,
+            id: resul[0].csctbfamiliaid,
+            id_familia: resul[0].csctbfamiliaid,
+            genero: watch("genero"),
+            parentesco: parentescos.find(
+              (item) => item.csctbparentescoid === resul[0].csctbparentescoid
+            ).nom_parentesco,
+            nombre: resul[0].nom_fam + " " + resul[0].ape_fam,
+          },
+        });
+      } else {
+        update({
+          email: {
+            anios,
+            meses,
+            dias,
+            id: session.user.email.id,
+            id_familia: resul[0].csctbfamiliaid,
+            genero: watch("genero"),
+            parentesco: parentescos.find(
+              (item) => item.csctbparentescoid === resul[0].csctbparentescoid
+            ).nom_parentesco,
+            nombre: resul[0].nom_fam + " " + resul[0].ape_fam,
+          },
+        });
+      }
+
       const tabs = document.querySelectorAll(".nav-link");
       const content = document.querySelectorAll(".tab-pane");
       const modal = document.getElementById("modalGuardar");
@@ -52,6 +83,7 @@ export default function InfoPersonal(props) {
   useEffect(() => {
     controlEmbarazada(watch("embarazada"));
   }, [watch("embarazada")]);
+
   const controlEmbarazada = (control) => {
     const embarazadaTab = document.getElementById("pills-embarazada-tab");
 
@@ -203,27 +235,33 @@ export default function InfoPersonal(props) {
           </div>
 
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-            <label className="form-label">Esta Embarazada</label>
-            <div>
-              <div className="form-check form-check-inline">
-                <input
-                  {...register("embarazada")}
-                  className="form-check-input"
-                  type="radio"
-                  value="true"
-                />
-                <label className="form-check-label">Si</label>
-              </div>
-              <div className="form-check form-check-inline">
-                <input
-                  {...register("embarazada")}
-                  className="form-check-input"
-                  type="radio"
-                  value="false"
-                />
-                <label className="form-check-label">No</label>
-              </div>
-            </div>
+            {watch("genero") == "FEMENINO" ? (
+              <>
+                <label id="embarazada" className="form-label">
+                  Esta Embarazada
+                </label>
+                <div id="embarazada">
+                  <div className="form-check form-check-inline">
+                    <input
+                      {...register("embarazada")}
+                      className="form-check-input"
+                      type="radio"
+                      value="true"
+                    />
+                    <label className="form-check-label">Si</label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <input
+                      {...register("embarazada")}
+                      className="form-check-input"
+                      type="radio"
+                      value="false"
+                    />
+                    <label className="form-check-label">No</label>
+                  </div>
+                </div>
+              </>
+            ) : null}
           </div>
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             {" "}
