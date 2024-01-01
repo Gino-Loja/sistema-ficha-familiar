@@ -1,66 +1,95 @@
 "use client";
-import { guardarEnfermedadVacunas } from "@/app/action";
+import {
+  guardarEnfermedadVacunas,
+  updateEnfermdad,
+  updateVacunas,
+} from "@/app/action";
 import { useForm } from "react-hook-form";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import {
+  useSearchParams,
+  usePathname,
+  useRouter,
+  useParams,
+} from "next/navigation";
 import { useEffect, useState } from "react";
-import ModalGenerico from "../modal/modalGenerico";
 import { useSession } from "next-auth/react";
+import ModalGenerico from "@/app/components/modal/modalGenerico";
 
-export default function CheckVacuna({ enfermedades, vacunas }) {
+export default function CheckVacuna({
+  enfermedades,
+  vacunas,
+  familiarVacuna,
+  data,
+  familiarEnfermedad,
+}) {
   const { data: session, status } = useSession();
+
   const [modalShow, setModalShow] = useState(false);
   const [enfer, setEnferme] = useState({});
   const [listaEnfermedades, setListaEnfermdades] = useState([]);
   const [listaVacunas, setListaVacunas] = useState([]);
   useEffect(() => {
-    if (status == "authenticated") {
-      if (session.user.email?.id) {
-        //console.log(session.user)
-        const { anios, meses, dias } = session.user.email;
-        obtenerVacunas(anios, meses, dias).then((data) => {
-          setListaVacunas(data);
-        });
-      }
-    }
-  }, [status]);
+    const { anios, meses, dias } = data;
+    obtenerVacunas(anios, meses, dias).then((data) => {
+      setListaVacunas(data);
+    });
+    setListaEnfermdades(familiarEnfermedad);
+  }, []);
 
   const obtenerVacunas = async (anios, meses, dias) => {
     return await vacunas(anios, meses, dias);
   };
+  const handleUpdateVacunas = async (
+    accion,
+    id_vacuna,
+    id_familia,
+    id_vacunaFamilia
+  ) => {
+    await updateVacunas(accion, id_vacuna, id_familia, id_vacunaFamilia).then(
+      () => {
+        refresh();
+      }
+    );
+  };
+
+  const handleUpdateEnfermedad = async (params) => {
+    await updateEnfermdad(params).then(() => {
+      refresh();
+      setListaEnfermdades((prevEnfermedades) =>
+        prevEnfermedades.filter(
+          (enfermedad) =>
+            enfermedad.csctbenfermedadid !== params.id_enfermedad
+        )
+      );
+    });
+  };
 
   const {
+    watch,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const onSubmit = handleSubmit(async (data) => {
-    const result = await guardarEnfermedadVacunas(
-      data,
-      listaEnfermedades,
-      session.user.email.id_familia
-    );
-    if (result.error) {
-      console.log(result.error);
-    } else {
-      const tabs = document.querySelectorAll(".nav-link");
-      const content = document.querySelectorAll(".tab-pane");
-      const modal = document.getElementById("modalGuardar");
+    const tabs = document.querySelectorAll(".nav-link");
+    const content = document.querySelectorAll(".tab-pane");
+    const modal = document.getElementById("modalGuardar");
 
-      var indexTab = 0;
-      const activeTabIndex = tabs.forEach((tab, index) => {
-        if (tab.classList.contains("active")) {
-          indexTab = index;
-        }
-      });
+    var indexTab = 0;
+    const activeTabIndex = tabs.forEach((tab, index) => {
+      if (tab.classList.contains("active")) {
+        indexTab = index;
+      }
+    });
 
-      tabs[indexTab].classList.remove("active");
-      tabs[indexTab + 1].classList.add("active");
-      content[indexTab].classList.remove("active", "show");
-      content[indexTab + 1].classList.add("active", "show");
-    }
+    tabs[indexTab].classList.remove("active");
+    tabs[indexTab + 1].classList.add("active");
+    content[indexTab].classList.remove("active", "show");
+    content[indexTab + 1].classList.add("active", "show");
   });
   const seachParams = useSearchParams();
   const pathname = usePathname();
+  const params = useParams();
   const { replace, refresh } = useRouter();
 
   const handleOnchange = (termino) => {
@@ -93,6 +122,13 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
           <button
             onClick={() => {
               setModalShow(false);
+              updateEnfermdad({
+                accion: true,
+                id_enfermedad: enfer.csctbenfermedadid,
+                id_familia: params.id,
+              }).then(()=>{
+                refresh()
+              });
               setListaEnfermdades([...listaEnfermedades, enfer]);
             }}
             className="btn btn-primary mx-2"
@@ -102,9 +138,9 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
         </div>
       </ModalGenerico>
       <div className="d-flex justify-content-center">
-        <p className="fw-bold fs-4">Vacunas</p>
+        <p className="fw-bold fs-4">Vacunas: {data.nombre}</p>
       </div>
-      <div className="row mb-3">
+      <div className="row">
         <div className="col-12">
           <a
             className="btn btn-info mb-2"
@@ -149,7 +185,20 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
                         <div className="form-check form-switch">
                           <input
                             {...register(vacunas.csctbvacunasid.toString(), {
-                              setValueAs: (e) => e.target.checked,
+                              value: familiarVacuna.some(
+                                (id) =>
+                                  id.csctbvacunasid == vacunas.csctbvacunasid
+                              ),
+                              onChange: (e) =>
+                                handleUpdateVacunas(
+                                  e.target.checked,
+                                  vacunas.csctbvacunasid,
+                                  params.id,
+                                  familiarVacuna.find(
+                                    (a) =>
+                                      a.csctbvacunasid == vacunas.csctbvacunasid
+                                  )?.csctbvacunafamiliaid
+                                ),
                             })}
                             className="form-check-input"
                             type="checkbox"
@@ -166,7 +215,7 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
           </div>
         </div>
       </div>
-      <div className="row mb-3">
+      <div className="row my-2">
         <div className="col-sm-12 col-xl-6">
           <input
             className="form-control"
@@ -175,7 +224,7 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
           />
         </div>
       </div>
-      <div className="row mb-3">
+      <div className="row">
         <div className="col-sm-12 col-xl-6">
           <select
             {...register("enfermedad", {
@@ -200,12 +249,42 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
           </select>
         </div>
       </div>
-      <div className="row mb-3">
+      <div className="row my-2">
         <div className="col-sm-12 col-xl-6">
           {listaEnfermedades.map((enfermedad, index) => {
             return (
               <h6 className="alert alert-light" key={index}>
                 {enfermedad.nom_enfermedad + " " + enfermedad.cog_enfermedad}{" "}
+                <span>
+                  <button
+                    onClick={() =>{
+                      handleUpdateEnfermedad({
+                        accion: false,
+                        id_enfermedad: enfermedad.csctbenfermedadid,
+                        id_familia: params.id,
+                        id_enfermedadFamilia: familiarEnfermedad.find(
+                          (a) =>
+                            a.csctbenfermedadid == enfermedad.csctbenfermedadid
+                        )?.csctbenfermeriesgoid,
+                      })
+                  
+                    }
+                    }
+                    type="button"
+                    className="btn btn-danger mx-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-trash3"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                  </button>
+                </span>
                 {listaEnfermedades.length == index + 1 ? (
                   <span className="badge bg-secondary">New</span>
                 ) : null}
@@ -214,10 +293,7 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
           })}
         </div>
       </div>
-      <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
-        <button type="button" className="btn btn-danger">
-          Cerrar
-        </button>
+      <div className=" h-25 d-flex flex-row-reverse mt-2 align-items-center">
         <button type="submit" className="btn btn-primary">
           Continuar
         </button>

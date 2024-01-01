@@ -60,6 +60,7 @@ export default function Biologico({
     watch,
     formState: { errors },
   } = useForm();
+  console.log(session)
   const onSubmit = handleSubmit(async (data) => {
     const result = await insertRiesgosBiologicosAmbientalesSocioeconomicos(
       Rbiologicos,
@@ -74,7 +75,7 @@ export default function Biologico({
       const content = document.querySelectorAll(".tab-pane");
 
       var indexTab = 0;
-      if (session.user.email.genero == "FEMENINO") {
+      if (session.user.email.embarazada == "true") {
         tabs.forEach((tab, index) => {
           if (tab.classList.contains("active")) {
             indexTab = index;
@@ -160,9 +161,9 @@ export default function Biologico({
         </div>
       </ModalFinalizar>
       <div className="d-flex justify-content-center">
-        <p className="fw-bold fs-4">Riesgos BIologicos</p>
+        <p className="fw-bold fs-4">Riesgos Biologicos</p>
       </div>
-      <div className="row ">
+      <div className="row mb-3">
         <div className="col-sm-12 col-md-6 col-lg-6 col-xl-6 my-2">
           <button className="btn btn-info mb-2 btn-md" type="button">
             <svg
@@ -259,9 +260,9 @@ export default function Biologico({
           </select>
         </div>
       </div>
-      <div className="row my-2">
+      <div className="row mb-3">
         <div className="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
-          <label className="form-label">Lista de riesgos Biologicos</label>
+          <label className="form-label"><h5>Lista de riesgos Biologicos</h5> </label>
 
           {Rbiologicos.map((biologico, index) => {
             return (
@@ -275,7 +276,7 @@ export default function Biologico({
           })}
         </div>
         <div className="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-          <label className="form-label">Lista de riesgos Socioeconomicos</label>
+          <label className="form-label"><h5>Lista de riesgos Socioeconomicos</h5> </label>
 
           {Rsocioeconomicos.map((socio, index) => {
             return (
@@ -290,7 +291,7 @@ export default function Biologico({
         </div>
       </div>
 
-      <div className="row">
+      <div className="row mb-3">
         <div className="col-sm-12 col-md-6 col-lg-6 col-xl-6">
           <button className="btn btn-info mb-2 btn-md" type="button">
             <svg
@@ -341,9 +342,9 @@ export default function Biologico({
           </select>
         </div>
       </div>
-      <div className="row my-2">
+      <div className="row mb-3">
         <div className="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
-          <label className="form-label">Lista de riesgos Biologicos</label>
+          <label className="form-label"><h5>Lista de riesgos Ambientales</h5></label>
 
           {RAmbientales.map((ambiental, index) => {
             return (
@@ -358,10 +359,8 @@ export default function Biologico({
         </div>
       </div>
 
-      <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
-        <button type="button" className="btn btn-danger">
-          Cerrar
-        </button>
+      <div className=" h-25 d-flex justify-content-end mt-2 align-items-center">
+   
         <button type="submit" className="btn btn-primary">
           Continuar
         </button>

@@ -1,16 +1,25 @@
 "use client";
-import { insertPrioritarioAndVulnerable } from "@/app/action";
+import {
+  insertPrioritarioAndVulnerable,
+  updatePrioritarioFamilia,
+  updateVulnerableFamilia,
+} from "@/app/action";
 import { useForm } from "react-hook-form";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import ModalGenerico from "../modal/modalGenerico";
+import ModalGenerico from "@/app/components/modal/modalGenerico";
 import { useSession } from "next-auth/react";
-export default function Prioritario({ vulnerables, prioritarios }) {
+export default function Prioritario({
+  vulnerables,
+  prioritarios,
+  familiaPrioritarios,
+  familiaVulnerable,
+  data
+}) {
   const { data: session, status } = useSession();
-
   const [modalShow, setModalShow] = useState(false);
-  const [listaPrioritario, setListaPrioritario] = useState([]);
-  const [listaVulnerable, setListaVulnerable] = useState([]);
+  const [listaPrioritario, setListaPrioritario] = useState(familiaPrioritarios);
+  const [listaVulnerable, setListaVulnerable] = useState(familiaVulnerable);
   const [prioritarioOrVulnerable, setPrioritarioOrVulnerable] = useState({});
 
   //   useEffect(() => {
@@ -54,15 +63,44 @@ export default function Prioritario({ vulnerables, prioritarios }) {
       content[indexTab + 1].classList.add("active", "show");
     }
   });
-  const seachParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace, refresh } = useRouter();
+
+  const params = useParams();
+
+  const { replace, refresh, push } = useRouter();
   const handleChange = () => {
     if (prioritarioOrVulnerable?.nom_prioritario !== undefined) {
+      updatePrioritarioFamilia({
+        accion: true,
+        id_prioritario: prioritarioOrVulnerable.csctbprioritarioid,
+        id_familia: params.id,
+      });
       setListaPrioritario([...listaPrioritario, prioritarioOrVulnerable]);
     } else {
+      updateVulnerableFamilia({
+        accion: true,
+        id_vulnerable: prioritarioOrVulnerable.csctbvulnerableid,
+        id_familia: params.id,
+      });
       setListaVulnerable([...listaVulnerable, prioritarioOrVulnerable]);
     }
+  };
+
+  const handleUpdateVulnerable = async (params) => {
+    await updateVulnerableFamilia(params).then(() => {
+      refresh();
+      setListaVulnerable((prev) =>
+        prev.filter((dato) => dato.csctbvulnerableid !== params.id_vulnerable)
+      );
+    });
+  };
+
+  const handleUpdatePrioritario = async (params) => {
+    await updatePrioritarioFamilia(params).then(() => {
+      refresh();
+      setListaPrioritario((prev) =>
+        prev.filter((dato) => dato.csctbprioritarioid !== params.id_prioritario)
+      );
+    });
   };
   return (
     <form onSubmit={onSubmit}>
@@ -94,11 +132,11 @@ export default function Prioritario({ vulnerables, prioritarios }) {
         </div>
       </ModalGenerico>
       <div className="d-flex justify-content-center">
-        <p className="fw-bold fs-4">Prioritarios</p>
+        <p className="fw-bold fs-4">Prioritarios: {data.nombre}</p>
       </div>
-      <div className="row mb-3">
+      <div className="row">
         <div className="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-          <label className="form-label"><h5>Prioritario</h5></label>
+          <label className="form-label">Prioritario</label>
           <select
             {...register("prioritario", {
               required: {
@@ -132,7 +170,7 @@ export default function Prioritario({ vulnerables, prioritarios }) {
           </select>
         </div>
         <div className="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-          <label className="form-label"><h5>Vulnerable</h5></label>
+          <label className="form-label">Vulnerable</label>
 
           <select
             {...register("vulnerable", {
@@ -166,13 +204,42 @@ export default function Prioritario({ vulnerables, prioritarios }) {
           </select>
         </div>
       </div>
-      <div className="row mb-3">
+      <div className="row my-2">
         <div className="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-          <label className="form-label"><h5>Lista de Prioritarios</h5></label>
+          <label className="form-label">Lista de Prioritarios</label>
           {listaPrioritario.map((prioritario, index) => {
             return (
               <h6 className="alert alert-light" key={index}>
                 {prioritario.nom_prioritario}
+                <span>
+                  <button
+                    onClick={() => {
+                      handleUpdatePrioritario({
+                        accion: false,
+                        id_prioritario: prioritario.csctbprioritarioid,
+                        id_familia: params.id,
+                        id_prioritarioFamilia: familiaPrioritarios.find(
+                          (a) =>
+                            a.csctbprioritarioid ==
+                            prioritario.csctbprioritarioid
+                        )?.csctbprioritariofamiliaid,
+                      });
+                    }}
+                    type="button"
+                    className="btn btn-danger mx-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-trash3"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                  </button>
+                </span>
                 {listaPrioritario.length == index + 1 ? (
                   <span className="badge bg-secondary">New</span>
                 ) : null}
@@ -181,11 +248,39 @@ export default function Prioritario({ vulnerables, prioritarios }) {
           })}
         </div>
         <div className="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-          <label className="form-label"><h5>Lista de Vulnerables</h5></label>
+          <label className="form-label">Lista de Vulnerables</label>
           {listaVulnerable.map((vulnerable, index) => {
             return (
               <h6 className="alert alert-light" key={index}>
                 {vulnerable.nom_vulnerable}
+                <span>
+                  <button
+                    onClick={() => {
+                      handleUpdateVulnerable({
+                        accion: false,
+                        id_vulnerable: vulnerable.csctbvulnerableid,
+                        id_familia: params.id,
+                        id_vulnerableFamilia: familiaVulnerable.find(
+                          (a) =>
+                            a.csctbvulnerableid == vulnerable.csctbvulnerableid
+                        )?.csctbvulnerablefamiliaid,
+                      });
+                    }}
+                    type="button"
+                    className="btn btn-danger mx-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-trash3"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                  </button>
+                </span>
                 {listaVulnerable.length == index + 1 ? (
                   <span className="badge bg-secondary">New</span>
                 ) : null}
@@ -195,10 +290,12 @@ export default function Prioritario({ vulnerables, prioritarios }) {
         </div>
       </div>
 
-      <div className=" h-25 d-flex justify-content-end mt-2 align-items-center">
-
+      <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
+        <button onClick={()=>(push("/buscarFicha"))} type="button" className="btn btn-danger">
+          Cerrar
+        </button>
         <button type="submit" className="btn btn-primary">
-            guardar y Continuar
+          Continuar
         </button>
       </div>
     </form>

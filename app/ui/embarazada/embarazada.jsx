@@ -2,17 +2,20 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import ModalFinalizar from "../modal/modalFinalizar";
+import { useRouter, useParams } from "next/navigation";
+import ModalFinalizar from "@/app/components/modal/modalFinalizar";
+import { updateFamiliaEmbarazadaById ,updateRiesgosEmbarazada} from "@/app/action";
 export default function Embarazada({
   riesgoObstetrico,
   insertEmbarazadaAndRiesgoObstetricos,
+  embarazadaById,
+  data,
+  riesgosEmbarazo
 }) {
-  const { data: session } = useSession();
-  const [listaRiesgos, setListaRiesgos] = useState([]);
+  const { params } = useParams();
+  const [listaRiesgos, setListaRiesgos] = useState(riesgosEmbarazo);
   const [modalShowFinalizar, setModalShowFinalizar] = useState(false);
   const router = useRouter();
-
   const {
     register,
     handleSubmit,
@@ -29,12 +32,9 @@ export default function Embarazada({
     }
   }, [watch("tipoRiesgo")]);
   const onSubmit = handleSubmit(async (data) => {
-    const id_familia = session.user.email.id_familia;
-    const result = await insertEmbarazadaAndRiesgoObstetricos(
-      data,
-      watch("riesgoObstetrico"),
-      id_familia
-    );
+    const result = await updateFamiliaEmbarazadaById(data, embarazadaById.csctbembarazadasid);
+    const ressul = await updateRiesgosEmbarazada(watch("riesgoObstetrico"),embarazadaById.csctbembarazadasid)
+  
     if (result.error) {
       console.log(result.error);
     } else {
@@ -48,30 +48,33 @@ export default function Embarazada({
     <form onSubmit={onSubmit}>
       <ModalFinalizar
         show={modalShowFinalizar}
-        tittle={`A Finalizado el registro de: ${session?.user?.email?.nombre} como ${session?.user?.email?.parentesco}`}
+        tittle={`A Finalizado la Actualizacion de: ${data.nombre} como ${data.parentesco}`}
       >
         <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
           <button
             onClick={() => {
               setModalShowFinalizar(false);
-              router.push("/nuevaFicha/");
+              router.push("/buscarFicha/");
             }}
             className="btn btn-primary mx-2"
           >
-            Aceptar
+            Continuar
           </button>
         </div>
       </ModalFinalizar>
-      <div className="row mb-3">
+      <div className="row">
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Ultima Fecha de Menstruacion</h5></label>
+          <label className="form-label">Ultima Fecha de Menstruacion</label>
           <input
             {...register("fechaUltimaMenstruacion", {
               required: {
                 value: true,
                 message: "Ingrese",
               },
+              value: new Date(embarazadaById.fecha_menstruacion)
+                .toISOString()
+                .split("T")[0],
             })}
             type="date"
             className="form-control"
@@ -79,13 +82,16 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Fecha Probable de Parto</h5></label>
+          <label className="form-label">Fecha Probable de Parto</label>
           <input
             {...register("fechaProbableDeParto", {
               required: {
                 value: true,
                 message: "Ingrese",
               },
+              value: new Date(embarazadaById.fecha_parto)
+                .toISOString()
+                .split("T")[0],
               maxLength: 10,
             })}
             type="date"
@@ -95,7 +101,7 @@ export default function Embarazada({
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
           <label className="form-label">
-            <h5>{"N de controles prenatales < 20 sem.."}</h5>
+            {"Numeros de controles prenatales < a 20 sem.."}
           </label>
           <input
             {...register("controlMenos20", {
@@ -103,6 +109,7 @@ export default function Embarazada({
                 value: true,
                 message: "Ingrese",
               },
+              value: embarazadaById.control_menos20,
               maxLength: 10,
             })}
             type="number"
@@ -112,7 +119,7 @@ export default function Embarazada({
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
           <label className="form-label">
-          <h5>{"N de controles prenatales > 20 sem.."}</h5>
+            {"Numeros de controles prenatales > a 20 sem.."}
           </label>
           <input
             {...register("controlMas20", {
@@ -120,6 +127,7 @@ export default function Embarazada({
                 value: true,
                 message: "Ingrese ",
               },
+              value: embarazadaById.control_mas20,
               maxLength: 10,
             })}
             type="number"
@@ -127,16 +135,17 @@ export default function Embarazada({
           />
         </div>
       </div>
-      <div className="row mb-3">
+      <div className="row my-2">
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Semanas de Gestacion</h5></label>
+          <label className="form-label">Semanas de Gestacion</label>
           <input
             {...register("semanasGestacion", {
               required: {
                 value: true,
                 message: "Ingrese",
               },
+              value: embarazadaById.semanas_gestacion,
             })}
             type="number"
             className="form-control"
@@ -144,13 +153,14 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Gestas</h5></label>
+          <label className="form-label">Gestas</label>
           <input
             {...register("gestas", {
               required: {
                 value: true,
                 message: "Ingrese",
               },
+              value: embarazadaById.gestas,
               maxLength: 10,
             })}
             type="number"
@@ -159,14 +169,15 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Partos</h5></label>
+          <label className="form-label">Partos</label>
           <input
             {...register("partos", {
               required: {
                 value: true,
                 message: "Ingrese ",
               },
-              maxLength: 10,
+              value: embarazadaById.partos,
+              maxLength: 3,
             })}
             type="number"
             className="form-control"
@@ -174,13 +185,14 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>abortos</h5> </label>
+          <label className="form-label">abortos </label>
           <input
             {...register("aborto", {
               required: {
                 value: true,
                 message: "Ingrese",
               },
+              value: embarazadaById.abortos,
               maxLength: 10,
             })}
             type="number"
@@ -188,25 +200,26 @@ export default function Embarazada({
           />
         </div>
       </div>
-      <div className="row mb-3">
+      <div className="row my-2">
         <div className="col-sm-12 col-md-6 col-lg-12 col-xl-12">
           {" "}
-          <label className="form-label"><h5>Antecedentes Patologicos</h5></label>
+          <label className="form-label">Antecedentes Patologicos</label>
           <textarea
             {...register("antecedentesPatologicos", {
               required: {
                 value: true,
                 message: "Ingrese",
               },
+              value: embarazadaById.ante_patologicos,
             })}
             type="number"
             className="form-control"
           />
         </div>
       </div>
-      <div className="row mb-3">
+      <div className="row my-2">
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-          <label className="form-label"><h5>Selecione el nivel del Riesgo</h5></label>
+          <label className="form-label">Selecione el nivel del Riesgo</label>
           <select
             {...register("tipoRiesgo", {
               required: {
@@ -225,7 +238,7 @@ export default function Embarazada({
           </select>
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-          <label className="form-label"><h5>Riesgo Obstetrico</h5></label>
+          <label className="form-label">Riesgo Obstetrico</label>
 
           <select {...register("riesgoObstetrico", {})} className="form-select">
             <option value="">Seleccione la opcion</option>
@@ -238,13 +251,14 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Cesarias</h5></label>
+          <label className="form-label">Cesarias</label>
           <input
             {...register("cesarias", {
               required: {
                 value: true,
                 message: "Ingrese ",
               },
+              value: embarazadaById.cesarias,
               maxLength: 10,
             })}
             type="number"
@@ -252,10 +266,16 @@ export default function Embarazada({
           />
         </div>
       </div>
-      <div className=" h-25 d-flex justify-content-end mt-2 align-items-center">
-
+      <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
+        <button
+          onClick={() => router.push("/buscarFicha")}
+          type="button"
+          className="btn btn-danger"
+        >
+          Cerrar
+        </button>
         <button type="submit" className="btn btn-primary">
-          guardar Y finalizar
+          Actualizar y finalizar
         </button>
       </div>
     </form>

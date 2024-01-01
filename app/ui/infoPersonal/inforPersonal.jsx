@@ -1,13 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { updateFamiliaById } from "@/app/action";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 export default function InfoPersonal(props) {
-  const { data: session, status, update } = useSession();
   const { refresh } = useRouter();
-
+  const params = useParams();
   const {
     register,
     handleSubmit,
@@ -21,49 +20,21 @@ export default function InfoPersonal(props) {
     instrucciones,
     pueblos,
     parentescos,
-    saveFamilia,
+    datosFamiliar,
+    data,
   } = props;
+  const [control_bucal, setcontrol_bucal] = useState(
+    datosFamiliar.control_bucal
+  );
+  const [isembarazada, setisembarazada] = useState(data.embarazo);
+
   const onSubmit = handleSubmit(async (data) => {
-    const resul = await saveFamilia(data, session.user.email?.id);
-    if (resul.errors) {
-      console.log(resul.errors);
+    const resul = await updateFamiliaById(data, params.id);
+    console.log(resul);
+    if (resul.error) {
+      console.log(resul.error);
     } else {
-      const { anios, meses, dias } = data;
-
-      if (session.user.email?.id == null) {
-        update({
-          email: {
-            anios,
-            meses,
-            dias,
-            id: resul[0].csctbfamiliaid,
-            id_familia: resul[0].csctbfamiliaid,
-            genero: watch("genero"),
-            parentesco: parentescos.find(
-              (item) => item.csctbparentescoid === resul[0].csctbparentescoid
-            ).nom_parentesco,
-            nombre: resul[0].nom_fam + " " + resul[0].ape_fam,
-            embarazada: watch("embarazada"),
-          },
-        });
-      } else {
-        update({
-          email: {
-            anios,
-            meses,
-            dias,
-            id: session.user.email.id,
-            id_familia: resul[0].csctbfamiliaid,
-            genero: watch("genero"),
-            parentesco: parentescos.find(
-              (item) => item.csctbparentescoid === resul[0].csctbparentescoid
-            ).nom_parentesco,
-            nombre: resul[0].nom_fam + " " + resul[0].ape_fam,
-            embarazada: watch("embarazada"),
-          },
-        });
-      }
-
+      refresh();
       const tabs = document.querySelectorAll(".nav-link");
       const content = document.querySelectorAll(".tab-pane");
       const modal = document.getElementById("modalGuardar");
@@ -83,6 +54,7 @@ export default function InfoPersonal(props) {
   });
 
   useEffect(() => {
+    setValue("embarazada", "true");
     controlEmbarazada(watch("embarazada"));
   }, [watch("embarazada")]);
 
@@ -107,14 +79,15 @@ export default function InfoPersonal(props) {
   return (
     <div className="container-fluid">
       <div className="d-flex justify-content-center">
-        <p className="fw-bold fs-4">Informacion Personal</p>
+        <p className="fw-bold fs-4">
+          Informacion Personal:{" "}
+          {datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam}
+        </p>
       </div>
       <form onSubmit={onSubmit}>
-        <div className="row mb-3">
+        <div className="row">
           <div className="col">
-            <label className="form-label">
-              <h5>Nombres</h5>
-            </label>
+            <label className="form-label">Nombres</label>
 
             <input
               {...register("nombres", {
@@ -122,6 +95,7 @@ export default function InfoPersonal(props) {
                   value: true,
                   message: "Ingrese los nombres",
                 },
+                value: datosFamiliar.nom_fam,
               })}
               type="text"
               className="form-control"
@@ -129,15 +103,14 @@ export default function InfoPersonal(props) {
           </div>
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             {" "}
-            <label className="form-label">
-              <h5>Apellidos</h5>
-            </label>
+            <label className="form-label">Apellidos</label>
             <input
               {...register("apellidos", {
                 required: {
                   value: true,
                   message: "Ingrese su apellido",
                 },
+                value: datosFamiliar.ape_fam,
               })}
               type="text"
               className="form-control"
@@ -145,9 +118,7 @@ export default function InfoPersonal(props) {
           </div>
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             {" "}
-            <label className="form-label">
-              <h5>Cedula</h5>
-            </label>
+            <label className="form-label">Cedula</label>
             <input
               {...register("cedula", {
                 required: {
@@ -155,6 +126,7 @@ export default function InfoPersonal(props) {
                   message: "Ingrese la cedula",
                 },
                 maxLength: 10,
+                value: datosFamiliar.cedula_fam,
               })}
               type="number"
               className="form-control"
@@ -163,15 +135,16 @@ export default function InfoPersonal(props) {
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div className="d-flex justify-content-between">
               <div className="w-50" style={{ marginRight: "3px" }}>
-                <label className="form-label">
-                  <h5>Fecha de Nacimiento</h5>
-                </label>
+                <label className="form-label">Fecha de Nacimiento</label>
                 <input
                   {...register("fechaNacimiento", {
                     required: {
                       value: true,
                       message: "Seleccione su fecha de nacimiento",
                     },
+                    value: new Date(datosFamiliar.fecha_na_fam)
+                      .toISOString()
+                      .split("T")[0],
                     onChange: () => {
                       var fechaNacimientoStr = watch("fechaNacimiento");
                       var fechaNacimiento = new Date(fechaNacimientoStr);
@@ -196,11 +169,11 @@ export default function InfoPersonal(props) {
               </div>
               <div className="d-flex w-50 justify-content-around align-items-end">
                 <div className="">
-                  <label className="form-label">
-                    <h5>Años</h5>
-                  </label>
+                  <label className="form-label">Años</label>
                   <input
-                    {...register("anios", {})}
+                    {...register("anios", {
+                      value: datosFamiliar.anios,
+                    })}
                     disabled
                     className="form-control form-control"
                     type="text"
@@ -208,22 +181,18 @@ export default function InfoPersonal(props) {
                 </div>
 
                 <div className="mx-1">
-                  <label className="form-label">
-                    <h5>meses</h5>
-                  </label>
+                  <label className="form-label">meses</label>
                   <input
-                    {...register("meses", {})}
+                    {...register("meses", { value: datosFamiliar.meses })}
                     disabled
                     className="form-control form-control"
                     type="text"
                   />
                 </div>
                 <div className="">
-                  <label className="form-label">
-                    <h5>Dias</h5>
-                  </label>
+                  <label className="form-label">Dias</label>
                   <input
-                    {...register("dias", {})}
+                    {...register("dias", { value: datosFamiliar.dias })}
                     disabled
                     className="form-control form-control"
                     type="text"
@@ -233,17 +202,16 @@ export default function InfoPersonal(props) {
             </div>
           </div>
         </div>
-        <div className="row mb-3">
+        <div className="row mt-2">
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-            <label className="form-label">
-              <h5>Genero</h5>
-            </label>
+            <label className="form-label">Genero</label>
             <select
               {...register("genero", {
                 required: {
                   value: true,
                   message: "Seleccione el genero",
                 },
+                value: datosFamiliar.genero,
                 validate: (value) => value !== "",
               })}
               className="form-select"
@@ -259,24 +227,37 @@ export default function InfoPersonal(props) {
             {watch("genero") == "FEMENINO" ? (
               <>
                 <label id="embarazada" className="form-label">
-                  <h5>Esta Embarazada</h5>
+                  Esta Embarazada
                 </label>
                 <div id="embarazada">
                   <div className="form-check form-check-inline">
                     <input
-                      {...register("embarazada")}
+                      {...register("embarazada", {
+                        onChange: (e) => {
+                          setValue("embarazada", e.target.value);
+                          setisembarazada(e.target.value == "true");
+                        },
+                      })}
                       className="form-check-input"
                       type="radio"
                       value="true"
+                      checked={isembarazada == true}
                     />
                     <label className="form-check-label">Si</label>
                   </div>
                   <div className="form-check form-check-inline">
                     <input
-                      {...register("embarazada")}
+                      {...register("embarazada", {
+                        onChange: (e) => {
+                          setValue("embarazada", e.target.value);
+
+                          setisembarazada(e.target.value == "true");
+                        },
+                      })}
                       className="form-check-input"
                       type="radio"
                       value="false"
+                      checked={isembarazada == false}
                     />
                     <label className="form-check-label">No</label>
                   </div>
@@ -286,40 +267,51 @@ export default function InfoPersonal(props) {
           </div>
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             {" "}
-            <label className="form-label">
-              <h5>Salud Bucal</h5>
-            </label>
+            <label className="form-label">Salud Bucal</label>
             <div>
               <div className="form-check form-check-inline">
                 <input
-                  {...register("saludBucal")}
+                  {...register("saludBucal", {
+                    onChange: (e) => {
+                      setValue("saludBucal", e.target.value);
+                      setcontrol_bucal(e.target.value == "true");
+                    },
+                  })}
                   className="form-check-input"
                   type="radio"
-                  value="true"
+                  value={true}
+                  checked={control_bucal == true}
                 />
                 <label className="form-check-label">Si</label>
               </div>
+
               <div className="form-check form-check-inline">
                 <input
-                  {...register("saludBucal")}
+                  {...register("saludBucal", {
+                    onChange: (e) => {
+                      setValue("saludBucal", e.target.value);
+                      setcontrol_bucal(e.target.value == "true");
+                    },
+                  })}
                   className="form-check-input"
                   type="radio"
-                  value="false"
+                  value={false}
+                  checked={control_bucal == false}
                 />
                 <label className="form-check-label">No</label>
               </div>
             </div>
           </div>
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-            <label className="form-label">
-              <h5>Estado Civil</h5>
-            </label>
+            <label className="form-label">Estado Civil</label>
             <select
               {...register("estadoCivil", {
                 required: {
                   value: true,
                   message: "Seleccione un estado civil",
                 },
+                value: datosFamiliar.estado_civil,
+
                 validate: (value) => value !== "",
               })}
               className="form-select"
@@ -332,17 +324,17 @@ export default function InfoPersonal(props) {
             </select>
           </div>
         </div>
-        <div className="row mb-3">
+        <div className="row mt-2">
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-            <label className="form-label">
-              <h5>Auto Identificacion Etnica</h5>
-            </label>
+            <label className="form-label">Auto Identificacion Etnica</label>
             <select
               {...register("etnia", {
                 required: {
                   value: true,
                   message: "Seleccione una etnia",
                 },
+                value: datosFamiliar.csctbetniaid,
+
                 validate: (value) => value !== "",
               })}
               className="form-select"
@@ -357,15 +349,14 @@ export default function InfoPersonal(props) {
             </select>
           </div>
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-            <label className="form-label">
-              <h5>Pueblos</h5>
-            </label>
+            <label className="form-label">Pueblos</label>
             <select
               {...register("pueblos", {
                 required: {
                   value: true,
                   message: "Seleccione el pueblo",
                 },
+                value: datosFamiliar.csctbpueblosid,
                 validate: (value) => value !== "",
               })}
               className="form-select"
@@ -383,15 +374,14 @@ export default function InfoPersonal(props) {
             </select>
           </div>
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-            <label className="form-label">
-              <h5>Ocupacion</h5>
-            </label>
+            <label className="form-label">Ocupacion</label>
             <select
               {...register("ocupacion", {
                 required: {
                   value: true,
                   message: "Seleccione el pueblo",
                 },
+                value: datosFamiliar.csctbocupacionid,
                 validate: (value) => value !== "",
               })}
               className="form-select"
@@ -409,15 +399,14 @@ export default function InfoPersonal(props) {
             </select>
           </div>
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-            <label className="form-label">
-              <h5>Nivel de Instrucion</h5>
-            </label>
+            <label className="form-label">Nivel de Instrucion</label>
             <select
               {...register("instruccion", {
                 required: {
                   value: true,
                   message: "Seleccione el pueblo",
                 },
+                value: datosFamiliar.csctbinstruccionid,
                 validate: (value) => value !== "",
               })}
               className="form-select"
@@ -435,17 +424,17 @@ export default function InfoPersonal(props) {
             </select>
           </div>
         </div>
-        <div className="row mb-3">
+        <div className="row mt-2">
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-            <label className="form-label">
-              <h5>Parentesto</h5>
-            </label>
+            <label className="form-label">Parentesto</label>
             <select
               {...register("parentesco", {
                 required: {
                   value: true,
                   message: "Selecccione el parentesco",
                 },
+                value: datosFamiliar.csctbparentescoid,
+
                 validate: (value) => value !== "",
               })}
               className="form-select"
@@ -464,9 +453,7 @@ export default function InfoPersonal(props) {
           </div>
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             {" "}
-            <label className="form-label">
-              <h5>Observaciones</h5>
-            </label>
+            <label className="form-label">Observaciones</label>
             <textarea
               className="form-control"
               id="exampleFormControlTextarea1"
@@ -475,6 +462,8 @@ export default function InfoPersonal(props) {
                 required: {
                   value: false,
                 },
+                value: datosFamiliar.observacion,
+
                 validate: (value) => value !== "",
               })}
             ></textarea>
