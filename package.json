@@ -1,7 +1,7 @@
 {
   "name": "sistema_ficha_familiar",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.2",
+    "gojs": "^2.3.13",
+    "gojs-react": "^1.1.2",
     "next": "14.0.4",
     "next-auth": "^4.24.5",
     "next-pwa": "^5.6.0",

@@ -10,9 +10,7 @@ import {
 import IndexBiologicos from "@/app/components/biologicos";
 import IndexEmbarazada from "@/app/components/embarazada";
 import InfoPersonal from "@/app/components/infoPersonal";
-import Modal from "@/app/components/modal";
 import IndexPrioritarios from "@/app/components/prioritarios";
-import Prioritario from "@/app/components/prioritarios/prioritarios";
 import IndexRiesgos from "@/app/components/riesgos";
 import Vacuna from "@/app/components/vacunas/vacuna";
 

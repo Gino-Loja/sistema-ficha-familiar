@@ -180,10 +180,8 @@ export default function InfoPersonal(props) {
                       var diferenciaTiempo =
                         fechaActual.getFullYear() -
                         fechaNacimiento.getFullYear();
-                      var meses =
-                        fechaActual.getMonth() - fechaNacimiento.getMonth();
-                      var dias =
-                        fechaActual.getDate() - fechaNacimiento.getDate();
+                      var meses = fechaNacimiento.getMonth();
+                      var dias = fechaNacimiento.getDate();
                       var anos = diferenciaTiempo;
                       setValue("anios", anos);
                       setValue("meses", meses);
@@ -290,9 +288,10 @@ export default function InfoPersonal(props) {
               <h5>Salud Bucal</h5>
             </label>
             <div>
+              {console.log(watch("saludBucal"))}
               <div className="form-check form-check-inline">
                 <input
-                  {...register("saludBucal")}
+                  {...register("saludBucal", {})}
                   className="form-check-input"
                   type="radio"
                   value="true"

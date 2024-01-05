@@ -145,6 +145,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
             aria-labelledby="pills-profile-tab"
             tabIndex="0"
           >
+            {console.log(datosFamiliar)}
             <Vacuna
               data={{
                 anios: datosFamiliar.anios,

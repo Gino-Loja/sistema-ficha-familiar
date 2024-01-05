@@ -153,10 +153,8 @@ export default function InfoPersonal(props) {
                       var diferenciaTiempo =
                         fechaActual.getFullYear() -
                         fechaNacimiento.getFullYear();
-                      var meses =
-                        fechaActual.getMonth() - fechaNacimiento.getMonth();
-                      var dias =
-                        fechaActual.getDate() - fechaNacimiento.getDate();
+                      var meses = fechaNacimiento.getMonth();
+                      var dias = fechaNacimiento.getDate();
                       var anos = diferenciaTiempo;
                       setValue("anios", anos);
                       setValue("meses", meses);

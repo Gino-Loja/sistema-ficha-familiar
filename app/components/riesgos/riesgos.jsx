@@ -90,7 +90,7 @@ export default function Riesgos({ evaluacionRiesgos }) {
       </div>
       <div className="row mb-3">
         <div className="col-12">
-          <label className="form-label"><h5>Riesgo, enfermdad, discapacidad</h5></label>
+          <label className="form-label"><h5>Riesgo, enfermedad, discapacidad</h5></label>
           <textarea
             className="form-control"
             id="exampleFormControlTextarea1"

@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: '12345'
+      POSTGRES_DB: ficha
+    ports:
+      - "5000:5432"
+    volumes:
+      #- ./db-data/:/var/lib/postgresql/data/
+      - ./backup.sql:/backup.sql
+    networks:
+      - ficha
+  node_app:
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    build: .
+    
+    ports:
+      - "3000:3000"
+    networks:
+      - ficha
+networks:
+  ficha:

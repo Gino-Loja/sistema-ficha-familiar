@@ -23,6 +23,7 @@ export const obtenerCsctbedadesid = (anios, meses, dias) => {
   } else {
     csctbedadesid = 15;
   }
+  console.log(csctbedadesid);
 
   return csctbedadesid;
 };
@@ -45,7 +46,7 @@ export const obtenerCsctbedadesidRiesgos = (anios, meses, dias) => {
     csctbedadesid = 6;
   } else if (edadEnDias >= 23361) {
     csctbedadesid = 7;
-  } 
+  }
 
   return csctbedadesid;
 };

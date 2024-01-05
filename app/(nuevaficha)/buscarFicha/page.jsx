@@ -1,11 +1,17 @@
 "use client";
 import Nav from "@/app/components/nav";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import ModalUser from "@/app/components/modal/modalUser";
-import { getFamiliares } from "@/app/action";
-function buscarFicha() {
+import {  getFamiliares } from "@/app/action";
+import Offcanvas from "react-bootstrap/Offcanvas";
+import MostrarGenograma from "@/app/components/prueba/page";
+function BuscarFicha() {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const router = useRouter();
   const {
     register,
@@ -18,6 +24,8 @@ function buscarFicha() {
 
   const [listaFamilia, setlistaFamilia] = useState([]);
   const [iduser, setId] = useState(0);
+
+  
   const onSubmit = handleSubmit(async (data) => {
     const result = await getFamiliares(watch("busqueda"), data.buscar);
 
@@ -37,6 +45,16 @@ function buscarFicha() {
 
   return (
     <>
+      <Offcanvas show={show} onHide={handleClose} className="w-100">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Familiares</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {listaFamilia.length > 0 ? (
+            <MostrarGenograma familiares={listaFamilia}></MostrarGenograma>
+          ) : null}
+        </Offcanvas.Body>
+      </Offcanvas>
       <Nav></Nav>
       <ModalUser show={modalShow} tittle={`Confirme lo siguiente: `}>
         <div className=" d-flex flex-column  align-items-center">
@@ -126,7 +144,14 @@ function buscarFicha() {
                         </svg>
                         Buscar{" "}
                       </button>
-                      <button type="button" className="btn btn-primary">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setValue("buscar", "");
+                          setlistaFamilia([]);
+                        }}
+                        className="btn btn-primary"
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
@@ -147,54 +172,69 @@ function buscarFicha() {
           </div>
 
           <div>
-            <div className="card mt-2 container card-body border-light overflow-x-auto">
-              <table className="table">
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col"># de ficha</th>
-                    <th scope="col">Nombres</th>
-                    <th scope="col">Apellidos</th>
-                    <th scope="col">Sexo</th>
-                    <th scope="col">Edad</th>
-                    <th scope="col">Parentesco</th>
-                    <th scope="col">Id_Jefe</th>
-                    <th scope="col">Accion</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {listaFamilia.map((familia, index) => (
-                    <tr key={index}>
-                      <td>{familia.csctbfamiliaid}</td>
-                      <td>{familia.nom_fam}</td>
-                      <td>{familia.ape_fam}</td>
-                      <td>{familia.genero}</td>
-                      <td>{familia.anios}</td>
-                      <td>{familia.nom_parentesco}</td>
-                      <td>{familia.id_jefe_hogar}</td>
-                      <td>
-                        <div className="d-flex justify-content-between w-100">
-                          <button
-                            type="button"
-                            onClick={() => handleUserId(familia.csctbfamiliaid)}
-                            className="btn btn-info"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              fill="currentColor"
-                              className="bi bi-pencil-fill"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
+            <div className="card mt-2 container card-body border-light ">
+              {listaFamilia.length > 0 ? (
+                <button
+                  type="button"
+                  className="btn btn-info shadow p-6 mb-3 rounded"
+                  onClick={handleShow}
+                >
+                  Ver arbol Familiar
+                </button>
+              ) : null}
+              <div className=" overflow-x-auto">
+                <table className="table shadow-sm p-3 mb-5 bg-body-tertiary rounded ">
+                  <thead className="thead-light">
+                    <tr>
+                      <th scope="col"># de ficha</th>
+                      <th scope="col">Nombres</th>
+                      <th scope="col">Apellidos</th>
+                      <th scope="col">Sexo</th>
+                      <th scope="col">Edad</th>
+                      <th scope="col">Parentesco</th>
+                      <th scope="col">Cedula</th>
+                      <th scope="col">Id_Jefe</th>
+                      <th scope="col">Accion</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {listaFamilia.map((familia, index) => (
+                      <tr key={index}>
+                        <td>{familia.csctbfamiliaid}</td>
+                        <td>{familia.nom_fam}</td>
+                        <td>{familia.ape_fam}</td>
+                        <td>{familia.genero}</td>
+                        <td>{familia.anios}</td>
+                        <td>{familia.nom_parentesco}</td>
+                        <td>{familia.cedula_fam}</td>
+                        <td>{familia.id_jefe_hogar}</td>
+                        <td>
+                          <div className="d-flex justify-content-between w-100">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleUserId(familia.csctbfamiliaid)
+                              }
+                              className="btn btn-info"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                className="bi bi-pencil-fill"
+                                viewBox="0 0 16 16"
+                              >
+                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -203,4 +243,4 @@ function buscarFicha() {
   );
 }
 
-export default buscarFicha;
+export default BuscarFicha;

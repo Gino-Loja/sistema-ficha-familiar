@@ -168,6 +168,9 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
       </div>
       <div className="row mb-3">
         <div className="col-sm-12 col-xl-6">
+        <label className="form-label">
+              <h5>Busqueda por nombre o codigo de la enfermedad</h5>
+            </label>
           <input
             className="form-control"
             defaultValue={""}

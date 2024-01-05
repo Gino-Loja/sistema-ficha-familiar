@@ -161,9 +161,9 @@ export default function UbicacionVivienda({ barrios }) {
             >
               <option value="">Seleccione la opcion</option>
 
-              {barrios.map((barrio) => {
+              {barrios.map((barrio, index) => {
                 return (
-                  <option value={barrio.csctbbarriosid}>
+                  <option key={index} value={barrio.csctbbarriosid}>
                     {barrio.nom_barrio + " " + barrio.nom_eaisbarrios}
                   </option>
                 );

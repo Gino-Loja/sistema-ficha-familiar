@@ -11,6 +11,7 @@ export async function saveFamilia(formData, id) {
       ? `CURRVAL('public.csctbfamilia_csctbfamiliaid_seq')`
       : id.toString();
   try {
+    console.log(formData.saludBucal);
     const text = `INSERT INTO public.csctbfamilia (
       csctbocupacionid, 
       csctbinstruccionid, 
@@ -45,7 +46,7 @@ export async function saveFamilia(formData, id) {
       formData.meses,
       formData.dias,
       formData.genero,
-      Boolean(formData.saludBucal),
+      formData.saludBucal,
       formData.observacion,
       true,
       formData.estadoCivil,
@@ -175,9 +176,9 @@ FROM
   public.csctbenfermedad
 WHERE 
   cog_enfermedad LIKE '%' || $1 || '%' OR
-  nom_enfermedad LIKE '%' || $1 || '%'
+  LOWER(nom_enfermedad) LIKE '%' || LOWER($1) || '%'
 ORDER BY 
-  cog_enfermedad ASC, nom_enfermedad ASC;
+  nom_enfermedad ASC;
 
 
   `;
@@ -386,25 +387,38 @@ export async function getFamiliares(accion, termino) {
 
   if (accion == 1) {
     text = `SELECT 
-    csctbficha.num_ficha, 
+    csctbfamilia.csctbfamiliaid,
     csctbfamilia.nom_fam, 
     csctbfamilia.ape_fam, 
     csctbfamilia.genero, 
     csctbfamilia.anios, 
     csctbparentesco.nom_parentesco, 
-    csctbfamilia.id_jefe_hogar
+    csctbfamilia.id_jefe_hogar,
+    csctbfamilia.cedula_fam
+
   FROM 
-    public.csctbficha,
     public.csctbfamilia, 
     public.csctbparentesco
+
   WHERE 
     csctbparentesco.csctbparentescoid = csctbfamilia.csctbparentescoid AND
-    csctbfamilia.csctbfamiliaid = csctbfamilia.id_jefe_hogar AND 
-    csctbficha.csctbfamiliaid = $1
-  ORDER BY ape_fam ASC;
-  
-  `;
+    csctbfamilia.id_jefe_hogar = (
+	SELECT 
+      csctbfamilia.id_jefe_hogar
+    FROM 
+    
+      public.csctbfamilia,
+      public.csctbficha
 
+    WHERE 
+	csctbfamilia.csctbfamiliaid = csctbficha.csctbfamiliaid and
+
+    csctbficha.csctbfamiliaid = $1 LIMIT 1  
+	)
+  ORDER BY ape_fam ASC;
+      
+  `;
+     
     const result = await conn.query(text, [parseInt(termino)]);
     return result.rows;
   } else if (accion == 2) {
@@ -416,7 +430,8 @@ export async function getFamiliares(accion, termino) {
       csctbfamilia.genero, 
       csctbfamilia.anios, 
       csctbparentesco.nom_parentesco, 
-      csctbfamilia.id_jefe_hogar
+      csctbfamilia.id_jefe_hogar,
+      csctbfamilia.cedula_fam
     FROM 
     
       public.csctbfamilia, 
@@ -431,37 +446,36 @@ export async function getFamiliares(accion, termino) {
       public.csctbparentesco
     WHERE 
       csctbparentesco.csctbparentescoid = csctbfamilia.csctbparentescoid AND
-      csctbfamilia.csctbfamiliaid = csctbfamilia.id_jefe_hogar AND 
-      (csctbfamilia.nom_fam LIKE '%' || $1 || '%' OR 
-      csctbfamilia.ape_fam LIKE '%' || $1 || '%')
+      (LOWER(csctbfamilia.nom_fam) LIKE '%' || LOWER($1) || '%' OR 
+      LOWER(csctbfamilia.ape_fam) LIKE '%' || LOWER($1) || '%')
       ORDER BY ape_fam ASC LIMIT 1 ) `;
     const result = await conn.query(text, [termino]);
     return result.rows;
   } else {
-    text = `SELECT 
-    csctbficha.num_ficha, 
+    text = ` SELECT 
+    csctbfamilia.csctbfamiliaid,
     csctbfamilia.nom_fam, 
     csctbfamilia.ape_fam, 
     csctbfamilia.genero, 
     csctbfamilia.anios, 
     csctbparentesco.nom_parentesco, 
-    csctbfamilia.id_jefe_hogar
+    csctbfamilia.id_jefe_hogar,
+    csctbfamilia.cedula_fam
   FROM 
-    public.csctbficha,
+  
     public.csctbfamilia, 
     public.csctbparentesco
   WHERE 
     csctbparentesco.csctbparentescoid = csctbfamilia.csctbparentescoid AND
-    csctbficha.csctbfamiliaid = csctbfamilia.id_jefe_hogar AND 
     csctbfamilia.id_jefe_hogar = (
-		SELECT 
-      csctbfamilia.id_jefe_hogar
-    FROM 
-      public.csctbfamilia
-    WHERE 
-      csctbfamilia.cedula_fam = $1 LIMIT 1  
-	)
-  ORDER BY ape_fam ASC;
+  SELECT 
+    csctbfamilia.id_jefe_hogar
+  FROM 
+    public.csctbfamilia, 
+    public.csctbparentesco
+  WHERE 
+    
+    csctbfamilia.cedula_fam = $1 LIMIT 1  )
   `;
     const result = await conn.query(text, [termino]);
     return result.rows;
@@ -501,7 +515,7 @@ export async function getFamiliarById(id) {
     LEFT JOIN public.csctbnacionalidadetnica ON csctbnacionalidadetnica.csctbnacionalidadetnicaid = csctbfamilia.csctbnacionalidadid
     LEFT JOIN public.csctbpueblos ON csctbpueblos.csctbpueblosid = csctbfamilia.csctbpueblosid 
   WHERE 
-    csctbfamilia.csctbfamiliaid = $1
+    csctbfamilia.id_jefe_hogar = $1
   order by csctbfamiliaid asc;
   `,
     [id]
@@ -1497,7 +1511,6 @@ export async function updateFactoresVivienda(formData, id_vivienda) {
         formData.proteccionVectores,
         formData.vulnerable,
         id_vivienda,
-
       ]
     );
     console.log(result.rows);

@@ -9,18 +9,7 @@ export default async function AgregarVivienda({ params, searchParams }) {
   return (
     <>
       <div className="container-fluid vh-100 d-flex flex-column p-3">
-        {/* <Modal tittle="nada de bueno">
-            <div className="d-flex w-50 justify-content-around align-items-center">
-              <button
-                data-bs-dismiss="modal"
-                type="button"
-                id="modalGuardar"
-                className="btn btn-primary"
-              >
-                Aceptar
-              </button>
-            </div>
-          </Modal> */}
+       
         <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
           <li className="nav-item" role="presentation">
             <button
