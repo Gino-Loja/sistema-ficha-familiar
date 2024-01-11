@@ -19,7 +19,7 @@ function LoginUser() {
       redirect: false,
     });
     if (result.error) {
-      setError(result.error);
+      console.log(result.error)
     } else {
       router.push("/");
       router.refresh();

@@ -437,7 +437,7 @@ export default function InfoPersonal(props) {
         <div className="row mb-3">
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <label className="form-label">
-              <h5>Parentesto</h5>
+              <h5>Parentesco</h5>
             </label>
             <select
               {...register("parentesco", {

@@ -1,4 +1,4 @@
-version: '3'
+# version: '3'
 
 services:
   postgres:
@@ -8,22 +8,24 @@ services:
       POSTGRES_PASSWORD: '12345'
       POSTGRES_DB: ficha
     ports:
-      - "5000:5432"
+      - "5432:5432"
     volumes:
       #- ./db-data/:/var/lib/postgresql/data/
-      - ./backup.sql:/backup.sql
+      - ./init.sql:/init.sql
     networks:
       - ficha
-  node_app:
-    depends_on:
-      - postgres
-    links:
-      - postgres
-    build: .
-    
-    ports:
-      - "3000:3000"
+  node:
+    tty: true # Enables debugging capabilities when attached to this container.
+    image: docker.io/bitnami/node:20
+    # command: sh -c 'npm install && npm start'
+    expose:
+      - 80
+      - 443
+    volumes:
+      - .:/app
+
     networks:
       - ficha
+
 networks:
   ficha:

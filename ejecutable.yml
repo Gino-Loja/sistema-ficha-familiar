@@ -1,0 +1,60 @@
+version: '2.2'
+services:
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: '12345'
+      POSTGRES_DB: ficha
+    ports:
+      - "5432:5432"
+    volumes:
+      #- ./db-data/:/var/lib/postgresql/data/
+      - ./init.sql:/init.sql
+    networks:
+      - ficha
+  web:
+    tty: true # Enables debugging capabilities when attached to this container.
+    image: docker.io/bitnami/node:20
+    # command: sh -c 'npm install && npm start'
+    expose:
+      - 80
+      - 443
+    ports:
+      - 80:3000
+      - 443:3000
+    volumes:
+      - .:/app
+
+    networks:
+      - ficha
+  nginx:
+    container_name: nginx
+    image: nginxproxy/nginx-proxy
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/vhost:/etc/nginx/vhost.d
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  acme-companion:
+    container_name: acme-companion
+    image: nginxproxy/acme-companion
+    restart: unless-stopped
+    volumes_from:
+      - nginx
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./nginx/acme:/etc/acme.sh
+    environment:
+      DEFAULT_EMAIL: certbot@fichafamiliarchambo.site
+networks:
+  ficha:

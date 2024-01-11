@@ -22,6 +22,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
   const parentescos = await getParentesco();
   const [datosFamiliar] = await getFamiliarById(params.id);
   const familiaEmbarazo = await getFamiliaEmbarazo(params.id);
+  console.log(familiaEmbarazo);
   return (
     <>
       <div className="container-fluid vh-100 d-flex flex-column p-3">
@@ -96,7 +97,12 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
               Riesgos Biologicos
             </button>
           </li>
-          <li className="nav-item" role="presentation">
+
+          <li
+            style={{ display: familiaEmbarazo.length == 0 ? "none" : "" }}
+            className="nav-item"
+            role="presentation"
+          >
             <button
               className="nav-link"
               id="pills-embarazada-tab"
@@ -223,22 +229,24 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
               id_familia={params.id}
             ></IndexBiologicos>
           </div>
-          <div
-            className="tab-pane fade"
-            id="pills-embarazada"
-            role="tabpanel"
-            aria-labelledby="pills-embarazada-tab"
-            tabIndex="0"
-          >
-            <IndexEmbarazada
-              id_familia={params.id}
-              data={{
-                nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
-                parentesco: datosFamiliar.nom_parentesco,
-                embarazo: familiaEmbarazo.length == 0 ? false : true,
-              }}
-            ></IndexEmbarazada>
-          </div>
+          {familiaEmbarazo.length == 0 ? null : (
+            <div
+              className="tab-pane fade"
+              id="pills-embarazada"
+              role="tabpanel"
+              aria-labelledby="pills-embarazada-tab"
+              tabIndex="0"
+            >
+              <IndexEmbarazada
+                id_familia={params.id}
+                data={{
+                  nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
+                  parentesco: datosFamiliar.nom_parentesco,
+                  embarazo: familiaEmbarazo.length == 0 ? false : true,
+                }}
+              ></IndexEmbarazada>
+            </div>
+          )}
         </div>
       </div>
     </>

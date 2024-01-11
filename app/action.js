@@ -515,7 +515,7 @@ export async function getFamiliarById(id) {
     LEFT JOIN public.csctbnacionalidadetnica ON csctbnacionalidadetnica.csctbnacionalidadetnicaid = csctbfamilia.csctbnacionalidadid
     LEFT JOIN public.csctbpueblos ON csctbpueblos.csctbpueblosid = csctbfamilia.csctbpueblosid 
   WHERE 
-    csctbfamilia.id_jefe_hogar = $1
+    csctbfamilia.csctbfamiliaid = $1
   order by csctbfamiliaid asc;
   `,
     [id]

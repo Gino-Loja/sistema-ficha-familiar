@@ -7,7 +7,7 @@ if (!conn) {
     user: 'postgres',
     password: "12345",
     host: 'localhost',
-    port: '5000',
+    port: '5432',
     database: 'ficha',
   });
 }
