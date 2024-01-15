@@ -30,6 +30,11 @@ function initDiagram() {
 
   var rLine = go.Geometry.parse("M -50 -95 l -50 -55");
   var lLine = go.Geometry.parse("M 50 -95 l 50 -55");
+  var sLine = go.Geometry.parse("M 100 20 120 0");
+  var d1Line = go.Geometry.parse("M 95 20 115 0");
+  var d2Line = go.Geometry.parse("M 105 20 125 0");
+  var hLine = go.Geometry.parse("M 100 0 160 0");
+  var pLine = go.Geometry.parse("M 100 -100 145 -100");
 
   diagram.add(
     $(
@@ -39,7 +44,7 @@ function initDiagram() {
       $(
         go.Panel,
         "Spot",
-        $(go.TextBlock, "Definicion de simbolos", {
+        $(go.TextBlock, "Símbolos", {
           font: "30px sans-serif",
           position: new go.Point(150, 15),
         })
@@ -50,7 +55,7 @@ function initDiagram() {
   diagram.add(
     $(
       go.Part,
-      "Vertical",
+      "Horizental",
       { locationObjectName: "main", location: new go.Point(0, 0) },
       $(
         go.Panel,
@@ -58,38 +63,38 @@ function initDiagram() {
         $(go.Shape, "Rectangle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
         })
-      )
+      ),
+      $(go.TextBlock, "Masculino", {
+        font: "12px sans-serif",
+        position: new go.Point(160, 15),
+      })
     )
   );
 
   diagram.add(
     $(
       go.Part,
-      "Vertical",
+      "Horizental",
       { locationObjectName: "main", location: new go.Point(0, 50) },
       $(
         go.Panel,
         "Spot",
-        $(go.Shape, "Rectangle", {
+        $(go.Shape, "Circle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
-        }),
-        $(go.Shape, "Rectangle", {
-          fill: "lightcoral",
-          stroke: null,
-          width: 20,
-          height: 20,
-          alignment: go.Spot.TopRight,
-          alignmentFocus: go.Spot.TopRight,
         })
-      )
+      ),
+      $(go.TextBlock, "Femenino", {
+        font: "12px sans-serif",
+        position: new go.Point(160, 15),
+      })
     )
   );
 
@@ -104,21 +109,97 @@ function initDiagram() {
         $(go.Shape, "Rectangle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
         }),
-        $(go.Shape, "Rectangle", {
-          fill: "lightcoral",
-          stroke: null,
-          width: 20,
-          height: 20,
-          alignment: go.Spot.BottomLeft,
-          alignmentFocus: go.Spot.BottomLeft,
+        $(go.Shape, {
+          geometry: hLine,
+          strokeWidth: 1,
+          fill: null,
+          stroke: "black",
         })
       )
     )
   );
+
+  diagram.add(
+    $(
+      go.Part,
+      "Horizental",
+      { locationObjectName: "main", location: new go.Point(100, 100) },
+      $(
+        go.Panel,
+        "Spot",
+        $(go.Shape, "Circle", {
+          name: "main",
+          fill: "white",
+          stroke: "black",
+          width: 40,
+          height: 40,
+        }),
+      ),
+      $(go.TextBlock, "Casados", {
+        font: "12px sans-serif",
+        position: new go.Point(60, 20),
+      })
+    )
+  );
+
+  diagram.add(
+    $(
+      go.Part,
+      "Vertical",
+      { locationObjectName: "main", location: new go.Point(0, 150) },
+      $(
+        go.Panel,
+        "Spot",
+        $(go.Shape, "Rectangle", {
+          name: "main",
+          fill: "white",
+          stroke: "black",
+          width: 40,
+          height: 40,
+        }),
+        $(go.Shape, {
+          geometry: hLine,
+          strokeWidth: 1,
+          fill: null,
+          stroke: "black",
+        }),
+        $(go.Shape, {
+          geometry: sLine,
+          strokeWidth: 1,
+          fill: null,
+          stroke: "black",
+        })
+      )
+    )
+  );
+
+  diagram.add(
+    $(
+      go.Part,
+      "Horizental",
+      { locationObjectName: "main", location: new go.Point(100, 150) },
+      $(
+        go.Panel,
+        "Spot",
+        $(go.Shape, "Circle", {
+          name: "main",
+          fill: "white",
+          stroke: "black",
+          width: 40,
+          height: 40,
+        }),
+      ),
+      $(go.TextBlock, "Separados", {
+        font: "12px sans-serif",
+        position: new go.Point(60, 20),
+      })
+    )
+  );
+  
   diagram.add(
     $(
       go.Part,
@@ -130,18 +211,52 @@ function initDiagram() {
         $(go.Shape, "Rectangle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
         }),
-        $(go.Shape, "PlusLine", {
-          width: 40,
-          height: 40,
-   
+        $(go.Shape, {
+          geometry: hLine,
+          strokeWidth: 1,
           fill: null,
-          stroke: "red",
+          stroke: "black",
+        }),
+        $(go.Shape, {
+          geometry: d1Line,
+          strokeWidth: 1,
+          fill: null,
+          stroke: "black",
+        }),
+        $(go.Shape, {
+          geometry: d2Line,
+          strokeWidth: 1,
+          fill: null,
+          stroke: "black",
         })
       )
+    )
+  );
+
+  diagram.add(
+    $(
+      go.Part,
+      "Horizental",
+      { locationObjectName: "main", location: new go.Point(100, 200) },
+      $(
+        go.Panel,
+        "Spot",
+        $(go.Shape, "Circle", {
+          name: "main",
+          fill: "white",
+          stroke: "black",
+          width: 40,
+          height: 40,
+        }),
+      ),
+      $(go.TextBlock, "Divorciados", {
+        font: "12px sans-serif",
+        position: new go.Point(60, 20),
+      })
     )
   );
 
@@ -156,12 +271,36 @@ function initDiagram() {
         $(go.Shape, "Rectangle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
         }),
-        $(go.Shape, "XLine", { width: 40, height: 40, fill: null })
+        $(go.Shape, "MinusLine", { width: 60, height: 40, margin: 4, stroke: "red", angle: -45 }),
       )
+    )
+  );
+
+  diagram.add(
+    $(
+      go.Part,
+      "Horizental",
+      { locationObjectName: "main", location: new go.Point(100, 250) },
+      $(
+        go.Panel,
+        "Spot",
+        $(go.Shape, "Circle", {
+          name: "main",
+          fill: "white",
+          stroke: "black",
+          width: 40,
+          height: 40,
+        }),
+        $(go.Shape, "MinusLine", { width: 60, height: 40, margin: 4, stroke: "red", angle: -45 }),
+      ),
+      $(go.TextBlock, "Difuntos", {
+        font: "12px sans-serif",
+        position: new go.Point(80, 30),
+      })
     )
   );
 
@@ -176,7 +315,67 @@ function initDiagram() {
         $(go.Shape, "Circle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
+          width: 40,
+          height: 40,
+        }),
+        $(go.Shape, {
+          geometry: lLine,
+          strokeWidth: 1,
+          fill: null,
+          stroke: "black",
+        }),
+        $(go.Shape, {
+          geometry: pLine,
+          strokeWidth: 1,
+          fill: null,
+          stroke: "black",
+        })
+      )
+    )
+  );
+
+  diagram.add(
+    $(
+      go.Part,
+      "Horizental",
+      { locationObjectName: "main", location: new go.Point(100, 350) },
+      $(
+        go.Panel,
+        "Spot",
+        $(go.Shape, "Circle", {
+          name: "main",
+          fill: "white",
+          stroke: "black",
+          width: 40,
+          height: 40,
+        }),
+        $(go.Shape, {
+          geometry: rLine,
+          strokeWidth: 1,
+          fill: null,
+          stroke: "black",
+        })
+      ),
+      $(go.TextBlock, "Hijos gemelos", {
+        font: "12px sans-serif",
+        position: new go.Point(90, 70),
+      })
+    )
+  );
+
+  diagram.add(
+    $(
+      go.Part,
+      "Vertical",
+      { locationObjectName: "main", location: new go.Point(0, 450) },
+      $(
+        go.Panel,
+        "Spot",
+        $(go.Shape, "Rectangle", {
+          name: "main",
+          fill: "white",
+          stroke: "black",
           width: 40,
           height: 40,
         }),
@@ -194,22 +393,27 @@ function initDiagram() {
     $(
       go.Part,
       "Horizental",
-      { locationObjectName: "main", location: new go.Point(0, 400) },
+      { locationObjectName: "main", location: new go.Point(100, 450) },
       $(
         go.Panel,
         "Spot",
-        $(go.Shape, "Triangle", {
+        $(go.Shape, "Circle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
         }),
-        $(go.Shape, "XLine", { width: 35, height: 35,  fill: null })
+        $(go.Shape, {
+          geometry: rLine,
+          strokeWidth: 1,
+          fill: null,
+          stroke: "black",
+        })
       ),
-      $(go.TextBlock, "Divorciados", {
+      $(go.TextBlock, "Hijos mellizos", {
         font: "12px sans-serif",
-        position: new go.Point(150, 15),
+        position: new go.Point(90, 70),
       })
     )
   );
@@ -217,85 +421,189 @@ function initDiagram() {
   diagram.add(
     $(
       go.Part,
-      "Horizental",
-      { locationObjectName: "main", location: new go.Point(0, 450) },
+      "Vertical",
+      { locationObjectName: "main", location: new go.Point(0, 500) },
       $(
         go.Panel,
         "Spot",
         $(go.Shape, "Rectangle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
+        }),
+        $(go.Shape, "Rectangle", {
+          fill: "lightcoral",
+          stroke: null,
+          width: 20,
+          height: 20,
+          alignment: go.Spot.TopRight,
+          alignmentFocus: go.Spot.TopRight,
         })
-      ),
-      $(go.TextBlock, "Masculino", {
-        font: "12px sans-serif",
-        position: new go.Point(150, 15),
-      })
+      )
     )
   );
 
   diagram.add(
     $(
       go.Part,
-      "Horizental",
-      { locationObjectName: "main", location: new go.Point(0, 500) },
+      "Vertical",
+      { locationObjectName: "main", location: new go.Point(0, 550) },
       $(
         go.Panel,
         "Spot",
-        $(go.Shape, "Circle", {
+        $(go.Shape, "Rectangle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
-        })
-      ),
-      $(go.TextBlock, "Femenino", {
-        font: "12px sans-serif",
-        position: new go.Point(150, 15),
-      })
-    )
-  );
-
-  // second column
-  diagram.add(
-    $(
-      go.Part,
-      "Horizental",
-      { locationObjectName: "main", location: new go.Point(100, 0) },
-      $(
-        go.Panel,
-        "Spot",
-        $(go.Shape, "Circle", {
-          name: "main",
-          fill: "white",
+        }),
+        $(go.Shape, "Rectangle", {
+          fill: "lightcoral",
           stroke: null,
-          width: 40,
-          height: 40,
+          width: 20,
+          height: 20,
+          alignment: go.Spot.BottomLeft,
+          alignmentFocus: go.Spot.BottomLeft,
         })
-      ),
-      $(go.TextBlock, "No presentan historial", {
-        font: "12px sans-serif",
-        position: new go.Point(50, 15),
-      })
+      )
     )
   );
 
   diagram.add(
     $(
       go.Part,
+      "Vertical",
+      { locationObjectName: "main", location: new go.Point(0, 600) },
+      $(
+        go.Panel,
+        "Spot",
+        $(go.Shape, "Rectangle", {
+          name: "main",
+          fill: "white",
+          stroke: "black",
+          width: 40,
+          height: 40,
+        }),
+        $(go.Shape, "PlusLine", {
+          width: 40,
+          height: 40,
+   
+          fill: null,
+          stroke: "red",
+        })
+      )
+    )
+  );
+
+   // diagram.add(
+  //   $(
+  //     go.Part,
+  //     "Horizental",
+  //     { locationObjectName: "main", location: new go.Point(0, 250) },
+  //     $(
+  //       go.Panel,
+  //       "Spot",
+  //       $(go.Shape, "Triangle", {
+  //         name: "main",
+  //         fill: "white",
+  //         stroke: "black",
+  //         width: 40,
+  //         height: 40,
+  //       }),
+  //       $(go.Shape, "XLine", { width: 35, height: 35,  fill: null })
+  //     ),
+  //     $(go.TextBlock, "Divorciados", {
+  //       font: "12px sans-serif",
+  //       position: new go.Point(150, 15),
+  //     })
+  //   )
+  // );
+
+  // diagram.add(
+  //   $(
+  //     go.Part,
+  //     "Horizental",
+  //     { locationObjectName: "main", location: new go.Point(0, 650) },
+  //     $(
+  //       go.Panel,
+  //       "Spot",
+  //       $(go.Shape, "Rectangle", {
+  //         name: "main",
+  //         fill: "white",
+  //         stroke: "black",
+  //         width: 40,
+  //         height: 40,
+  //       })
+  //     ),
+  //     $(go.TextBlock, "Masculino", {
+  //       font: "12px sans-serif",
+  //       position: new go.Point(150, 15),
+  //     })
+  //   )
+  // );
+
+  // diagram.add(
+  //   $(
+  //     go.Part,
+  //     "Horizental",
+  //     { locationObjectName: "main", location: new go.Point(0, 650) },
+  //     $(
+  //       go.Panel,
+  //       "Spot",
+  //       $(go.Shape, "Circle", {
+  //         name: "main",
+  //         fill: "white",
+  //         stroke: "black",
+  //         width: 40,
+  //         height: 40,
+  //       })
+  //     ),
+  //     $(go.TextBlock, "Femenino", {
+  //       font: "12px sans-serif",
+  //       position: new go.Point(150, 15),
+  //     })
+  //   )
+  // );
+
+  // SEGUNDA COLUMNA
+  // diagram.add(
+  //   $(
+  //     go.Part,
+  //     "Horizental",
+  //     { locationObjectName: "main", location: new go.Point(100, 0) },
+  //     $(
+  //       go.Panel,
+  //       "Spot",
+  //       $(go.Shape, "Circle", {
+  //         name: "main",
+  //         fill: "white",
+  //         stroke: "black",
+  //         width: 40,
+  //         height: 40,
+  //       })
+  //     ),
+  //     $(go.TextBlock, "No presentan historial", {
+  //       font: "12px sans-serif",
+  //       position: new go.Point(50, 15),
+  //     })
+  //   )
+  // );
+
+  diagram.add(
+    $(
+      go.Part,
       "Horizental",
-      { locationObjectName: "main", location: new go.Point(100, 50) },
+      { locationObjectName: "main", location: new go.Point(100, 500) },
       $(
         go.Panel,
         "Spot",
         $(go.Shape, "Circle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
         }),
@@ -308,7 +616,7 @@ function initDiagram() {
           alignmentFocus: go.Spot.TopRight,
         })
       ),
-      $(go.TextBlock, "Tumores \n (unilateral)", {
+      $(go.TextBlock, "Enfermedad de pulmon", {
         font: "12px sans-serif",
         position: new go.Point(50, 10),
       })
@@ -319,14 +627,14 @@ function initDiagram() {
     $(
       go.Part,
       "Horizental",
-      { locationObjectName: "main", location: new go.Point(100, 100) },
+      { locationObjectName: "main", location: new go.Point(100, 550) },
       $(
         go.Panel,
         "Spot",
         $(go.Shape, "Circle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
         }),
@@ -334,69 +642,69 @@ function initDiagram() {
           geometry: blarc,
           strokeWidth: 0,
           fill: "lightcoral",
-          stroke: null,
+          stroke: "black",
           alignment: go.Spot.BottomLeft,
           alignmentFocus: go.Spot.BottomLeft,
         })
       ),
-      $(go.TextBlock, "Enfermedad de pulmon", {
+      $(go.TextBlock, "Tumores \n (unilateral)", {
         font: "12px sans-serif",
         position: new go.Point(50, 15),
       })
     )
   );
 
-  diagram.add(
-    $(
-      go.Part,
-      "Horizental",
-      { locationObjectName: "main", location: new go.Point(100, 150) },
-      $(
-        go.Panel,
-        "Spot",
-        $(go.Shape, "Circle", {
-          name: "main",
-          fill: "white",
-          stroke: null,
-          width: 40,
-          height: 40,
-        }),
-        $(go.Shape, {
-          geometry: blarc,
-          strokeWidth: 1,
-          fill: "lightcoral",
-          stroke: "lightcoral",
-          alignment: go.Spot.BottomLeft,
-          alignmentFocus: go.Spot.BottomLeft,
-        }),
-        $(go.Shape, {
-          geometry: tlarc,
-          strokeWidth: 1,
-          fill: "lightcoral",
-          stroke: "lightcoral",
-          alignment: go.Spot.TopLeft,
-          alignmentFocus: go.Spot.TopLeft,
-        })
-      ),
-      $(go.TextBlock, "Enfermedad en ovarios", {
-        font: "12px sans-serif",
-        position: new go.Point(50, 15),
-      })
-    )
-  );
+  // diagram.add(
+  //   $(
+  //     go.Part,
+  //     "Horizental",
+  //     { locationObjectName: "main", location: new go.Point(100, 150) },
+  //     $(
+  //       go.Panel,
+  //       "Spot",
+  //       $(go.Shape, "Circle", {
+  //         name: "main",
+  //         fill: "white",
+  //         stroke: "black",
+  //         width: 40,
+  //         height: 40,
+  //       }),
+  //       $(go.Shape, {
+  //         geometry: blarc,
+  //         strokeWidth: 1,
+  //         fill: "lightcoral",
+  //         stroke: "lightcoral",
+  //         alignment: go.Spot.BottomLeft,
+  //         alignmentFocus: go.Spot.BottomLeft,
+  //       }),
+  //       $(go.Shape, {
+  //         geometry: tlarc,
+  //         strokeWidth: 1,
+  //         fill: "lightcoral",
+  //         stroke: "lightcoral",
+  //         alignment: go.Spot.TopLeft,
+  //         alignmentFocus: go.Spot.TopLeft,
+  //       })
+  //     ),
+  //     $(go.TextBlock, "Enfermedad en ovarios", {
+  //       font: "12px sans-serif",
+  //       position: new go.Point(50, 15),
+  //     })
+  //   )
+  // );
 
   diagram.add(
     $(
       go.Part,
       "Horizental",
-      { locationObjectName: "main", location: new go.Point(100, 200) },
+      { locationObjectName: "main", location: new go.Point(100, 600) },
       $(
         go.Panel,
         "Spot",
         $(go.Shape, "Circle", {
           name: "main",
           fill: "white",
-          stroke: null,
+          stroke: "black",
           width: 40,
           height: 40,
         }),
@@ -414,59 +722,6 @@ function initDiagram() {
     )
   );
 
-  diagram.add(
-    $(
-      go.Part,
-      "Horizental",
-      { locationObjectName: "main", location: new go.Point(100, 250) },
-      $(
-        go.Panel,
-        "Spot",
-        $(go.Shape, "Circle", {
-          name: "main",
-          fill: "white",
-          stroke: null,
-          width: 40,
-          height: 40,
-        }),
-        $(go.Shape, "XLine", { width: 30, height: 30,  fill: null })
-      ),
-      $(go.TextBlock, "Difuntos", {
-        font: "12px sans-serif",
-        position: new go.Point(50, 18),
-      })
-    )
-  );
-
-  diagram.add(
-    $(
-      go.Part,
-      "Horizental",
-      { locationObjectName: "main", location: new go.Point(100, 350) },
-      $(
-        go.Panel,
-        "Spot",
-        $(go.Shape, "Circle", {
-          name: "main",
-          fill: "white",
-          stroke: null,
-          width: 40,
-          height: 40,
-        }),
-        $(go.Shape, {
-          geometry: rLine,
-          strokeWidth: 1,
-          fill: null,
-          stroke: "black",
-        })
-      ),
-      $(go.TextBlock, "Hijos gemelos", {
-        font: "12px sans-serif",
-        position: new go.Point(75, 70),
-      })
-    )
-  );
-
   return diagram;
 }
 
@@ -476,7 +731,7 @@ const Explain = () => {
       <ReactDiagram
         initDiagram={initDiagram}
         divClassName="w-100 bg-body-secondary"
-        style={{height:"85vh"}}
+        style={{height:"70vh"}}
         onModelChange={handleModelChange}
       />
     </div>

@@ -322,13 +322,54 @@ function initDiagram() {
       },
       $(go.Shape, { stroke: "#424242", strokeWidth: 2 })
     );
-
+  console.log("estableciendo casados");
   diagram.linkTemplateMap.add(
     "Marriage", // for marriage relationships
     $(
       go.Link,
+
       { selectable: false },
-      $(go.Shape, { strokeWidth: 2.5, stroke: "#5d8cc1" /* blue */ })
+      $(
+        go.Shape,
+        {
+          strokeWidth: 2.5,
+          stroke: "#5d8cc1",
+          geometryString: "M0 0 L1 0 M0 3 L1 3" /* blue */,
+        }
+
+        //new go.Binding("pathPattern", "patt", "M0 0 L1 0 M0 3 L1 3"),
+      ),
+
+      $(
+        go.Shape, // the link's path shape
+        { isPanelMain: true, stroke: "transparent", strokeWidth: 3 },
+        new go.Binding("pathPattern", () =>
+          $(go.Shape, {
+            geometryString: "M0 0 L1 0 M0 3 L1 3",
+         
+            fill: "transparent",
+            stroke: "#5d8cc1",
+            strokeWidth: 1.3,
+            strokeCap: "square",
+          })
+        )
+      ),
+      $(go.Shape, {
+        
+        fill: "black",
+        stroke: "black",
+        strokeWidth: 2,
+        segmentIndex: 0.1,
+        segmentFraction: 0.7,
+       
+        // geometry:go.Geometry.parse(
+        //   "F M20 0 l13 10"+"F M20 0 l13 10"
+        // )
+        //strokeDashArray: [4, 2] , lienas entrecortadas
+        // This SVG-style path creates a thick "+" figure:,
+       
+        geometry: go.Geometry.parse("F M0 10 l13 -10 M9 10 l13 -10"),
+      })
     )
   );
 
@@ -433,7 +474,7 @@ function setupMarriages(diagram) {
       }
     }
     var virs = data.vir;
-    if (virs !== undefined  ) {
+    if (virs !== undefined) {
       if (typeof virs === "number") virs = [virs];
       for (var j = 0; j < virs.length; j++) {
         var husband = virs[j];
@@ -760,11 +801,11 @@ const Genogram = (props) => {
   genoData = props.Genogram;
 
   return (
-    <div className="w-100"  >
+    <div className="w-100">
       <ReactDiagram
         initDiagram={initDiagram}
         divClassName="w-100"
-        style={{height:"85vh"}}
+        style={{ height: "70vh" }}
         onModelChange={handleModelChange}
       />
     </div>

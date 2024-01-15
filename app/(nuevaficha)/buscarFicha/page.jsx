@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import ModalUser from "@/app/components/modal/modalUser";
-import {  getFamiliares } from "@/app/action";
+import { getFamiliares } from "@/app/action";
 import Offcanvas from "react-bootstrap/Offcanvas";
-import MostrarGenograma from "@/app/components/prueba/page";
+
 function BuscarFicha() {
   const [show, setShow] = useState(false);
 
@@ -24,8 +24,7 @@ function BuscarFicha() {
 
   const [listaFamilia, setlistaFamilia] = useState([]);
   const [iduser, setId] = useState(0);
-
-  
+  const [idJefeFamilia, setIdJefeFamilia] = useState(0);
   const onSubmit = handleSubmit(async (data) => {
     const result = await getFamiliares(watch("busqueda"), data.buscar);
 
@@ -45,16 +44,12 @@ function BuscarFicha() {
 
   return (
     <>
-      <Offcanvas show={show} onHide={handleClose} className="w-100">
+      {/* <Offcanvas show={show} onHide={handleClose} className="w-100">
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Familiares</Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body>
-          {listaFamilia.length > 0 ? (
-            <MostrarGenograma familiares={listaFamilia}></MostrarGenograma>
-          ) : null}
-        </Offcanvas.Body>
-      </Offcanvas>
+        <Offcanvas.Body></Offcanvas.Body>
+      </Offcanvas> */}
       <Nav></Nav>
       <ModalUser show={modalShow} tittle={`Confirme lo siguiente: `}>
         <div className=" d-flex flex-column  align-items-center">
@@ -177,7 +172,11 @@ function BuscarFicha() {
                 <button
                   type="button"
                   className="btn btn-info shadow p-6 mb-3 rounded"
-                  onClick={handleShow}
+                  onClick={() =>
+                    router.push(
+                      `/buscarFicha/genograma/${listaFamilia[0].id_jefe_hogar}`
+                    )
+                  }
                 >
                   Ver arbol Familiar
                 </button>

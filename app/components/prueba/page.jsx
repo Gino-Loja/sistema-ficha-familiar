@@ -155,8 +155,6 @@ function mapearDatosGenograma(datos) {
         nodo.f = datos.find(
           (persona) => persona.nom_parentesco == relacionesFamiliares[9]
         )?.csctbfamiliaid;
-
-     
       }
     } else if (dato.nom_parentesco == relacionesFamiliares[10]) {
       nodo.vir = genoDataMap.find(
@@ -232,21 +230,21 @@ const MostrarGenograma = ({ familiares }) => {
   //   },
   // ]);
   return (
-    <div
-      className="row container-fluid bg-body-tertiary "
-      style={{ height: "85vh" }}
-    >
-      <div className="col-sm-12 col-md-9">
-        {familiarEtiquetado.length > 0 ? (
-          <Genogram Genogram={familiarEtiquetado} />
-        ) : "...cargando"}
-      </div>
-
-     
-
-      <div className="col-sm-12 col-md-3 ">
-        <Explain />
-      </div>
+    <div>
+      {familiarEtiquetado.length > 0 ? (
+        <Genogram Genogram={familiarEtiquetado} />
+      ) : (
+        <div className="w-100 vh-100 align-items-center d-flex justify-content-center">
+          <div className="text-center d-flex flex-column">
+            <center>
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <div>Cargando Genograma</div>
+            </center>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
