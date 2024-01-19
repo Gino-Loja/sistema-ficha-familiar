@@ -5,6 +5,7 @@ import {
   obtenerCsctbedadesidRiesgos,
 } from "./utils/rangoEdad";
 import { obetnerIdsAndMerge } from "./utils/obtenerId";
+import { Cookie } from "next/font/google";
 export async function saveFamilia(formData, id) {
   const id_jefe =
     id == null
@@ -394,7 +395,10 @@ export async function getFamiliares(accion, termino) {
     csctbfamilia.anios, 
     csctbparentesco.nom_parentesco, 
     csctbfamilia.id_jefe_hogar,
-    csctbfamilia.cedula_fam
+    csctbfamilia.cedula_fam,
+    csctbfamilia.estado_civil,
+    csctbfamilia.anios
+
 
   FROM 
     public.csctbfamilia, 
@@ -418,7 +422,7 @@ export async function getFamiliares(accion, termino) {
   ORDER BY ape_fam ASC;
       
   `;
-     
+
     const result = await conn.query(text, [parseInt(termino)]);
     return result.rows;
   } else if (accion == 2) {
@@ -1519,4 +1523,70 @@ export async function updateFactoresVivienda(formData, id_vivienda) {
     console.log(error);
     return { error: "No se ingresaron tus datos" };
   }
+}
+
+export async function insertTipoFamilia(id_familia) {
+  try {
+    const result = await conn.query(
+      `INSERT INTO csctbtipofamilia(
+       idjefe_hogar_familia)
+      VALUES ($1);`,
+      [id_familia]
+    );
+
+    return result.rows;
+  } catch (error) {
+    return { error: "No se podido ingresar tu datos" };
+  }
+}
+export async function updateTipoFamilia(data, id_familia) {
+  try {
+    const result = await conn.query(
+      `UPDATE public.csctbtipofamilia
+      SET  
+      tipo_familia=$1, 
+      ciclo_vital=$2,
+       primer_hijo=$3, 
+      hijo_edad_preescolar=$4, 
+      hijo_edad_escolar=$5, 
+      hijo_edad_adolescente=$6, 
+      hijo_edad_adulta=$7, 
+      apgar_familiar=$8
+      WHERE idjefe_hogar_familia = $9;`,
+      [
+        data.tipoFamilia,
+        data.cicloVital,
+        data.primerHijo,
+        data.hijoEdadPreescolar,
+        data.hijoEdadEscolar,
+        data.hijoEdadAdolescente,
+        data.hijoEdadAdulta,
+        data.apgarFamiliar,
+
+        id_familia,
+      ]
+    );
+
+    return result.rows;
+  } catch (error) {
+    console.log(error);
+    return { error: "No se podido ingresar tu datos" };
+  }
+}
+
+export async function getTipoFamilia(id_familia) {
+  const result = await conn.query(
+    `SELECT idcsctbtipofamilia, tipo_familia,
+     ciclo_vital, primer_hijo,
+      hijo_edad_preescolar,
+       hijo_edad_escolar,
+        hijo_edad_adolescente,
+         hijo_edad_adulta,
+          apgar_familiar,
+           idjefe_hogar_familia
+    FROM csctbtipofamilia
+    WHERE idjefe_hogar_familia = $1;`,
+    [id_familia]
+  );
+  return result.rows;
 }

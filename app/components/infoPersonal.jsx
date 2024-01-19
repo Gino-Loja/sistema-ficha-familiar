@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { insertTipoFamilia } from "../action";
 
 export default function InfoPersonal(props) {
   const { data: session, status, update } = useSession();
@@ -25,8 +26,8 @@ export default function InfoPersonal(props) {
   } = props;
   const onSubmit = handleSubmit(async (data) => {
     const resul = await saveFamilia(data, session.user.email?.id);
-    if (resul.errors) {
-      console.log(resul.errors);
+    if (resul.error) {
+      console.log(resul.error);
     } else {
       const { anios, meses, dias } = data;
 
@@ -46,6 +47,8 @@ export default function InfoPersonal(props) {
             embarazada: watch("embarazada"),
           },
         });
+        const insert = await insertTipoFamilia(resul[0].csctbfamiliaid);
+        insert?.error ? console.log(insert.error) : null;
       } else {
         update({
           email: {
@@ -328,6 +331,11 @@ export default function InfoPersonal(props) {
               <option value="CASADO/A">Casado/a</option>
               <option value="SOLTERO/A">Soltero/a</option>
               <option value="VIUDO/A">Viudo/a</option>
+              <option value={"UNIÓN LIBRE"}>Union Libre</option>
+              <option value={"SEPARACIÓN"}>Separacion</option>
+              <option value={"DIVORCIO"}>Divorcio</option>
+
+              <option value={"UNIÓN CONSANGUÍNEA"}>Union Consaguinea</option>
             </select>
           </div>
         </div>
@@ -461,6 +469,7 @@ export default function InfoPersonal(props) {
               ))}
             </select>
           </div>
+
           <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             {" "}
             <label className="form-label">

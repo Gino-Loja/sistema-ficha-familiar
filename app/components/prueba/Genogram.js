@@ -159,6 +159,7 @@ function initDiagram() {
 
   diagram.nodeTemplateMap.add(
     "M",
+
     $(
       go.Node,
       "Vertical",
@@ -167,8 +168,10 @@ function initDiagram() {
         locationObjectName: "ICON",
         selectionObjectName: "ICON",
       },
+
       $(
         go.Panel,
+        "Auto",
         { name: "ICON" },
         $(go.Shape, "Square", {
           width: 40,
@@ -178,21 +181,33 @@ function initDiagram() {
           stroke: "#919191",
           portId: "",
         }),
+
+        // $(
+        //   go.Panel,
+        //   {
+        //     itemTemplate: $(
+        //       go.Panel,
+        //       $(
+        //         go.Shape,
+        //         { stroke: null, strokeWidth: 0 },
+        //         new go.Binding("fill", "", attrFill),
+        //         new go.Binding("geometry", "", maleGeometry)
+        //       )
+        //     ),
+        //     margin: 1,
+        //   },
+        //   new go.Binding("itemArray", "a")
+        // ),
         $(
-          go.Panel,
+          go.TextBlock,
           {
-            itemTemplate: $(
-              go.Panel,
-              $(
-                go.Shape,
-                { stroke: null, strokeWidth: 0 },
-                new go.Binding("fill", "", attrFill),
-                new go.Binding("geometry", "", maleGeometry)
-              )
-            ),
-            margin: 1,
+            textAlign: "center",
+            verticalAlignment: go.Spot.Center,
+            maxSize: new go.Size(80, NaN),
+            font: "16px serif",
+            editable: true,
           },
-          new go.Binding("itemArray", "a")
+          new go.Binding("text", "anios")
         )
       ),
       $(
@@ -215,6 +230,7 @@ function initDiagram() {
       },
       $(
         go.Panel,
+        "Auto",
         { name: "ICON" },
         $(go.Shape, "Circle", {
           width: 40,
@@ -224,22 +240,33 @@ function initDiagram() {
           stroke: "#a1a1a1",
           portId: "",
         }),
+        // $(
+        //   go.Panel,
+        //   {
+        //     // for each attribute show a Shape at a particular place in the overall circle
+        //     itemTemplate: $(
+        //       go.Panel,
+        //       $(
+        //         go.Shape,
+        //         { stroke: null, strokeWidth: 0 },
+        //         new go.Binding("fill", "", attrFill),
+        //         new go.Binding("geometry", "", femaleGeometry)
+        //       )
+        //     ),
+        //     margin: 1,
+        //   },
+        //   new go.Binding("itemArray", "a")
+        // )
         $(
-          go.Panel,
+          go.TextBlock,
           {
-            // for each attribute show a Shape at a particular place in the overall circle
-            itemTemplate: $(
-              go.Panel,
-              $(
-                go.Shape,
-                { stroke: null, strokeWidth: 0 },
-                new go.Binding("fill", "", attrFill),
-                new go.Binding("geometry", "", femaleGeometry)
-              )
-            ),
-            margin: 1,
+            textAlign: "center",
+            verticalAlignment: go.Spot.Center,
+            maxSize: new go.Size(80, NaN),
+            font: "16px serif",
+            editable: true,
           },
-          new go.Binding("itemArray", "a")
+          new go.Binding("text", "anios")
         )
       ),
       $(
@@ -308,6 +335,7 @@ function initDiagram() {
   );
 
   setupDiagram(diagram, genoData, 4 /* focus on this person */);
+  console.log(genoData);
 
   diagram.linkTemplate = // for parent-child relationships
     $(
@@ -322,9 +350,31 @@ function initDiagram() {
       },
       $(go.Shape, { stroke: "#424242", strokeWidth: 2 })
     );
-  console.log("estableciendo casados");
+  //console.log("estableciendo casados");
+  // let tipo_union;
+  // genoData.forEach((persona) => {
+  //   if (persona.ec === "CASADO/A" && persona.f !== null) {
+  //     // Realizar alguna acción o condición cuando el estado civil es 'CASADO/A'
+  //      $(
+  //       go.Shape, // the link's path shape
+  //       { isPanelMain: true, stroke: "transparent", strokeWidth: 3 },
+  //       new go.Binding("pathPattern", () =>
+  //         $(go.Shape, {
+  //           geometryString: "M0 0 L1 0 M0 3 L1 3",
+
+  //           fill: "transparent",
+  //           stroke: "#5d8cc1",
+  //           strokeWidth: 1.3,
+  //           strokeCap: "square",
+  //         })
+  //       )
+  //     );
+  //   }
+  // });
+
+  //casados
   diagram.linkTemplateMap.add(
-    "Marriage", // for marriage relationships
+    "CASADO/A", // for marriage relationships
     $(
       go.Link,
 
@@ -333,12 +383,121 @@ function initDiagram() {
         go.Shape,
         {
           strokeWidth: 2.5,
-          stroke: "#5d8cc1",
+          stroke: "#000000",
+          geometryString: "M0 0 L1 0 M0 3 L1 3" /* blue */,
+        }
+
+        //new go.Binding("pathPattern", "patt", "M0 0 L1 0 M0 3 L1 3"),
+      )
+    )
+  );
+  //separacion
+  diagram.linkTemplateMap.add(
+    "SEPARACIÓN", // for marriage relationships
+    $(
+      go.Link,
+
+      { selectable: false },
+      $(
+        go.Shape,
+        {
+          strokeWidth: 2.5,
+          stroke: "#000000",
           geometryString: "M0 0 L1 0 M0 3 L1 3" /* blue */,
         }
 
         //new go.Binding("pathPattern", "patt", "M0 0 L1 0 M0 3 L1 3"),
       ),
+      //tipo_union,
+
+      $(go.Shape, {
+        fill: "black",
+        stroke: "black",
+        strokeWidth: 2,
+        segmentIndex: 0.1,
+        segmentFraction: 0.7,
+
+        // geometry:go.Geometry.parse(
+        //   "F M20 0 l13 10"+"F M20 0 l13 10"
+        // )
+        //strokeDashArray: [4, 2] , lienas entrecortadas
+        // This SVG-style path creates a thick "+" figure:,
+
+        geometry: go.Geometry.parse("F M0 10 l13 -10"),
+      })
+    )
+  );
+  // divorcio
+  diagram.linkTemplateMap.add(
+    "DIVORCIO", // for marriage relationships
+    $(
+      go.Link,
+
+      { selectable: false },
+      $(
+        go.Shape,
+        {
+          strokeWidth: 2.5,
+          stroke: "#000000",
+          geometryString: "M0 0 L1 0 M0 3 L1 3" /* blue */,
+        }
+
+        //new go.Binding("pathPattern", "patt", "M0 0 L1 0 M0 3 L1 3"),
+      ),
+      //tipo_union,
+
+      $(go.Shape, {
+        fill: "black",
+        stroke: "black",
+        strokeWidth: 2,
+        segmentIndex: 0.1,
+        segmentFraction: 0.7,
+
+        // geometry:go.Geometry.parse(
+        //   "F M20 0 l13 10"+"F M20 0 l13 10"
+        // )
+        //strokeDashArray: [4, 2] , lienas entrecortadas
+        // This SVG-style path creates a thick "+" figure:,
+
+        geometry: go.Geometry.parse("F M0 10 l13 -10 M9 10 l13 -10"),
+      })
+    )
+  );
+  //union libre
+  diagram.linkTemplateMap.add(
+    "UNIÓN LIBRE", // for marriage relationships
+    $(
+      go.Link,
+
+      { selectable: false },
+
+      //tipo_union,
+
+      $(
+        go.Shape, // the link's path shape
+        { isPanelMain: true, stroke: "transparent", strokeWidth: 3 },
+        new go.Binding("pathPattern", () =>
+          $(go.Shape, {
+            geometryString: "M0 0 M4 0 L4.1 0",
+
+            fill: "transparent",
+            stroke: "#000000",
+            strokeWidth: 1.3,
+            strokeCap: "round",
+          })
+        )
+      )
+    )
+  );
+  // union consaquinea
+  diagram.linkTemplateMap.add(
+    "UNIÓN CONSANGUÍNEA", // for marriage relationships
+    $(
+      go.Link,
+
+      { selectable: false },
+
+      //tipo_union,
 
       $(
         go.Shape, // the link's path shape
@@ -346,30 +505,14 @@ function initDiagram() {
         new go.Binding("pathPattern", () =>
           $(go.Shape, {
             geometryString: "M0 0 L1 0 M0 3 L1 3",
-         
+
             fill: "transparent",
-            stroke: "#5d8cc1",
+            stroke: "#000000",
             strokeWidth: 1.3,
-            strokeCap: "square",
+            strokeCap: "round",
           })
         )
-      ),
-      $(go.Shape, {
-        
-        fill: "black",
-        stroke: "black",
-        strokeWidth: 2,
-        segmentIndex: 0.1,
-        segmentFraction: 0.7,
-       
-        // geometry:go.Geometry.parse(
-        //   "F M20 0 l13 10"+"F M20 0 l13 10"
-        // )
-        //strokeDashArray: [4, 2] , lienas entrecortadas
-        // This SVG-style path creates a thick "+" figure:,
-       
-        geometry: go.Geometry.parse("F M0 10 l13 -10 M9 10 l13 -10"),
-      })
+      )
     )
   );
 
@@ -435,7 +578,10 @@ function findMarriage(diagram, a, b) {
     while (it.next()) {
       var link = it.value;
       // Link.data.category === "Marriage" means it's a marriage relationship
-      if (link.data !== null && link.data.category === "Marriage") return link;
+      if (link.data !== null && link.data.category === "CASADO/A") return link;
+      if (link.data !== null && link.data.category === "DIVORCIO") return link;
+      if (link.data !== null && link.data.category === "SEPARACIÓN")
+        return link;
     }
   }
   return null;
@@ -445,10 +591,12 @@ function findMarriage(diagram, a, b) {
 function setupMarriages(diagram) {
   var model = diagram.model;
   var nodeDataArray = model.nodeDataArray;
+  console.log(nodeDataArray);
   for (var i = 0; i < nodeDataArray.length; i++) {
     var data = nodeDataArray[i];
     var key = data.key;
     var uxs = data.ux;
+    var category_data = data.ec;
     if (uxs !== undefined && uxs !== null) {
       if (typeof uxs === "number") uxs = [uxs];
       for (var j = 0; j < uxs.length; j++) {
@@ -463,11 +611,12 @@ function setupMarriages(diagram) {
           var mlab = { s: "LinkLabel" };
           model.addNodeData(mlab);
           // add the marriage link itself, also referring to the label node
+
           var mdata = {
             from: key,
             to: wife,
             labelKeys: [mlab.key],
-            category: "Marriage",
+            category: category_data,
           };
           model.addLinkData(mdata);
         }
@@ -483,6 +632,7 @@ function setupMarriages(diagram) {
           continue;
         }
         var link = findMarriage(diagram, key, husband);
+
         if (link === null) {
           // add a label node for the marriage link
           var mlab = { s: "LinkLabel" };
@@ -492,7 +642,7 @@ function setupMarriages(diagram) {
             from: key,
             to: husband,
             labelKeys: [mlab.key],
-            category: "Marriage",
+            category: category_data,
           };
           model.addLinkData(mdata);
         }

@@ -90,7 +90,7 @@ function mapearDatosGenograma(datos) {
   const genoDataMap = [];
 
   // Función para obtener o crear un nodo en el genograma
-  function obtenerCrearNodo(id, nombre, genero, a) {
+  function obtenerCrearNodo(id, nombre, genero, a, estado_civil, anios) {
     let nodo = genoData.find((n) => n.key === id);
     if (!nodo) {
       nodo = {
@@ -99,6 +99,8 @@ function mapearDatosGenograma(datos) {
         // m: null,
         // f: null,
         // ux: null,
+        ec:estado_civil,
+        anios: anios,
         s: genero == "FEMENINO" ? "F" : "M",
         a: a,
       };
@@ -110,8 +112,9 @@ function mapearDatosGenograma(datos) {
   // Mapear datos a genograma
 
   datos.forEach((dato) => {
-    const { csctbfamiliaid, nom_fam, genero, a } = dato;
-    const nodo = obtenerCrearNodo(csctbfamiliaid, nom_fam, genero, a);
+    const { csctbfamiliaid, nom_fam, genero, a, estado_civil, anios } = dato;
+    console.log(dato)
+    const nodo = obtenerCrearNodo(csctbfamiliaid, nom_fam, genero, a, estado_civil, anios);
 
     if (
       dato.nom_parentesco == relacionesFamiliares[6] &&
