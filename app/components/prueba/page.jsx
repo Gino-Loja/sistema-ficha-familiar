@@ -99,7 +99,7 @@ function mapearDatosGenograma(datos) {
         // m: null,
         // f: null,
         // ux: null,
-        ec:estado_civil,
+        ec: estado_civil,
         anios: anios,
         s: genero == "FEMENINO" ? "F" : "M",
         a: a,
@@ -113,8 +113,15 @@ function mapearDatosGenograma(datos) {
 
   datos.forEach((dato) => {
     const { csctbfamiliaid, nom_fam, genero, a, estado_civil, anios } = dato;
-    console.log(dato)
-    const nodo = obtenerCrearNodo(csctbfamiliaid, nom_fam, genero, a, estado_civil, anios);
+    console.log(dato);
+    const nodo = obtenerCrearNodo(
+      csctbfamiliaid,
+      nom_fam,
+      genero,
+      a,
+      estado_civil,
+      anios
+    );
 
     if (
       dato.nom_parentesco == relacionesFamiliares[6] &&
@@ -167,6 +174,17 @@ function mapearDatosGenograma(datos) {
       nodo.ux = genoDataMap.find(
         (persona) => persona.f != undefined && persona.s == "F"
       )?.key;
+    } else if (dato.nom_parentesco == relacionesFamiliares[5]) {
+      // hijastro
+      nodo.f = datos.find(
+        (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+      )?.csctbfamiliaid;
+      nodo.m = datos.find(
+        (persona) => persona.nom_parentesco == relacionesFamiliares[7]
+      )?.csctbfamiliaid;
+      nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
+
+      nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
     }
     genoDataMap.push(nodo);
   });

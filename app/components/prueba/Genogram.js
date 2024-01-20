@@ -156,10 +156,9 @@ function initDiagram() {
         return tlarc;
     }
   }
-
+  //hombre
   diagram.nodeTemplateMap.add(
     "M",
-
     $(
       go.Node,
       "Vertical",
@@ -217,7 +216,7 @@ function initDiagram() {
       )
     )
   );
-
+  //mujer
   diagram.nodeTemplateMap.add(
     "F", // female
     $(
@@ -276,7 +275,7 @@ function initDiagram() {
       )
     )
   );
-
+  //no usar
   diagram.nodeTemplateMap.add(
     "N", // Miscarriage
     $(
@@ -314,6 +313,215 @@ function initDiagram() {
             margin: 1,
           },
           new go.Binding("itemArray", "a")
+        )
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
+        new go.Binding("text", "n")
+      )
+    )
+  );
+  //hijastro
+  diagram.nodeTemplateMap.add(
+    "hijastro", // Miscarriage
+    $(
+      go.Node,
+      "Vertical",
+      {
+        locationSpot: go.Spot.Center,
+        locationObjectName: "ICON",
+        selectionObjectName: "ICON",
+      },
+      $(
+        go.Panel,
+        "Auto",
+        { name: "ICON" },
+
+        $(go.Shape, {
+          width: 50,
+          height: 50,
+          strokeWidth: 1.5,
+          fill: "white",
+          background: "white",
+
+          stroke: "#a1a1a1",
+          geometryString: `M228.79999 154.8 h106 v78 h-106 Z 
+          M210.79999 131.8 v121.99999
+          M353.79999 133.33124 v121.46876
+          M211.36188 132.79072l24.24744 -0.54752
+          M210.36144 253.85543h16.26506
+          M353.20314 254.806l-17.98763 -0.40951
+          M332.84689 134.31563l20.6875 -0.21875`,
+        }),
+        $(
+          go.TextBlock,
+          {
+            textAlign: "center",
+            verticalAlignment: go.Spot.Center,
+            maxSize: new go.Size(80, NaN),
+            font: "16px serif",
+            editable: true,
+          },
+          new go.Binding("text", "anios")
+        )
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
+        new go.Binding("text", "n")
+      )
+    )
+  );
+  //hijastra
+  diagram.nodeTemplateMap.add(
+    "hijastra", // Miscarriage
+    $(
+      go.Node,
+      "Vertical",
+      {
+        locationSpot: go.Spot.Center,
+        locationObjectName: "ICON",
+        selectionObjectName: "ICON",
+      },
+      $(
+        go.Panel,
+        "Auto",
+        { name: "ICON" },
+
+        $(go.Shape, {
+          width: 50,
+          height: 50,
+          strokeWidth: 1.5,
+          fill: "white",
+          background: "white",
+          stroke: "#a1a1a1",
+
+          geometryString: `M210.79999 137.0356 v116.76439
+          M353.79999 133.33124 v121.46876
+          M210.66501 136.97191l24.24744 -0.54752
+          M210.36144 253.85543h16.26506
+          M353.20314 254.806l-17.98763 -0.40951
+          M332.84689 134.31563l20.6875 -0.21875
+          M280 146.77868a48.83721 48.83721 0 1 0 0 97.67442a48.83721 48.83721 0 1 0 0 -97.67442`,
+        }),
+        $(
+          go.TextBlock,
+          {
+            textAlign: "center",
+            verticalAlignment: go.Spot.Center,
+            maxSize: new go.Size(80, NaN),
+            font: "16px serif",
+            editable: true,
+          },
+          new go.Binding("text", "anios")
+        )
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
+        new go.Binding("text", "n")
+      )
+    )
+  );
+  // padre soltero
+  diagram.nodeTemplateMap.add(
+    "padreSoltero", // Miscarriage
+    $(
+      go.Node,
+      "Vertical",
+      {
+        locationSpot: go.Spot.Center,
+        locationObjectName: "ICON",
+        selectionObjectName: "ICON",
+      },
+      $(
+        go.Panel,
+        "Auto",
+        { name: "ICON" },
+
+        $(go.Shape, {
+          width: 50,
+          height: 50,
+          strokeWidth: 1.5,
+          fill: "white",
+
+          stroke: "#a1a1a1",
+
+          geometryString: `M213.64101 146.38252
+          l64.61785 -71.9508
+          l64.61785 71.9508
+          l-64.61785 71.9508
+          l-64.61785 -71.9508
+          M184.57216 59.57192
+          h186.42883
+          v171.42881
+          h-186.42883
+          v-171.42881`,
+        }),
+        $(
+          go.TextBlock,
+          {
+            textAlign: "center",
+            verticalAlignment: go.Spot.Center,
+            maxSize: new go.Size(80, NaN),
+            font: "16px serif",
+            editable: true,
+          },
+          new go.Binding("text", "anios")
+        )
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
+        new go.Binding("text", "n")
+      )
+    )
+  );
+  //madre soltera
+  diagram.nodeTemplateMap.add(
+    "madreSoltera", // Miscarriage
+    $(
+      go.Node,
+      "Vertical",
+      {
+        locationSpot: go.Spot.Center,
+        locationObjectName: "ICON",
+        selectionObjectName: "ICON",
+      },
+      $(
+        go.Panel,
+        "Auto",
+        { name: "ICON" },
+
+        $(go.Shape, {
+          width: 50,
+          height: 50,
+          strokeWidth: 1.5,
+          fill: "white",
+
+          stroke: "#a1a1a1",
+
+          geometryString: `M230.79999 322.29999
+          m-109 0
+          a109 106.5 0 1 0 218 0
+          a109 106.5 0 1 0 -218 0
+          M144.98099 322.966
+          l83 -95.50001
+          l83 95.50001
+          l-83 95.50001
+          l-83 -95.50001`,
+        }),
+        $(
+          go.TextBlock,
+          {
+            textAlign: "center",
+            verticalAlignment: go.Spot.Center,
+            maxSize: new go.Size(80, NaN),
+            font: "16px serif",
+            editable: true,
+          },
+          new go.Binding("text", "anios")
         )
       ),
       $(
@@ -582,6 +790,10 @@ function findMarriage(diagram, a, b) {
       if (link.data !== null && link.data.category === "DIVORCIO") return link;
       if (link.data !== null && link.data.category === "SEPARACIÓN")
         return link;
+      if (link.data !== null && link.data.category === "UNIÓN LIBRE")
+        return link;
+      if (link.data !== null && link.data.category === "UNIÓN CONSANGUÍNEA")
+        return link;
     }
   }
   return null;
@@ -597,7 +809,28 @@ function setupMarriages(diagram) {
     var key = data.key;
     var uxs = data.ux;
     var category_data = data.ec;
+
+    if (
+      data.s == "M" &&
+      category_data == "SOLTERO/A" &&
+      data.f === undefined &&
+      data.m === undefined
+    ) {
+      data.s = "padreSoltero";
+    }
+    if (
+      data.s == "F" &&
+      category_data == "SOLTERO/A" &&
+      data.f === undefined &&
+      data.m === undefined
+    ) {
+      data.s = "madreSoltera";
+    }
+
     if (uxs !== undefined && uxs !== null) {
+      // if (category_data == "SOLTERO/A") {
+      //   data.s = "madreSoltera";
+      // }
       if (typeof uxs === "number") uxs = [uxs];
       for (var j = 0; j < uxs.length; j++) {
         var wife = uxs[j];
@@ -624,6 +857,10 @@ function setupMarriages(diagram) {
     }
     var virs = data.vir;
     if (virs !== undefined) {
+      // console.log("llego aqui");
+      // if (category_data == "SOLTERO/A") {
+      //   data.s = "padreSoltero";
+      // }
       if (typeof virs === "number") virs = [virs];
       for (var j = 0; j < virs.length; j++) {
         var husband = virs[j];
@@ -657,6 +894,7 @@ function setupParents(diagram) {
   var nodeDataArray = model.nodeDataArray;
   for (var i = 0; i < nodeDataArray.length; i++) {
     var data = nodeDataArray[i];
+
     var key = data.key;
     var mother = data.m;
     var father = data.f;
@@ -670,7 +908,12 @@ function setupParents(diagram) {
         continue;
       }
       var mdata = link.data;
+
       var mlabkey = mdata.labelKeys[0];
+      if (data.h !== undefined) {
+        var h = data.h;
+        data.s = h;
+      }
       if (twin !== undefined) {
         var cdata = { from: mlabkey, to: key, routing: go.Link.Normal };
       } else {
@@ -938,6 +1181,7 @@ GenogramLayout.prototype.findParentsMarriageLabelNode = function (node) {
   var it = node.findNodesInto();
   while (it.next()) {
     var n = it.value;
+
     if (n.isLinkLabel) return n;
   }
   return null;
@@ -949,6 +1193,7 @@ function handleModelChange(e) {
 
 const Genogram = (props) => {
   genoData = props.Genogram;
+  console.log(genoData);
 
   return (
     <div className="w-100">
