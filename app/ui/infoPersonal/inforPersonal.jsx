@@ -319,6 +319,11 @@ export default function InfoPersonal(props) {
               <option value="CASADO/A">Casado/a</option>
               <option value="SOLTERO/A">Soltero/a</option>
               <option value="VIUDO/A">Viudo/a</option>
+              <option value={"UNIÓN LIBRE"}>Union Libre</option>
+              <option value={"SEPARACIÓN"}>Separacion</option>
+              <option value={"DIVORCIO"}>Divorcio</option>
+
+              <option value={"UNIÓN CONSANGUÍNEA"}>Union Consaguinea</option>
             </select>
           </div>
         </div>
@@ -465,6 +470,34 @@ export default function InfoPersonal(props) {
                 validate: (value) => value !== "",
               })}
             ></textarea>
+          </div>
+          <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+            {" "}
+            <label className="form-label">Fallecido</label>
+            <div>
+              {console.log(datosFamiliar.fallecido)}
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("fallecido", {})}
+                  className="form-check-input"
+                  type="radio"
+                  value={true}
+                  defaultChecked={datosFamiliar.fallecido == true}
+                />
+                <label className="form-check-label">Si</label>
+              </div>
+
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("fallecido", {})}
+                  className="form-check-input"
+                  type="radio"
+                  value={false}
+                  defaultChecked={datosFamiliar.fallecido == false}
+                />
+                <label className="form-check-label">No</label>
+              </div>
+            </div>
           </div>
         </div>
         {props.children}

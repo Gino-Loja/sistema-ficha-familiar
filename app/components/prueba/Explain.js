@@ -1,5 +1,6 @@
 "use client";
 import React, { Component } from "react";
+import Image from "next/image";
 
 import * as go from "gojs";
 import { ReactDiagram } from "gojs-react";
@@ -137,7 +138,7 @@ function initDiagram() {
           stroke: "black",
           width: 40,
           height: 40,
-        }),
+        })
       ),
       $(go.TextBlock, "Casados", {
         font: "12px sans-serif",
@@ -191,7 +192,7 @@ function initDiagram() {
           stroke: "black",
           width: 40,
           height: 40,
-        }),
+        })
       ),
       $(go.TextBlock, "Separados", {
         font: "12px sans-serif",
@@ -199,7 +200,7 @@ function initDiagram() {
       })
     )
   );
-  
+
   diagram.add(
     $(
       go.Part,
@@ -251,7 +252,7 @@ function initDiagram() {
           stroke: "black",
           width: 40,
           height: 40,
-        }),
+        })
       ),
       $(go.TextBlock, "Divorciados", {
         font: "12px sans-serif",
@@ -275,7 +276,13 @@ function initDiagram() {
           width: 40,
           height: 40,
         }),
-        $(go.Shape, "MinusLine", { width: 60, height: 40, margin: 4, stroke: "red", angle: -45 }),
+        $(go.Shape, "MinusLine", {
+          width: 60,
+          height: 40,
+          margin: 4,
+          stroke: "red",
+          angle: -45,
+        })
       )
     )
   );
@@ -295,7 +302,13 @@ function initDiagram() {
           width: 40,
           height: 40,
         }),
-        $(go.Shape, "MinusLine", { width: 60, height: 40, margin: 4, stroke: "red", angle: -45 }),
+        $(go.Shape, "MinusLine", {
+          width: 60,
+          height: 40,
+          margin: 4,
+          stroke: "red",
+          angle: -45,
+        })
       ),
       $(go.TextBlock, "Difuntos", {
         font: "12px sans-serif",
@@ -490,7 +503,7 @@ function initDiagram() {
         $(go.Shape, "PlusLine", {
           width: 40,
           height: 40,
-   
+
           fill: null,
           stroke: "red",
         })
@@ -498,7 +511,7 @@ function initDiagram() {
     )
   );
 
-   // diagram.add(
+  // diagram.add(
   //   $(
   //     go.Part,
   //     "Horizental",
@@ -727,13 +740,16 @@ function initDiagram() {
 
 const Explain = () => {
   return (
-    <div className="w-100" >
-      <ReactDiagram
+    <div className="w-100 d-flex justify-content-end p-2">
+      {/* <ReactDiagram
         initDiagram={initDiagram}
         divClassName="w-100 bg-body-secondary"
         style={{height:"70vh"}}
         onModelChange={handleModelChange}
-      />
+      /> */}
+      <div>
+        <img style={{ height: "70vh" }} src="/panel1.svg"></img>
+      </div>
     </div>
   );
 };

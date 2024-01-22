@@ -65,7 +65,9 @@ export default function Embarazada({
       <div className="row mb-3">
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Ultima Fecha de Menstruacion</h5></label>
+          <label className="form-label">
+            <h5>Ultima Fecha de Menstruacion</h5>
+          </label>
           <input
             {...register("fechaUltimaMenstruacion", {
               required: {
@@ -79,7 +81,9 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Fecha Probable de Parto</h5></label>
+          <label className="form-label">
+            <h5>Fecha Probable de Parto</h5>
+          </label>
           <input
             {...register("fechaProbableDeParto", {
               required: {
@@ -112,7 +116,7 @@ export default function Embarazada({
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
           <label className="form-label">
-          <h5>{"N de controles prenatales > 20 sem.."}</h5>
+            <h5>{"N de controles prenatales > 20 sem.."}</h5>
           </label>
           <input
             {...register("controlMas20", {
@@ -130,7 +134,9 @@ export default function Embarazada({
       <div className="row mb-3">
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Semanas de Gestacion</h5></label>
+          <label className="form-label">
+            <h5>Semanas de Gestacion</h5>
+          </label>
           <input
             {...register("semanasGestacion", {
               required: {
@@ -144,7 +150,9 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Gestas</h5></label>
+          <label className="form-label">
+            <h5>Gestas</h5>
+          </label>
           <input
             {...register("gestas", {
               required: {
@@ -159,7 +167,9 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Partos</h5></label>
+          <label className="form-label">
+            <h5>Partos</h5>
+          </label>
           <input
             {...register("partos", {
               required: {
@@ -174,7 +184,9 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>abortos</h5> </label>
+          <label className="form-label">
+            <h5>abortos</h5>{" "}
+          </label>
           <input
             {...register("aborto", {
               required: {
@@ -191,7 +203,9 @@ export default function Embarazada({
       <div className="row mb-3">
         <div className="col-sm-12 col-md-6 col-lg-12 col-xl-12">
           {" "}
-          <label className="form-label"><h5>Antecedentes Patologicos</h5></label>
+          <label className="form-label">
+            <h5>Antecedentes Patologicos</h5>
+          </label>
           <textarea
             {...register("antecedentesPatologicos", {
               required: {
@@ -206,7 +220,9 @@ export default function Embarazada({
       </div>
       <div className="row mb-3">
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-          <label className="form-label"><h5>Selecione el nivel del Riesgo</h5></label>
+          <label className="form-label">
+            <h5>Selecione el nivel del Riesgo</h5>
+          </label>
           <select
             {...register("tipoRiesgo", {
               required: {
@@ -225,7 +241,9 @@ export default function Embarazada({
           </select>
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-          <label className="form-label"><h5>Riesgo Obstetrico</h5></label>
+          <label className="form-label">
+            <h5>Riesgo Obstetrico</h5>
+          </label>
 
           <select {...register("riesgoObstetrico", {})} className="form-select">
             <option value="">Seleccione la opcion</option>
@@ -238,7 +256,9 @@ export default function Embarazada({
         </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
-          <label className="form-label"><h5>Cesarias</h5></label>
+          <label className="form-label">
+            <h5>Cesarias</h5>
+          </label>
           <input
             {...register("cesarias", {
               required: {
@@ -251,9 +271,30 @@ export default function Embarazada({
             className="form-control"
           />
         </div>
+
+        <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label className="form-label">
+            <h5>Tipo aborto</h5>
+          </label>
+          <select
+            {...register("tipoAborto", {
+              required: {
+                value: true,
+                message: "Seleccione",
+              },
+              validate: (value) => value !== "",
+            })}
+            className="form-select"
+            aria-label="Default select example"
+          >
+            <option value="">Seleccione la opcion</option>
+            <option value="ESPONTÁNEO">ESPONTÁNEO</option>
+            <option value="INDUCIDO">INDUCIDO</option>
+            <option value="NINGUNO">NINGUNO</option>
+          </select>
+        </div>
       </div>
       <div className=" h-25 d-flex justify-content-end mt-2 align-items-center">
-
         <button type="submit" className="btn btn-primary">
           guardar Y finalizar
         </button>

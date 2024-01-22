@@ -151,7 +151,6 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
             aria-labelledby="pills-profile-tab"
             tabIndex="0"
           >
-            {console.log(datosFamiliar)}
             <Vacuna
               data={{
                 anios: datosFamiliar.anios,
@@ -229,14 +228,14 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
               id_familia={params.id}
             ></IndexBiologicos>
           </div>
-          {familiaEmbarazo.length == 0 ? null : (
-            <div
-              className="tab-pane fade"
-              id="pills-embarazada"
-              role="tabpanel"
-              aria-labelledby="pills-embarazada-tab"
-              tabIndex="0"
-            >
+          <div
+            className="tab-pane fade"
+            id="pills-embarazada"
+            role="tabpanel"
+            aria-labelledby="pills-embarazada-tab"
+            tabIndex="0"
+          >
+            {familiaEmbarazo.length == 0 ? null : (
               <IndexEmbarazada
                 id_familia={params.id}
                 data={{
@@ -245,8 +244,8 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
                   embarazo: familiaEmbarazo.length == 0 ? false : true,
                 }}
               ></IndexEmbarazada>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </>

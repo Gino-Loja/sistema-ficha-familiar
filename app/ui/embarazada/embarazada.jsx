@@ -4,13 +4,16 @@ import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import ModalFinalizar from "@/app/components/modal/modalFinalizar";
-import { updateFamiliaEmbarazadaById ,updateRiesgosEmbarazada} from "@/app/action";
+import {
+  updateFamiliaEmbarazadaById,
+  updateRiesgosEmbarazada,
+} from "@/app/action";
 export default function Embarazada({
   riesgoObstetrico,
   insertEmbarazadaAndRiesgoObstetricos,
   embarazadaById,
   data,
-  riesgosEmbarazo
+  riesgosEmbarazo,
 }) {
   const { params } = useParams();
   const [listaRiesgos, setListaRiesgos] = useState(riesgosEmbarazo);
@@ -31,10 +34,17 @@ export default function Embarazada({
       });
     }
   }, [watch("tipoRiesgo")]);
+  console.log(embarazadaById)
   const onSubmit = handleSubmit(async (data) => {
-    const result = await updateFamiliaEmbarazadaById(data, embarazadaById.csctbembarazadasid);
-    const ressul = await updateRiesgosEmbarazada(watch("riesgoObstetrico"),embarazadaById.csctbembarazadasid)
-  
+    const result = await updateFamiliaEmbarazadaById(
+      data,
+      embarazadaById.csctbfamiliaid
+    );
+    const ressul = await updateRiesgosEmbarazada(
+      watch("riesgoObstetrico"),
+      embarazadaById.csctbfamiliaid
+    );
+
     if (result.error) {
       console.log(result.error);
     } else {
@@ -62,7 +72,6 @@ export default function Embarazada({
           </button>
         </div>
       </ModalFinalizar>
-      {console.log(embarazadaById)}
       <div className="row">
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
@@ -265,6 +274,29 @@ export default function Embarazada({
             type="number"
             className="form-control"
           />
+        </div>
+
+        <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+          <label className="form-label">
+            <h5>Tipo aborto</h5>
+          </label>
+          <select
+            {...register("tipoAborto", {
+              required: {
+                value: true,
+                message: "Seleccione",
+              },
+              value: embarazadaById.tipo_aborto,
+              validate: (value) => value !== "",
+            })}
+            className="form-select"
+            aria-label="Default select example"
+          >
+            <option value="">Seleccione la opcion</option>
+            <option value="ESPONTÁNEO">ESPONTÁNEO</option>
+            <option value="INDUCIDO">INDUCIDO</option>
+            <option value="NINGUNO">NINGUNO</option>
+          </select>
         </div>
       </div>
       <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">

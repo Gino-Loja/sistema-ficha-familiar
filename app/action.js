@@ -30,9 +30,9 @@ export async function saveFamilia(formData, id) {
       estado_fam, 
       fecreacion_fam,
         id_jefe_hogar,
-      estado_civil, csctbetniaid, csctbpueblosid)
+      estado_civil, csctbetniaid, csctbpueblosid, fallecido)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
-       $9, $10, $11, $12, $13, $14, current_timestamp,${id_jefe},$15, $16, $17)
+       $9, $10, $11, $12, $13, $14, current_timestamp,${id_jefe},$15, $16, $17,$18)
         RETURNING csctbfamiliaid,nom_fam, ape_fam,genero,csctbparentescoid`;
 
     const values = [
@@ -53,6 +53,7 @@ export async function saveFamilia(formData, id) {
       formData.estadoCivil,
       formData.etnia,
       formData.pueblos,
+      formData.fallecido,
     ];
 
     const res = await conn.query(text, values);
@@ -349,8 +350,8 @@ export async function insertEmbarazadaAndRiesgoObstetricos(
       public.csctbembarazadas(csctbfamiliaid,
         fecha_menstruacion, 
         fecha_parto, control_menos20, control_mas20, semanas_gestacion, 
-        gestas, partos, abortos, cesarias, ante_patologicos)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11); 
+        gestas, partos, abortos, cesarias, ante_patologicos, tipo_aborto)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,$12); 
       `,
       [
         id_familia,
@@ -364,16 +365,13 @@ export async function insertEmbarazadaAndRiesgoObstetricos(
         formData.aborto,
         formData.cesarias,
         formData.antecedentesPatologicos,
+        formData.tipoAborto,
       ]
     );
 
     result = await conn.query(`INSERT INTO public.csctbriesgoembarazada(
-      csctbriesgobsteid , csctbembarazadasid, fecha_embarazada)
-    VALUES (${id_riesgo}, (SELECT csctbembarazadasid
-      FROM public.csctbembarazadas
-      ORDER BY csctbembarazadasid DESC
-      LIMIT 1
-      ), CURRENT_TIMESTAMP);
+      csctbriesgobsteid , csctbfamiliaid, fecha_embarazada)
+    VALUES (${id_riesgo}, ${id_familia}, CURRENT_TIMESTAMP);
     `);
     return result.rows;
   } catch (error) {
@@ -397,8 +395,8 @@ export async function getFamiliares(accion, termino) {
     csctbfamilia.id_jefe_hogar,
     csctbfamilia.cedula_fam,
     csctbfamilia.estado_civil,
-    csctbfamilia.anios
-
+    csctbfamilia.anios,
+    csctbfamilia.fallecido
 
   FROM 
     public.csctbfamilia, 
@@ -435,7 +433,8 @@ export async function getFamiliares(accion, termino) {
       csctbfamilia.anios, 
       csctbparentesco.nom_parentesco, 
       csctbfamilia.id_jefe_hogar,
-      csctbfamilia.cedula_fam
+      csctbfamilia.cedula_fam,
+    csctbfamilia.fallecido
     FROM 
     
       public.csctbfamilia, 
@@ -464,7 +463,8 @@ export async function getFamiliares(accion, termino) {
     csctbfamilia.anios, 
     csctbparentesco.nom_parentesco, 
     csctbfamilia.id_jefe_hogar,
-    csctbfamilia.cedula_fam
+    csctbfamilia.cedula_fam,
+    csctbfamilia.fallecido
   FROM 
   
     public.csctbfamilia, 
@@ -509,7 +509,8 @@ export async function getFamiliarById(id) {
     csctbfamilia.estado_civil, 
     csctbetnia.csctbetniaid, 
     csctbnacionalidadetnica.nom_nacionalidadetnica, 
-    csctbpueblos.csctbpueblosid
+    csctbpueblos.csctbpueblosid,
+    csctbfamilia.fallecido
   FROM 
     public.csctbfamilia
     LEFT JOIN public.csctbparentesco ON csctbparentesco.csctbparentescoid = csctbfamilia.csctbparentescoid
@@ -548,7 +549,8 @@ export async function updateFamiliaById(formData, id) {
       fecreacion_fam = current_timestamp,
       estado_civil = $15,
       csctbetniaid = $16,
-      csctbpueblosid = $17
+      csctbpueblosid = $17,
+      fallecido = $18
     WHERE csctbfamiliaid = ${id}`;
 
     const values = [
@@ -569,6 +571,7 @@ export async function updateFamiliaById(formData, id) {
       formData.estadoCivil,
       formData.etnia,
       formData.pueblos,
+      formData.fallecido,
     ];
     const res = await conn.query(text, values);
 
@@ -626,8 +629,8 @@ export async function updateEnfermdad({
     if (accion) {
       const result = await conn.query(
         `INSERT INTO public.csctbenferfam(
-           csctbenfermedadid, csctbfamiliaid, fecha_enfermedad)
-          VALUES ($1, $2, current_timestamp);
+           csctbenfermedadid, csctbfamiliaid)
+          VALUES ($1, $2);
       `,
         [id_enfermedad, id_familia]
       );
@@ -1040,7 +1043,9 @@ export async function getFamiliaEmbarazadaById(id) {
   csctbembarazadas.gestas, 
   csctbembarazadas.partos, 
   csctbembarazadas.abortos, 
-  csctbembarazadas.cesarias
+  csctbembarazadas.cesarias,
+  csctbembarazadas.tipo_aborto,
+  csctbembarazadas.csctbfamiliaid
 FROM 
   public.csctbembarazadas, 
   public.csctbfamilia
@@ -1055,12 +1060,12 @@ WHERE
 export async function getFamiliaEmbarazadaRiesgoById(id) {
   const result = await conn.query(
     `SELECT
-     csctbriesembarazadaid,
+    csctbriesembarazadaid,
      csctbriesgobsteid,
-    csctbembarazadasid
+    csctbfamiliaid
  
     FROM public.csctbriesgoembarazada
-    WHERE csctbembarazadasid = $1 LIMIT 1
+    WHERE csctbfamiliaid = $1 LIMIT 1
     ;
 `,
     [id]
@@ -1083,8 +1088,9 @@ export async function updateFamiliaEmbarazadaById(formData, id_familia) {
         gestas=$7, 
         partos=$8, 
         abortos=$9,
-        cesarias=$10
-    WHERE csctbembarazadasid = $11;`,
+        cesarias=$10,
+        tipo_aborto=$11
+    WHERE csctbfamiliaid = $12;`,
       [
         formData.fechaUltimaMenstruacion,
         formData.fechaProbableDeParto,
@@ -1096,6 +1102,7 @@ export async function updateFamiliaEmbarazadaById(formData, id_familia) {
         formData.partos,
         formData.aborto,
         formData.cesarias,
+        formData.tipoAborto,
         id_familia,
       ]
     );
@@ -1106,11 +1113,12 @@ export async function updateFamiliaEmbarazadaById(formData, id_familia) {
   }
 }
 export async function updateRiesgosEmbarazada(id_riesgo, id_embarazada) {
+  console.log(id_embarazada, id_riesgo);
   const result = await conn.query(
     `UPDATE public.csctbriesgoembarazada
 	SET 
    csctbriesgobsteid=$1
-	WHERE csctbembarazadasid=$2;`,
+	WHERE csctbriesembarazadaid=$2;`,
     [id_riesgo, id_embarazada]
   );
   return result.rows;

@@ -487,6 +487,33 @@ export default function InfoPersonal(props) {
               })}
             ></textarea>
           </div>
+
+          <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+            {" "}
+            <label className="form-label">
+              <h5>Fallecido</h5>
+            </label>
+            <div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("fallecido", {})}
+                  className="form-check-input"
+                  type="radio"
+                  value="true"
+                />
+                <label className="form-check-label">Si</label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("fallecido")}
+                  className="form-check-input"
+                  type="radio"
+                  value="false"
+                />
+                <label className="form-check-label">No</label>
+              </div>
+            </div>
+          </div>
         </div>
         {props.children}
       </form>

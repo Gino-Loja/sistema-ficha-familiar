@@ -1,7 +1,12 @@
 "use client";
 import MostrarGenograma from "@/app/components/prueba/page";
 import { useEffect, useState } from "react";
-import { getFamiliares, getTipoFamilia, updateTipoFamilia } from "@/app/action";
+import {
+  getFamiliares,
+  getTipoFamilia,
+  updateTipoFamilia,
+  getFamiliaEmbarazadaById,
+} from "@/app/action";
 import { useForm } from "react-hook-form";
 import Explain from "@/app/components/prueba/Explain";
 import Form from "react-bootstrap/Form";
@@ -18,6 +23,10 @@ export default function GenogramaPage({ params, searchParams }) {
   };
   const getTipoFamiliaC = async () => {
     return await getTipoFamilia(params.id);
+  };
+
+  const getFamiliaE = async () => {
+    return await getFamiliaEmbarazadaById(params.id);
   };
   const {
     register,

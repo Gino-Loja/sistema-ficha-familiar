@@ -77,12 +77,12 @@ function initDiagram() {
   var trsq = go.Geometry.parse("F M20 1 l19 0 0 19 -19 0z");
   var brsq = go.Geometry.parse("F M20 20 l19 0 0 19 -19 0z");
   var blsq = go.Geometry.parse("F M1 20 l19 0 0 19 -19 0z");
-  var slash = go.Geometry.parse(
-    "F M38 0 L40 0 40 2 2 40 0 40 0 38z" + "F M40 38 L40 40 38 40 0 2 0 0 2 0z"
-  );
+  var slash = go.Geometry.parse("F M38 0 L40 0 40 2 2 40 0 40 0 38z"); //aqui
   var plus = go.Geometry.parse(
-    "F M18 2 L20 0 22 2 22 38 20 40 18 38z" +
-      "F M2 22 L0 20 2 18 38 18 40 20 38 22z"
+    "F M0 0 L80 0 B-90 90 80 20 20 20 L100 100 20 100 B90 90 20 80 20 20z"
+  );
+  var flecha = go.Geometry.parse(
+    "M14 13.5a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1 0-1h4.793L2.146 2.854a.5.5 0 1 1 .708-.708L13 12.293V7.5a.5.5 0 0 1 1 0z"
   );
   function maleGeometry(a) {
     switch (a) {
@@ -123,6 +123,7 @@ function initDiagram() {
   var brarc = go.Geometry.parse("F M20 20 B 0 90 20 20 19 19 z");
   var blarc = go.Geometry.parse("F M20 20 B 90 90 20 20 19 19 z");
   function femaleGeometry(a) {
+    console.log;
     switch (a) {
       case "A":
         return tlarc;
@@ -149,7 +150,7 @@ function initDiagram() {
       case "L":
         return blarc;
       case "S":
-        return slash;
+        return flecha;
       case "M":
         return plus;
       default:
@@ -170,6 +171,31 @@ function initDiagram() {
 
       $(
         go.Panel,
+        {
+          itemTemplate: $(
+            go.Panel,
+            $(
+              go.Shape,
+              {
+                strokeWidth: 1,
+                height: 40,
+                width: 30,
+                margin: 5,
+              },
+              new go.Binding("stroke", "", attrFill),
+              new go.Binding("fill", "", attrFill),
+
+              new go.Binding("geometry", "", femaleGeometry)
+            )
+          ),
+          alignment: go.Spot.TopLeft,
+          alignmentFocus: go.Spot.BottomRight,
+        },
+        new go.Binding("itemArray", "a")
+      ),
+
+      $(
+        go.Panel,
         "Auto",
         { name: "ICON" },
         $(go.Shape, "Square", {
@@ -181,22 +207,23 @@ function initDiagram() {
           portId: "",
         }),
 
-        // $(
-        //   go.Panel,
-        //   {
-        //     itemTemplate: $(
-        //       go.Panel,
-        //       $(
-        //         go.Shape,
-        //         { stroke: null, strokeWidth: 0 },
-        //         new go.Binding("fill", "", attrFill),
-        //         new go.Binding("geometry", "", maleGeometry)
-        //       )
-        //     ),
-        //     margin: 1,
-        //   },
-        //   new go.Binding("itemArray", "a")
-        // ),
+        $(
+          go.Panel,
+          {
+            itemTemplate: $(
+              go.Panel,
+              $(
+                go.Shape,
+                { stroke: null, strokeWidth: 0 },
+                new go.Binding("fill", "", attrFill),
+
+                new go.Binding("geometry", "", maleGeometry)
+              )
+            ),
+          },
+          new go.Binding("itemArray", "a")
+        ),
+
         $(
           go.TextBlock,
           {
@@ -213,6 +240,12 @@ function initDiagram() {
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
         new go.Binding("text", "n")
+      ),
+
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(100, NaN), editable: true },
+        new go.Binding("text", "codigo")
       )
     )
   );
@@ -227,6 +260,23 @@ function initDiagram() {
         locationObjectName: "ICON",
         selectionObjectName: "ICON",
       },
+
+      $(
+        go.Panel,
+        {
+          itemTemplate: $(
+            go.Panel,
+            $(
+              go.Shape,
+              { stroke: null, strokeWidth: 0 },
+              new go.Binding("fill", "", attrFill),
+              new go.Binding("geometry", "", maleGeometry)
+            )
+          ),
+        },
+        new go.Binding("itemArray", "a")
+      ),
+
       $(
         go.Panel,
         "Auto",
@@ -239,23 +289,23 @@ function initDiagram() {
           stroke: "#a1a1a1",
           portId: "",
         }),
-        // $(
-        //   go.Panel,
-        //   {
-        //     // for each attribute show a Shape at a particular place in the overall circle
-        //     itemTemplate: $(
-        //       go.Panel,
-        //       $(
-        //         go.Shape,
-        //         { stroke: null, strokeWidth: 0 },
-        //         new go.Binding("fill", "", attrFill),
-        //         new go.Binding("geometry", "", femaleGeometry)
-        //       )
-        //     ),
-        //     margin: 1,
-        //   },
-        //   new go.Binding("itemArray", "a")
-        // )
+        $(
+          go.Panel,
+          {
+            // for each attribute show a Shape at a particular place in the overall circle
+            itemTemplate: $(
+              go.Panel,
+              $(
+                go.Shape,
+                { stroke: null, strokeWidth: 0 },
+                new go.Binding("fill", "", attrFill),
+                new go.Binding("geometry", "", maleGeometry)
+              )
+            ),
+            margin: 1,
+          },
+          new go.Binding("itemArray", "a")
+        ),
         $(
           go.TextBlock,
           {
@@ -272,12 +322,17 @@ function initDiagram() {
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
         new go.Binding("text", "n")
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(100, NaN), editable: true },
+        new go.Binding("text", "codigo")
       )
     )
   );
-  //no usar
+  //Embarazada
   diagram.nodeTemplateMap.add(
-    "N", // Miscarriage
+    "embarazada", // Miscarriage
     $(
       go.Node,
       "Vertical",
@@ -288,6 +343,7 @@ function initDiagram() {
       },
       $(
         go.Panel,
+        "Auto",
         { name: "ICON" },
         $(go.Shape, "Triangle", {
           width: 40,
@@ -313,12 +369,29 @@ function initDiagram() {
             margin: 1,
           },
           new go.Binding("itemArray", "a")
+        ),
+
+        $(
+          go.TextBlock,
+          {
+            textAlign: "center",
+            verticalAlignment: go.Spot.Center,
+            maxSize: new go.Size(80, NaN),
+            font: "16px serif",
+            editable: true,
+          },
+          new go.Binding("text", "anios")
         )
       ),
       $(
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
         new go.Binding("text", "n")
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(100, NaN), editable: true },
+        new go.Binding("text", "codigo")
       )
     )
   );
@@ -354,6 +427,23 @@ function initDiagram() {
           M353.20314 254.806l-17.98763 -0.40951
           M332.84689 134.31563l20.6875 -0.21875`,
         }),
+
+        $(
+          go.Panel,
+          {
+            itemTemplate: $(
+              go.Panel,
+              $(
+                go.Shape,
+                { stroke: null, strokeWidth: 0 },
+                new go.Binding("fill", "", attrFill),
+                new go.Binding("geometry", "", maleGeometry)
+              )
+            ),
+          },
+          new go.Binding("itemArray", "a")
+        ),
+
         $(
           go.TextBlock,
           {
@@ -370,6 +460,11 @@ function initDiagram() {
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
         new go.Binding("text", "n")
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(100, NaN), editable: true },
+        new go.Binding("text", "codigo")
       )
     )
   );
@@ -406,6 +501,21 @@ function initDiagram() {
           M280 146.77868a48.83721 48.83721 0 1 0 0 97.67442a48.83721 48.83721 0 1 0 0 -97.67442`,
         }),
         $(
+          go.Panel,
+          {
+            itemTemplate: $(
+              go.Panel,
+              $(
+                go.Shape,
+                { stroke: null, strokeWidth: 0 },
+                new go.Binding("fill", "", attrFill),
+                new go.Binding("geometry", "", maleGeometry)
+              )
+            ),
+          },
+          new go.Binding("itemArray", "a")
+        ),
+        $(
           go.TextBlock,
           {
             textAlign: "center",
@@ -421,6 +531,11 @@ function initDiagram() {
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
         new go.Binding("text", "n")
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(100, NaN), editable: true },
+        new go.Binding("text", "codigo")
       )
     )
   );
@@ -460,6 +575,22 @@ function initDiagram() {
           v-171.42881`,
         }),
         $(
+          go.Panel,
+          {
+            itemTemplate: $(
+              go.Panel,
+              $(
+                go.Shape,
+                { stroke: null, strokeWidth: 0 },
+                new go.Binding("fill", "", attrFill),
+                new go.Binding("geometry", "", maleGeometry)
+              )
+            ),
+          },
+          new go.Binding("itemArray", "a")
+        ),
+
+        $(
           go.TextBlock,
           {
             textAlign: "center",
@@ -475,6 +606,11 @@ function initDiagram() {
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
         new go.Binding("text", "n")
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(100, NaN), editable: true },
+        new go.Binding("text", "codigo")
       )
     )
   );
@@ -512,6 +648,23 @@ function initDiagram() {
           l-83 95.50001
           l-83 -95.50001`,
         }),
+
+        $(
+          go.Panel,
+          {
+            itemTemplate: $(
+              go.Panel,
+              $(
+                go.Shape,
+                { stroke: null, strokeWidth: 0 },
+                new go.Binding("fill", "", attrFill),
+                new go.Binding("geometry", "", maleGeometry)
+              )
+            ),
+          },
+          new go.Binding("itemArray", "a")
+        ),
+
         $(
           go.TextBlock,
           {
@@ -528,6 +681,65 @@ function initDiagram() {
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
         new go.Binding("text", "n")
+      ),
+      $(
+        go.TextBlock,
+        { textAlign: "center", maxSize: new go.Size(100, NaN), editable: true },
+        new go.Binding("text", "codigo")
+      )
+    )
+  );
+
+  //aborto-espontaneo
+  diagram.nodeTemplateMap.add(
+    "ESPONTÁNEO", // Miscarriage
+    $(
+      go.Node,
+      "Vertical",
+      {
+        locationSpot: go.Spot.Center,
+        locationObjectName: "ICON",
+        selectionObjectName: "ICON",
+      },
+      $(
+        go.Panel,
+        "Auto",
+        { name: "ICON" },
+
+        $(go.Shape, "Circle", {
+          width: 50,
+          height: 50,
+          strokeWidth: 1.5,
+          fill: "black",
+
+          stroke: "#a1a1a1",
+        })
+      )
+    )
+  );
+  diagram.nodeTemplateMap.add(
+    "INDUCIDO", // Miscarriage
+    $(
+      go.Node,
+      "Vertical",
+      {
+        locationSpot: go.Spot.Center,
+        locationObjectName: "ICON",
+        selectionObjectName: "ICON",
+      },
+      $(
+        go.Panel,
+        "Auto",
+        { name: "ICON" },
+
+        $(go.Shape, "XLine", {
+          width: 25,
+          height: 25,
+          strokeWidth: 3,
+          fill: "white",
+
+          stroke: "black",
+        })
       )
     )
   );

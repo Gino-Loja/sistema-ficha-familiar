@@ -2,7 +2,10 @@
 import Genogram from "./Genogram.js";
 import Explain from "./Explain.js";
 import { useEffect, useState } from "react";
-import { getFamiliaEnfermedadById } from "@/app/action";
+import {
+  getFamiliaEmbarazadaById,
+  getFamiliaEnfermedadById,
+} from "@/app/action";
 import { Suspense } from "react";
 
 //import "./App.css";
@@ -67,21 +70,22 @@ function obetnerEtiquetas(dato) {
   const resultado = [];
 
   dato.forEach((enfermedad) => {
-    const nombre = enfermedad.nom_enfermedad.toLowerCase();
+    const codigo = enfermedad.cog_enfermedad;
 
-    if (nombre.includes("pulmon") || nombre.includes("pul")) {
-      resultado.push("E");
-    } else if (nombre.includes("tumor")) {
-      resultado.push("J");
-    } else if (nombre.includes("ovario") || nombre.includes("ovarios")) {
-      resultado.push("B", "J");
-    } else if (nombre.includes("leucemia")) {
-      resultado.push("M");
-    } else {
-      resultado.push("O"); // Otra categoría, puedes asignar otra letra o manejar de acuerdo a tus necesidades
-    }
+    resultado.push(codigo);
+
+    // if (nombre.includes("pulmon") || nombre.includes("pul")) {
+    //   resultado.push("E");
+    // } else if (nombre.includes("tumor")) {
+    //   resultado.push("J");
+    // } else if (nombre.includes("ovario") || nombre.includes("ovarios")) {
+    //   resultado.push("B", "J");
+    // } else if (nombre.includes("leucemia")) {
+    //   resultado.push("M");
+    // } else {
+    //   resultado.push("O"); // Otra categoría, puedes asignar otra letra o manejar de acuerdo a tus necesidades
+    // }
   });
-
   return resultado;
 }
 
@@ -90,20 +94,49 @@ function mapearDatosGenograma(datos) {
   const genoDataMap = [];
 
   // Función para obtener o crear un nodo en el genograma
-  function obtenerCrearNodo(id, nombre, genero, a, estado_civil, anios) {
+  function obtenerCrearNodo(
+    id,
+    nombre,
+    genero,
+    codigo,
+    estado_civil,
+    anios,
+    fallecido,
+    aborto,
+    tipo_aborto
+  ) {
+    console.log(tipo_aborto, aborto);
     let nodo = genoData.find((n) => n.key === id);
     if (!nodo) {
-      nodo = {
-        key: id,
-        n: nombre,
-        // m: null,
-        // f: null,
-        // ux: null,
-        ec: estado_civil,
-        anios: anios,
-        s: genero == "FEMENINO" ? "F" : "M",
-        a: a,
-      };
+      if (tipo_aborto !== undefined && aborto !== undefined) {
+        nodo = {
+          key: id,
+          n: nombre,
+          // m: null,
+          // f: null,
+          // ux: null,
+          a: [fallecido == true ? "S" : ""],
+          ec: estado_civil,
+          anios: anios,
+          s: genero == "FEMENINO" ? "F" : "M",
+          codigo: codigo,
+          aborto: aborto,
+          tipo_aborto: tipo_aborto,
+        };
+      } else {
+        nodo = {
+          key: id,
+          n: nombre,
+          // m: null,
+          // f: null,
+          // ux: null,
+          a: [fallecido == true ? "S" : ""],
+          ec: estado_civil,
+          anios: anios,
+          s: genero == "FEMENINO" ? "F" : "M",
+          codigo: codigo,
+        };
+      }
       genoData.push(nodo);
     }
     return nodo;
@@ -112,15 +145,27 @@ function mapearDatosGenograma(datos) {
   // Mapear datos a genograma
 
   datos.forEach((dato) => {
-    const { csctbfamiliaid, nom_fam, genero, a, estado_civil, anios } = dato;
-    console.log(dato);
+    const {
+      csctbfamiliaid,
+      nom_fam,
+      genero,
+      codigo,
+      estado_civil,
+      anios,
+      fallecido,
+      aborto,
+      tipo_aborto,
+    } = dato;
     const nodo = obtenerCrearNodo(
       csctbfamiliaid,
       nom_fam,
       genero,
-      a,
+      codigo,
       estado_civil,
-      anios
+      anios,
+      fallecido,
+      aborto,
+      tipo_aborto
     );
 
     if (
@@ -186,8 +231,23 @@ function mapearDatosGenograma(datos) {
 
       nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
     }
+    if (dato.aborto !== undefined && dato.tipo_aborto !== undefined) {
+      for (let index = 0; index < aborto; index++) {
+        var nodo_aborto = {
+          key: index,
+          m: nodo.key,
+          f: datos.find(
+            (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+          )?.csctbfamiliaid,
+          s: dato.tipo_aborto,
+        };
+        genoDataMap.push(nodo_aborto);
+      }
+      nodo.s = "embarazada";
+    }
     genoDataMap.push(nodo);
   });
+
 
   return genoDataMap;
 }
@@ -200,7 +260,20 @@ const MostrarGenograma = ({ familiares }) => {
         familiares.map(async (familiar) => {
           const data = await getFamiliaEnfermedadById(familiar.csctbfamiliaid);
           const etiquetas = obetnerEtiquetas(data);
-          return { ...familiar, a: etiquetas };
+          const isEmbarazada = await getFamiliaEmbarazadaById(
+            familiar.csctbfamiliaid
+          );
+
+          if (isEmbarazada.length > 0) {
+            return {
+              ...familiar,
+              codigo: etiquetas,
+              aborto: isEmbarazada[0].abortos,
+              tipo_aborto: isEmbarazada[0].tipo_aborto,
+            };
+          } else {
+            return { ...familiar, codigo: etiquetas };
+          }
         })
       );
     };
