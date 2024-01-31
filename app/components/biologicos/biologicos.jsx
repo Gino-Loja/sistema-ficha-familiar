@@ -152,7 +152,7 @@ export default function Biologico({
           <button
             onClick={() => {
               setModalShowFinalizar(false);
-              router.push("/nuevaFicha/");
+              router.push("/buscarFicha/");
             }}
             className="btn btn-primary mx-2"
           >

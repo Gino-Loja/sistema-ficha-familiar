@@ -6,13 +6,15 @@ import {
 } from "./utils/rangoEdad";
 import { obetnerIdsAndMerge } from "./utils/obtenerId";
 import { Cookie } from "next/font/google";
+
+import { writeFile } from "fs/promises";
+import path from "path";
 export async function saveFamilia(formData, id) {
   const id_jefe =
     id == null
       ? `CURRVAL('public.csctbfamilia_csctbfamiliaid_seq')`
       : id.toString();
   try {
-    console.log(formData.saludBucal);
     const text = `INSERT INTO public.csctbfamilia (
       csctbocupacionid, 
       csctbinstruccionid, 
@@ -134,7 +136,6 @@ export async function guardarEnfermedadVacunas(
   enfermedades,
   id_familia
 ) {
-  console.log(vacunas, enfermedades, id_familia);
   const listaIdsVacunas = Object.keys(vacunas)
     .filter((key) => typeof vacunas[key] === "boolean" && vacunas[key])
     .map(Number);
@@ -417,7 +418,7 @@ export async function getFamiliares(accion, termino) {
 
     csctbficha.csctbfamiliaid = $1 LIMIT 1  
 	)
-  ORDER BY ape_fam ASC;
+  ORDER BY csctbfamiliaid ASC;
       
   `;
 
@@ -1074,7 +1075,6 @@ export async function getFamiliaEmbarazadaRiesgoById(id) {
 }
 
 export async function updateFamiliaEmbarazadaById(formData, id_familia) {
-  console.log(id_familia);
   try {
     const result = await conn.query(
       `UPDATE public.csctbembarazadas
@@ -1113,7 +1113,6 @@ export async function updateFamiliaEmbarazadaById(formData, id_familia) {
   }
 }
 export async function updateRiesgosEmbarazada(id_riesgo, id_embarazada) {
-  console.log(id_embarazada, id_riesgo);
   const result = await conn.query(
     `UPDATE public.csctbriesgoembarazada
 	SET 
@@ -1260,7 +1259,6 @@ export async function insertFactoresVivienda(formData, id_vivienda) {
         formData.vulnerable,
       ]
     );
-    console.log(result.rows);
     return result.rows;
   } catch (error) {
     console.log(error);
@@ -1467,7 +1465,7 @@ export async function updateViviendaById(formData, id_familia) {
       formData.canalAgua,
     ]
   );
-  return await result.rows;
+  return result.rows;
 }
 
 export async function updateFactoresVivienda(formData, id_vivienda) {
@@ -1525,10 +1523,8 @@ export async function updateFactoresVivienda(formData, id_vivienda) {
         id_vivienda,
       ]
     );
-    console.log(result.rows);
     return result.rows;
   } catch (error) {
-    console.log(error);
     return { error: "No se ingresaron tus datos" };
   }
 }
@@ -1537,13 +1533,14 @@ export async function insertTipoFamilia(id_familia) {
   try {
     const result = await conn.query(
       `INSERT INTO csctbtipofamilia(
-       idjefe_hogar_familia)
+        idjefe_hogar_familia)
       VALUES ($1);`,
       [id_familia]
     );
 
     return result.rows;
   } catch (error) {
+    console.log(error);
     return { error: "No se podido ingresar tu datos" };
   }
 }
@@ -1597,4 +1594,26 @@ export async function getTipoFamilia(id_familia) {
     [id_familia]
   );
   return result.rows;
+}
+
+export async function saveImagenGenograma(img, id) {
+  //const dataURL = await img;
+  const currentDate = new Date();
+  const formattedDate = currentDate.toISOString().slice(0, 10);
+  const filePath = path.join(
+    process.cwd(),
+    "public/genogramas",
+    `${id}_${formattedDate}.svg`
+  );
+  await writeFile(filePath, img);
+  const result = await conn.query(
+    `
+    INSERT INTO "csctbHistorialGenograma"(
+    imagen,  "fechaRegistro", idjefedehogar)
+    VALUES ( $1, current_timestamp, $2);
+  `,
+    [`${id}_${formattedDate}.svg`, id]
+  );
+
+  return filePath;
 }

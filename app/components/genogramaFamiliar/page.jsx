@@ -60,7 +60,9 @@ const relacionesFamiliares = {
   15: "TIO/A",
   16: "PRIMO/A",
   17: "OTRO FAMILIAR", //queda fuera del arbol por que no tiene asignado padres en comun
-  18: "NO FAMILIAR", //queda fuera del arbol por que no tiene asignado padres en comun
+  18: "NO FAMILIAR",
+  29: "GEMELOS",
+  30: "MELLIZOS",
 };
 
 // Ejemplo de acceso a la descripción de una relación por su número
@@ -92,6 +94,9 @@ function obetnerEtiquetas(dato) {
 function mapearDatosGenograma(datos) {
   const genoData = [];
   const genoDataMap = [];
+  const padres = [];
+  const hijos = [];
+  const nietos = [];
 
   // Función para obtener o crear un nodo en el genograma
   function obtenerCrearNodo(
@@ -105,7 +110,6 @@ function mapearDatosGenograma(datos) {
     aborto,
     tipo_aborto
   ) {
-    console.log(tipo_aborto, aborto);
     let nodo = genoData.find((n) => n.key === id);
     if (!nodo) {
       if (tipo_aborto !== undefined && aborto !== undefined) {
@@ -143,8 +147,7 @@ function mapearDatosGenograma(datos) {
   }
 
   // Mapear datos a genograma
-
-  datos.forEach((dato) => {
+  datos.forEach((dato, index) => {
     const {
       csctbfamiliaid,
       nom_fam,
@@ -168,15 +171,23 @@ function mapearDatosGenograma(datos) {
       tipo_aborto
     );
 
+    //padre
+
     if (
       dato.nom_parentesco == relacionesFamiliares[6] &&
       dato.genero == "MASCULINO"
     ) {
+      //hijo
+
       nodo.ux = datos.find(
         (persona) => persona.nom_parentesco == relacionesFamiliares[7]
       )?.csctbfamiliaid;
       nodo.s = "M";
-    } else if (dato.nom_parentesco == relacionesFamiliares[4]) {
+      padres.push(nodo);
+    }
+
+    //hijos
+    else if (dato.nom_parentesco == relacionesFamiliares[4]) {
       //const padreMadre = dato.genero === "MASCULINO" ? "m" : "f";
       //nodo[padreMadre] = dato.csctbfamiliaid;
       nodo.f = datos.find(
@@ -186,73 +197,166 @@ function mapearDatosGenograma(datos) {
         (persona) => persona.nom_parentesco == relacionesFamiliares[7]
       )?.csctbfamiliaid;
       nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
-    } else if (
+      hijos.push(dato);
+    }
+    //madre
+    else if (
       dato.nom_parentesco == relacionesFamiliares[7] &&
       dato.genero == "FEMENINO"
     ) {
       nodo.s = "F";
-    } else if (dato.nom_parentesco == relacionesFamiliares[11]) {
-      if (
-        genoDataMap.find(
-          (persona) => persona.f != undefined && persona.s == "M"
-        )
-      ) {
-        nodo.f = genoDataMap.find(
-          (persona) => persona.f != undefined && persona.s == "M"
-        )?.key;
-        nodo.m = datos.find(
-          (persona) => persona.nom_parentesco == relacionesFamiliares[10]
-        )?.csctbfamiliaid;
-      } else {
-        nodo.m = genoDataMap.find(
-          (persona) => persona.f != undefined && persona.s == "F"
-        )?.key;
-        nodo.f = datos.find(
-          (persona) => persona.nom_parentesco == relacionesFamiliares[9]
-        )?.csctbfamiliaid;
-      }
-    } else if (dato.nom_parentesco == relacionesFamiliares[10]) {
-      nodo.vir = genoDataMap.find(
-        (persona) => persona.f != undefined && persona.s == "M"
-      )?.key;
-    } else if (dato.nom_parentesco == relacionesFamiliares[9]) {
-      nodo.ux = genoDataMap.find(
-        (persona) => persona.f != undefined && persona.s == "F"
-      )?.key;
-    } else if (dato.nom_parentesco == relacionesFamiliares[5]) {
-      // hijastro
-      nodo.f = datos.find(
-        (persona) => persona.nom_parentesco == relacionesFamiliares[6]
-      )?.csctbfamiliaid;
-      nodo.m = datos.find(
-        (persona) => persona.nom_parentesco == relacionesFamiliares[7]
-      )?.csctbfamiliaid;
-      nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
-
-      nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
     }
-    if (dato.aborto !== undefined && dato.tipo_aborto !== undefined) {
-      for (let index = 0; index < aborto; index++) {
-        var nodo_aborto = {
-          key: index,
-          m: nodo.key,
-          f: datos.find(
-            (persona) => persona.nom_parentesco == relacionesFamiliares[6]
-          )?.csctbfamiliaid,
-          s: dato.tipo_aborto,
-        };
-        genoDataMap.push(nodo_aborto);
+    //nieto
+    else if (dato.nom_parentesco == relacionesFamiliares[11]) {
+      if (hijos[hijos.length - 1].nom_parentesco === relacionesFamiliares[9]) {
+        nodo.f = hijos[hijos.length - 1].csctbfamiliaid;
+        nodo.m = hijos[hijos.length - 2].csctbfamiliaid;
+        nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
+
+        //nodo.h = nodo.s == "M" ? "M" : "F";
+      } else if (
+        hijos[hijos.length - 1].nom_parentesco === relacionesFamiliares[10]
+      ) {
+        nodo.f = hijos[hijos.length - 2].csctbfamiliaid;
+        nodo.m = hijos[hijos.length - 1].csctbfamiliaid;
+        nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
+
+        //nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
       }
-      nodo.s = "embarazada";
+    }
+    //Nnuera
+    else if (dato.nom_parentesco == relacionesFamiliares[10]) {
+      nodo.vir = hijos[hijos.length - 1].csctbfamiliaid;
+      hijos.push(dato);
+    }
+    //hierno
+    else if (dato.nom_parentesco == relacionesFamiliares[9]) {
+      nodo.ux = hijos[hijos.length - 1].csctbfamiliaid;
+      hijos.push(dato);
+    }
+
+    //hijastro
+    else if (dato.nom_parentesco == relacionesFamiliares[5]) {
+      // hijastro
+      if (hijos[hijos.length - 1]?.nom_parentesco === relacionesFamiliares[9]) {
+        nodo.f = hijos[hijos.length - 1].csctbfamiliaid;
+        nodo.m = hijos[hijos.length - 2].csctbfamiliaid;
+        nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
+
+        nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
+      } else if (
+        hijos[hijos.length - 1]?.nom_parentesco === relacionesFamiliares[10]
+      ) {
+        nodo.f = hijos[hijos.length - 2].csctbfamiliaid;
+        nodo.m = hijos[hijos.length - 1].csctbfamiliaid;
+        nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
+
+        nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
+      } else {
+        nodo.f = datos.find(
+          (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+        )?.csctbfamiliaid;
+        nodo.m = datos.find(
+          (persona) => persona.nom_parentesco == relacionesFamiliares[7]
+        )?.csctbfamiliaid;
+        nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
+
+        nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
+      }
+    }
+
+    //gemelos y mellizos
+    else if (
+      dato.nom_parentesco == relacionesFamiliares[29] ||
+      dato.nom_parentesco == relacionesFamiliares[30]
+    ) {
+      if (hijos[hijos.length - 1]?.nom_parentesco === relacionesFamiliares[9]) {
+        nodo.f = hijos[hijos.length - 1].csctbfamiliaid;
+        nodo.m = hijos[hijos.length - 2].csctbfamiliaid;
+        nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
+
+        nodo.t = "d";
+      } else if (
+        hijos[hijos.length - 1]?.nom_parentesco === relacionesFamiliares[10]
+      ) {
+        nodo.f = hijos[hijos.length - 2].csctbfamiliaid;
+        nodo.m = hijos[hijos.length - 1].csctbfamiliaid;
+        nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
+
+        nodo.t = "d";
+      } else {
+        nodo.f = datos.find(
+          (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+        )?.csctbfamiliaid;
+        nodo.m = datos.find(
+          (persona) => persona.nom_parentesco == relacionesFamiliares[7]
+        )?.csctbfamiliaid;
+        nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
+
+        nodo.t = "d";
+      }
+    }
+
+    if (dato.aborto !== undefined && dato.tipo_aborto !== undefined) {
+      //abortos
+      if (hijos[hijos.length - 1]?.nom_parentesco === relacionesFamiliares[9]) {
+        for (let index = 0; index < aborto; index++) {
+          var nodo_aborto = {
+            key: index,
+            f: hijos[hijos.length - 1].csctbfamiliaid,
+            m: hijos[hijos.length - 2].csctbfamiliaid,
+            s: dato.tipo_aborto,
+          };
+          genoDataMap.push(nodo_aborto);
+        }
+        nodo.s = "embarazada";
+        //nodo.h = nodo.s == "M" ? "M" : "F";
+      } else if (
+        hijos[hijos.length - 1]?.nom_parentesco === relacionesFamiliares[10]
+      ) {
+        for (let index = 0; index < aborto; index++) {
+          var nodo_aborto = {
+            key: index,
+            m: hijos[hijos.length - 1].csctbfamiliaid,
+            f: hijos[hijos.length - 2].csctbfamiliaid,
+            s: dato.tipo_aborto,
+          };
+          genoDataMap.push(nodo_aborto);
+        }
+        nodo.s = "embarazada";
+
+        //nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
+      } else {
+        for (let index = 0; index < aborto; index++) {
+          var nodo_aborto = {
+            key: index,
+            m: nodo.key,
+            f: datos.find(
+              (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+            )?.csctbfamiliaid,
+            s: dato.tipo_aborto,
+          };
+          genoDataMap.push(nodo_aborto);
+        }
+        nodo.s = "embarazada";
+      }
+    }
+
+    // if (datos.length ) {
+
+    //hijastro en nietos
+
+    // }
+    if (datos.length === index + 1) {
+      nodo.a.push("AP");
     }
     genoDataMap.push(nodo);
   });
 
-
   return genoDataMap;
 }
 
-const MostrarGenograma = ({ familiares }) => {
+const MostrarGenograma = ({ familiares, idFamilia }) => {
   const [familiarEtiquetado, setfamiliiarEtiquetado] = useState([]);
   useEffect(() => {
     const getEnfermedades = async () => {
@@ -325,8 +429,11 @@ const MostrarGenograma = ({ familiares }) => {
   // ]);
   return (
     <div>
+
+      
+
       {familiarEtiquetado.length > 0 ? (
-        <Genogram Genogram={familiarEtiquetado} />
+        <Genogram idFamilia={idFamilia} Genogram={familiarEtiquetado} />
       ) : (
         <div className="w-100 vh-100 align-items-center d-flex justify-content-center">
           <div className="text-center d-flex flex-column">

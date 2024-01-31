@@ -30,8 +30,8 @@ export default function InfoPersonal(props) {
       console.log(resul.error);
     } else {
       const { anios, meses, dias } = data;
-
       if (session.user.email?.id == null) {
+        
         update({
           email: {
             anios,
@@ -47,9 +47,11 @@ export default function InfoPersonal(props) {
             embarazada: watch("embarazada"),
           },
         });
+        console.log(resul[0].csctbfamiliaid)
         const insert = await insertTipoFamilia(resul[0].csctbfamiliaid);
         insert?.error ? console.log(insert.error) : null;
       } else {
+       
         update({
           email: {
             anios,

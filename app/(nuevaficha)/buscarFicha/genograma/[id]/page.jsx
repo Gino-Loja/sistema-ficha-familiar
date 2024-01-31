@@ -1,5 +1,5 @@
 "use client";
-import MostrarGenograma from "@/app/components/prueba/page";
+import MostrarGenograma from "@/app/components/genogramaFamiliar/page";
 import { useEffect, useState } from "react";
 import {
   getFamiliares,
@@ -8,7 +8,7 @@ import {
   getFamiliaEmbarazadaById,
 } from "@/app/action";
 import { useForm } from "react-hook-form";
-import Explain from "@/app/components/prueba/Explain";
+import Explain from "@/app/components/genogramaFamiliar/Explain";
 import Form from "react-bootstrap/Form";
 import { useRouter } from "next/navigation";
 
@@ -18,16 +18,6 @@ export default function GenogramaPage({ params, searchParams }) {
   const [listaTipoFamilia, setTipolistaTipoFamilia] = useState(null);
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const getFamilia = async () => {
-    return await getFamiliares(1, params.id);
-  };
-  const getTipoFamiliaC = async () => {
-    return await getTipoFamilia(params.id);
-  };
-
-  const getFamiliaE = async () => {
-    return await getFamiliaEmbarazadaById(params.id);
-  };
   const {
     register,
     handleSubmit,
@@ -38,58 +28,70 @@ export default function GenogramaPage({ params, searchParams }) {
   } = useForm();
   const router = useRouter();
   useEffect(() => {
+    const getFamilia = async () => {
+      return await getFamiliares(1, params.id);
+    };
+    const getTipoFamiliaC = async () => {
+      return await getTipoFamilia(params.id);
+    };
     // var idPanel2 = document.getElementById("panel2")
     // var idPanel3 = document.getElementById("panel2")
     // var idPanel4 = document.getElementById("panel2")
 
     getTipoFamiliaC().then((data) => {
       setTipolistaTipoFamilia(data[0]);
-      router.refresh();
     });
     getFamilia().then((data) => {
       setlistaFamilia(data);
-      router.refresh();
     });
-  }, []);
+  }, [params.id]);
+
+  const formValues = {
+    tipoFamilia: watch("tipoFamilia"),
+    hijoEdadAdulta: watch("hijoEdadAdulta"),
+    cicloVital: watch("cicloVital"),
+    primerHijo: watch("primerHijo"),
+    hijoEdadPreescolar: watch("hijoEdadPreescolar"),
+    hijoEdadEscolar: watch("hijoEdadEscolar"),
+    hijoEdadAdolescente: watch("hijoEdadAdolescente"),
+    hijoEdadAdulta: watch("hijoEdadAdulta"),
+    apgarFamiliar: watch("apgarFamiliar"),
+  };
+
+  // ...
 
   useEffect(() => {
     i++;
-
+    const updateTipoFamaliaUse = async () => {
+      await updateTipoFamilia(
+        {
+          tipoFamilia: watch("tipoFamilia"),
+          hijoEdadAdulta: watch("hijoEdadAdulta"),
+          cicloVital: watch("cicloVital"),
+          primerHijo: watch("primerHijo"),
+          hijoEdadPreescolar: watch("hijoEdadPreescolar"),
+          hijoEdadEscolar: watch("hijoEdadEscolar"),
+          hijoEdadAdolescente: watch("hijoEdadAdolescente"),
+          hijoEdadAdulta: watch("hijoEdadAdulta"),
+          apgarFamiliar: watch("apgarFamiliar"),
+        },
+        params.id
+      );
+    };
     // Lógica que solo debe ejecutarse en la primera carga
     if (!firstLoad) {
       // Lógica que solo debe ejecutarse en la primera carga
-
-      (async () => {
-        const result = await updateTipoFamilia(
-          {
-            tipoFamilia: getValues("tipoFamilia"),
-            hijoEdadAdulta: getValues("hijoEdadAdulta"),
-            cicloVital: getValues("cicloVital"),
-            primerHijo: getValues("primerHijo"),
-            hijoEdadPreescolar: getValues("hijoEdadPreescolar"),
-            hijoEdadEscolar: getValues("hijoEdadEscolar"),
-            hijoEdadAdolescente: getValues("hijoEdadAdolescente"),
-            hijoEdadAdulta: getValues("hijoEdadAdulta"),
-            apgarFamiliar: getValues("apgarFamiliar"),
-          },
-          params.id
-        ).then(() => router.refresh());
-      })();
+      //console.log("ejecutandose", params.id);
+      updateTipoFamaliaUse();
     }
+    //console.log("ya nooo", i);
     if (i == 2) {
+      //console.log("ya siiiii", i);
       setFirstLoad(false);
     }
-  }, [
-    watch("tipoFamilia"),
-    watch("hijoEdadAdulta"),
-    watch("cicloVital"),
-    watch("primerHijo"),
-    watch("hijoEdadPreescolar"),
-    watch("hijoEdadEscolar"),
-    watch("hijoEdadAdolescente"),
-    watch("hijoEdadAdulta"),
-    watch("apgarFamiliar"),
-  ]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formValues, firstLoad, params.id]);
 
   const onChanges = (e) => {
     if (e.target.checked) {
@@ -104,11 +106,29 @@ export default function GenogramaPage({ params, searchParams }) {
     setValue("hijoEdadAdolescente", false);
     setValue("hijoEdadAdulta", false);
   };
+
   return listaFamilia.length > 0 ? (
     <>
       <div className="row container-fluid bg-body-tertiary">
+        <div className=" d-flex justify-content-end">
+          <button
+            onClick={() => router.push("/buscarFicha/")}
+            className="btn btn-danger m-1"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-x"
+              viewBox="0 0 16 16"
+            >
+              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+            </svg>
+          </button>
+        </div>
         <div className="col-sm-12 col-md-9">
-          <MostrarGenograma familiares={listaFamilia} />
+          <MostrarGenograma idFamilia={params.id} familiares={listaFamilia} />
         </div>
         <div className="col-sm-12 col-md-3 ">
           <Explain></Explain>

@@ -1,17 +1,22 @@
 // import '../App.css';
 "use client";
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 
 import * as go from "gojs";
 import { ReactDiagram } from "gojs-react";
+import { saveImagenGenograma } from "@/app/action";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Toast from "react-bootstrap/Toast";
 
 var genoData;
-
+var diagram;
 function initDiagram() {
   const $ = go.GraphObject.make;
   // set your license key here before creating the diagram: go.Diagram.licenseKey = "...";
   go.Diagram.licenseKey = "adsfewfwaefasdfdsfs";
-  const diagram = $(go.Diagram, {
+  diagram = $(go.Diagram, {
     initialDocumentSpot: go.Spot.Bottom,
     initialViewportSpot: go.Spot.Bottom,
     "undoManager.isEnabled": true, // must be set to allow for model change listening
@@ -67,12 +72,14 @@ function initDiagram() {
         return "#af70c2"; // magenta
       case "S":
         return "#000000"; // black
+
       case "M":
         return "#d4071c"; // red
       default:
         return "transparent";
     }
   }
+
   var tlsq = go.Geometry.parse("F M1 1 l19 0 0 19 -19 0z");
   var trsq = go.Geometry.parse("F M20 1 l19 0 0 19 -19 0z");
   var brsq = go.Geometry.parse("F M20 20 l19 0 0 19 -19 0z");
@@ -82,7 +89,7 @@ function initDiagram() {
     "F M0 0 L80 0 B-90 90 80 20 20 20 L100 100 20 100 B90 90 20 80 20 20z"
   );
   var flecha = go.Geometry.parse(
-    "M14 13.5a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1 0-1h4.793L2.146 2.854a.5.5 0 1 1 .708-.708L13 12.293V7.5a.5.5 0 0 1 1 0z"
+    "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
   );
   function maleGeometry(a) {
     switch (a) {
@@ -123,7 +130,6 @@ function initDiagram() {
   var brarc = go.Geometry.parse("F M20 20 B 0 90 20 20 19 19 z");
   var blarc = go.Geometry.parse("F M20 20 B 90 90 20 20 19 19 z");
   function femaleGeometry(a) {
-    console.log;
     switch (a) {
       case "A":
         return tlarc;
@@ -149,12 +155,21 @@ function initDiagram() {
         return blarc;
       case "L":
         return blarc;
-      case "S":
+      case "AP":
         return flecha;
       case "M":
         return plus;
       default:
         return tlarc;
+    }
+  }
+
+  function colorApuntador(a) {
+    switch (a) {
+      case "AP":
+        return "#000000";
+      default:
+        return "transparent";
     }
   }
   //hombre
@@ -171,6 +186,7 @@ function initDiagram() {
 
       $(
         go.Panel,
+        "Spot",
         {
           itemTemplate: $(
             go.Panel,
@@ -180,16 +196,22 @@ function initDiagram() {
                 strokeWidth: 1,
                 height: 40,
                 width: 30,
-                margin: 5,
+                margin: 2,
+                angle: -25,
               },
-              new go.Binding("stroke", "", attrFill),
-              new go.Binding("fill", "", attrFill),
 
-              new go.Binding("geometry", "", femaleGeometry)
-            )
+              new go.Binding("stroke", "", colorApuntador),
+              new go.Binding("fill", "", colorApuntador),
+              new go.Binding("geometry", "", (e) => {
+                if (e == "AP") {
+                  return flecha;
+                } else {
+                  return tlarc;
+                }
+              })
+            ),
+            { alignment: new go.Spot(0, 1, -40, 0) }
           ),
-          alignment: go.Spot.TopLeft,
-          alignmentFocus: go.Spot.BottomRight,
         },
         new go.Binding("itemArray", "a")
       ),
@@ -263,15 +285,31 @@ function initDiagram() {
 
       $(
         go.Panel,
+        "Spot",
         {
           itemTemplate: $(
             go.Panel,
             $(
               go.Shape,
-              { stroke: null, strokeWidth: 0 },
-              new go.Binding("fill", "", attrFill),
-              new go.Binding("geometry", "", maleGeometry)
-            )
+              {
+                strokeWidth: 1,
+                height: 40,
+                width: 30,
+                margin: 2,
+
+                angle: 20,
+              },
+              new go.Binding("stroke", "", colorApuntador),
+              new go.Binding("fill", "", colorApuntador),
+              new go.Binding("geometry", "", (e) => {
+                if (e == "AP") {
+                  return flecha;
+                } else {
+                  return tlarc;
+                }
+              })
+            ),
+            { alignment: new go.Spot(0, 1, 50, 0) }
           ),
         },
         new go.Binding("itemArray", "a")
@@ -343,6 +381,38 @@ function initDiagram() {
       },
       $(
         go.Panel,
+        "Spot",
+        {
+          itemTemplate: $(
+            go.Panel,
+            $(
+              go.Shape,
+              {
+                strokeWidth: 1,
+                height: 40,
+                width: 30,
+                margin: 2,
+                angle: 25,
+              },
+              new go.Binding("stroke", "", colorApuntador),
+              new go.Binding("fill", "", colorApuntador),
+              new go.Binding("geometry", "", (e) => {
+                if (e == "AP") {
+                  return flecha;
+                } else {
+                  return tlarc;
+                }
+              })
+            ),
+
+            { alignment: new go.Spot(0, 1, 50, 0) }
+          ),
+        },
+        new go.Binding("itemArray", "a")
+      ),
+
+      $(
+        go.Panel,
         "Auto",
         { name: "ICON" },
         $(go.Shape, "Triangle", {
@@ -363,7 +433,7 @@ function initDiagram() {
                 go.Shape,
                 { stroke: null, strokeWidth: 0 },
                 new go.Binding("fill", "", attrFill),
-                new go.Binding("geometry", "", femaleGeometry)
+                new go.Binding("geometry", "", maleGeometry)
               )
             ),
             margin: 1,
@@ -383,6 +453,7 @@ function initDiagram() {
           new go.Binding("text", "anios")
         )
       ),
+
       $(
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
@@ -408,6 +479,39 @@ function initDiagram() {
       },
       $(
         go.Panel,
+        "Spot",
+        {
+          itemTemplate: $(
+            go.Panel,
+            $(
+              go.Shape,
+              {
+                strokeWidth: 1,
+                height: 40,
+                width: 30,
+                margin: 2,
+                angle: -25,
+                //alignment: go.Spot.TopLeft
+              },
+              new go.Binding("stroke", "", colorApuntador),
+              new go.Binding("fill", "", colorApuntador),
+              new go.Binding("geometry", "", (e) => {
+                if (e == "AP") {
+                  return flecha;
+                } else {
+                  return tlarc;
+                }
+              })
+            ),
+            { alignment: new go.Spot(0, 1, -40, 0) }
+          ),
+          alignment: go.Spot.TopLeft,
+        },
+        new go.Binding("itemArray", "a")
+      ),
+
+      $(
+        go.Panel,
         "Auto",
         { name: "ICON" },
 
@@ -417,7 +521,7 @@ function initDiagram() {
           strokeWidth: 1.5,
           fill: "white",
           background: "white",
-
+          portId: "",
           stroke: "#a1a1a1",
           geometryString: `M228.79999 154.8 h106 v78 h-106 Z 
           M210.79999 131.8 v121.99999
@@ -456,6 +560,7 @@ function initDiagram() {
           new go.Binding("text", "anios")
         )
       ),
+
       $(
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
@@ -479,6 +584,37 @@ function initDiagram() {
         locationObjectName: "ICON",
         selectionObjectName: "ICON",
       },
+      $(
+        go.Panel,
+        "Spot",
+        {
+          itemTemplate: $(
+            go.Panel,
+            $(
+              go.Shape,
+              {
+                strokeWidth: 1,
+                height: 40,
+                width: 30,
+                margin: 2,
+                angle: 25,
+              },
+              new go.Binding("stroke", "", colorApuntador),
+              new go.Binding("fill", "", colorApuntador),
+              new go.Binding("geometry", "", (e) => {
+                if (e == "AP") {
+                  return flecha;
+                } else {
+                  return tlarc;
+                }
+              })
+            ),
+            { alignment: new go.Spot(0, 1, 50, 0) }
+          ),
+        },
+        new go.Binding("itemArray", "a")
+      ),
+
       $(
         go.Panel,
         "Auto",
@@ -527,6 +663,7 @@ function initDiagram() {
           new go.Binding("text", "anios")
         )
       ),
+
       $(
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
@@ -550,6 +687,37 @@ function initDiagram() {
         locationObjectName: "ICON",
         selectionObjectName: "ICON",
       },
+      $(
+        go.Panel,
+        "Spot",
+        {
+          itemTemplate: $(
+            go.Panel,
+            $(
+              go.Shape,
+              {
+                strokeWidth: 1,
+                height: 40,
+                width: 30,
+                margin: 2,
+                angle: -25,
+              },
+              new go.Binding("stroke", "", colorApuntador),
+              new go.Binding("fill", "", colorApuntador),
+              new go.Binding("geometry", "", (e) => {
+                if (e == "AP") {
+                  return flecha;
+                } else {
+                  return tlarc;
+                }
+              })
+            ),
+            { alignment: new go.Spot(0, 1, -40, 0) }
+          ),
+        },
+        new go.Binding("itemArray", "a")
+      ),
+
       $(
         go.Panel,
         "Auto",
@@ -602,6 +770,7 @@ function initDiagram() {
           new go.Binding("text", "anios")
         )
       ),
+
       $(
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
@@ -625,6 +794,37 @@ function initDiagram() {
         locationObjectName: "ICON",
         selectionObjectName: "ICON",
       },
+      $(
+        go.Panel,
+        "Spot",
+        {
+          itemTemplate: $(
+            go.Panel,
+            $(
+              go.Shape,
+              {
+                strokeWidth: 1,
+                height: 40,
+                width: 30,
+                margin: 2,
+                angle: 25,
+              },
+              new go.Binding("stroke", "", colorApuntador),
+              new go.Binding("fill", "", colorApuntador),
+              new go.Binding("geometry", "", (e) => {
+                if (e == "AP") {
+                  return flecha;
+                } else {
+                  return tlarc;
+                }
+              })
+            ),
+            { alignment: new go.Spot(0, 1, 50, 0) }
+          ),
+        },
+        new go.Binding("itemArray", "a")
+      ),
+
       $(
         go.Panel,
         "Auto",
@@ -755,7 +955,6 @@ function initDiagram() {
   );
 
   setupDiagram(diagram, genoData, 4 /* focus on this person */);
-  console.log(genoData);
 
   diagram.linkTemplate = // for parent-child relationships
     $(
@@ -1015,12 +1214,17 @@ function findMarriage(diagram, a, b) {
 function setupMarriages(diagram) {
   var model = diagram.model;
   var nodeDataArray = model.nodeDataArray;
-  console.log(nodeDataArray);
   for (var i = 0; i < nodeDataArray.length; i++) {
     var data = nodeDataArray[i];
     var key = data.key;
     var uxs = data.ux;
     var category_data = data.ec;
+
+    if (data.h !== undefined) {
+      //nuevos cambios
+      var h = data.h;
+      data.s = h;
+    }
 
     if (
       data.s == "M" &&
@@ -1405,16 +1609,70 @@ function handleModelChange(e) {
 
 const Genogram = (props) => {
   genoData = props.Genogram;
-  console.log(genoData);
+  const idFamilia = props.idFamilia;
+  //console.log(genoData);
+  const [show, setShow] = useState(false);
 
   return (
     <div className="w-100">
+
+      
+
       <ReactDiagram
         initDiagram={initDiagram}
         divClassName="w-100"
         style={{ height: "70vh" }}
         onModelChange={handleModelChange}
       />
+
+      <button
+        className="btn btn-primary"
+        onClick={async () => {
+          var svg = diagram.makeSvg();
+
+          //console.log(img)
+          var serializer = new XMLSerializer();
+          var svgString = serializer.serializeToString(svg);
+          // Crear un objeto Blob con los datos del SVG y el tipo MIME
+          //var blob = new Blob([svgString], { type: "image/svg+xml" });
+          // Crear una URL temporal que apunte al objeto Blob
+          //var url = URL.createObjectURL(blob);
+
+          await saveImagenGenograma(svgString, idFamilia).then((data) => {
+            setShow(true);
+          });
+
+          //console.log(img);
+          // var newWindow = window.open("", "newWindow");
+          // if (!newWindow) return;
+          // var newDocument = newWindow.document;
+          // var svg = diagram.makeSvg({
+          //   document: newDocument, // create SVG DOM in new document context
+          //   //scale: 9,
+          //   //size: new go.Size(10000,NaN)
+
+          // });
+          // newDocument.body.appendChild(svg);
+        }}
+      >
+        Guardar Genograma
+      </button>
+
+      <Toast
+        className="z-0 position-absolute bg-light m-10"
+        onClose={() => setShow(false)}
+        show={show}
+        delay={3000}
+        autohide
+        position={"bottom-end"}
+      >
+        <Toast.Header>
+          <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+          <strong className="me-auto">Aviso</strong>
+          <small>hace 1 segundo</small>
+        </Toast.Header>
+        <Toast.Body>El genograma ha sido guardado!</Toast.Body>
+      </Toast>
     </div>
   );
 };

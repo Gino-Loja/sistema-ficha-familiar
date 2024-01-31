@@ -8,8 +8,7 @@ const nextConfig = {
     scope: "/app",
     skipWaiting: true,
     //disable: process.env.NODE_ENV === 'development'
-  }),
-  output: "standalone",
+  })
 };
 
 module.exports = nextConfig;

@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import * as go from "gojs";
 import { ReactDiagram } from "gojs-react";
+import { useRouter } from "next/navigation";
 
 function handleModelChange(e) {
   console.log(e);
@@ -739,6 +740,8 @@ function initDiagram() {
 }
 
 const Explain = () => {
+
+  const {push} = useRouter()
   return (
     <div className="w-100 d-flex justify-content-end p-2">
       {/* <ReactDiagram
@@ -747,7 +750,9 @@ const Explain = () => {
         style={{height:"70vh"}}
         onModelChange={handleModelChange}
       /> */}
+
       <div>
+      
         <img style={{ height: "70vh" }} src="/panel1.svg"></img>
       </div>
     </div>
