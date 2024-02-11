@@ -22,7 +22,8 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
   const parentescos = await getParentesco();
   const [datosFamiliar] = await getFamiliarById(params.id);
   const familiaEmbarazo = await getFamiliaEmbarazo(params.id);
-  console.log(familiaEmbarazo);
+  console.log(familiaEmbarazo)
+
   return (
     <>
       <div className="container-fluid vh-100 d-flex flex-column p-3">
@@ -99,7 +100,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
           </li>
 
           <li
-            style={{ display: familiaEmbarazo.length == 0 ? "none" : "" }}
+            //style={{ display: familiaEmbarazo.length == 0 ? "none" : "" }}
             className="nav-item"
             role="presentation"
           >
@@ -133,7 +134,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
               parentescos={parentescos}
               datosFamiliar={datosFamiliar}
               data={{
-                embarazo: familiaEmbarazo.length == 0 ? false : true,
+                embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
               }}
             >
               <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
@@ -158,7 +159,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
                 dias: datosFamiliar.dias,
                 nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
                 parentesco: datosFamiliar.nom_parentesco,
-                embarazo: familiaEmbarazo.length == 0 ? false : true,
+                embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
               }}
               params={searchParams}
               id_familia={params.id}
@@ -181,7 +182,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
             <IndexRiesgos
               data={{
                 nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
-                embarazo: familiaEmbarazo.length == 0 ? false : true,
+                embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
               }}
               id_familia={params.id}
             ></IndexRiesgos>
@@ -196,7 +197,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
             <IndexPrioritarios
               data={{
                 nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
-                embarazo: familiaEmbarazo.length == 0 ? false : true,
+                embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
               }}
               id_familia={params.id}
             ></IndexPrioritarios>
@@ -223,7 +224,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
                 dias: datosFamiliar.dias,
                 nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
                 parentesco: datosFamiliar.nom_parentesco,
-                embarazo: familiaEmbarazo.length == 0 ? false : true,
+                embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
               }}
               id_familia={params.id}
             ></IndexBiologicos>
@@ -241,7 +242,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
                 data={{
                   nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
                   parentesco: datosFamiliar.nom_parentesco,
-                  embarazo: familiaEmbarazo.length == 0 ? false : true,
+                  embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
                 }}
               ></IndexEmbarazada>
             )}

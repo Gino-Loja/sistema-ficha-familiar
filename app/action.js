@@ -8,7 +8,7 @@ import { obetnerIdsAndMerge } from "./utils/obtenerId";
 import { Cookie } from "next/font/google";
 
 import { writeFile } from "fs/promises";
-import path from "path";
+import path, { format } from "path";
 export async function saveFamilia(formData, id) {
   const id_jefe =
     id == null
@@ -32,9 +32,9 @@ export async function saveFamilia(formData, id) {
       estado_fam, 
       fecreacion_fam,
         id_jefe_hogar,
-      estado_civil, csctbetniaid, csctbpueblosid, fallecido)
+      estado_civil, csctbetniaid, csctbpueblosid, fallecido, informante)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
-       $9, $10, $11, $12, $13, $14, current_timestamp,${id_jefe},$15, $16, $17,$18)
+       $9, $10, $11, $12, $13, $14, current_timestamp,${id_jefe},$15, $16, $17,$18, $19)
         RETURNING csctbfamiliaid,nom_fam, ape_fam,genero,csctbparentescoid`;
 
     const values = [
@@ -56,6 +56,7 @@ export async function saveFamilia(formData, id) {
       formData.etnia,
       formData.pueblos,
       formData.fallecido,
+      formData.informante,
     ];
 
     const res = await conn.query(text, values);
@@ -67,6 +68,16 @@ export async function saveFamilia(formData, id) {
     `,
       [res.rows[0].csctbfamiliaid]
     );
+
+    if (formData.genero == "FEMENINO") {
+      await conn.query(
+        `INSERT INTO 
+        public.csctbembarazadas(csctbfamiliaid)
+        VALUES ($1); 
+        `,
+        [res.rows[0].csctbfamiliaid]
+      );
+    }
     return res.rows;
   } catch (error) {
     //console.log(error);
@@ -351,7 +362,7 @@ export async function insertEmbarazadaAndRiesgoObstetricos(
       public.csctbembarazadas(csctbfamiliaid,
         fecha_menstruacion, 
         fecha_parto, control_menos20, control_mas20, semanas_gestacion, 
-        gestas, partos, abortos, cesarias, ante_patologicos, tipo_aborto)
+        gestas, partos, n_abortos_inducidos, cesarias, ante_patologicos, n_abortos_espontaneos)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,$12); 
       `,
       [
@@ -363,10 +374,10 @@ export async function insertEmbarazadaAndRiesgoObstetricos(
         formData.semanasGestacion,
         formData.gestas,
         formData.partos,
-        formData.aborto,
+        formData.abortosInducidos,
         formData.cesarias,
         formData.antecedentesPatologicos,
-        formData.tipoAborto,
+        formData.abortosEspontaneos,
       ]
     );
 
@@ -397,7 +408,9 @@ export async function getFamiliares(accion, termino) {
     csctbfamilia.cedula_fam,
     csctbfamilia.estado_civil,
     csctbfamilia.anios,
-    csctbfamilia.fallecido
+    csctbfamilia.fallecido,
+    csctbfamilia.informante
+
 
   FROM 
     public.csctbfamilia, 
@@ -511,7 +524,9 @@ export async function getFamiliarById(id) {
     csctbetnia.csctbetniaid, 
     csctbnacionalidadetnica.nom_nacionalidadetnica, 
     csctbpueblos.csctbpueblosid,
-    csctbfamilia.fallecido
+    csctbfamilia.fallecido,
+    csctbfamilia.informante
+
   FROM 
     public.csctbfamilia
     LEFT JOIN public.csctbparentesco ON csctbparentesco.csctbparentescoid = csctbfamilia.csctbparentescoid
@@ -551,7 +566,8 @@ export async function updateFamiliaById(formData, id) {
       estado_civil = $15,
       csctbetniaid = $16,
       csctbpueblosid = $17,
-      fallecido = $18
+      fallecido = $18,
+      informante = $19
     WHERE csctbfamiliaid = ${id}`;
 
     const values = [
@@ -573,6 +589,7 @@ export async function updateFamiliaById(formData, id) {
       formData.etnia,
       formData.pueblos,
       formData.fallecido,
+      formData.informante,
     ];
     const res = await conn.query(text, values);
 
@@ -1022,7 +1039,15 @@ export async function updateRiesgosAmbientales({
 
 export async function getFamiliaEmbarazo(id) {
   const result = await conn.query(
-    `SELECT  csctbfamiliaid
+    `SELECT  csctbfamiliaid,
+    fecha_menstruacion,
+     fecha_parto, 
+     control_menos20,
+      control_mas20,
+       esquema_vacunacion,
+        ante_gineco, ante_patologicos, semanas_gestacion,
+         gestas, partos, abortos,
+          cesarias, tipo_aborto
       FROM public.csctbembarazadas WHERE csctbfamiliaid= $1 LIMIT 1;
   `,
     [id]
@@ -1043,9 +1068,9 @@ export async function getFamiliaEmbarazadaById(id) {
   csctbembarazadas.semanas_gestacion, 
   csctbembarazadas.gestas, 
   csctbembarazadas.partos, 
-  csctbembarazadas.abortos, 
+  csctbembarazadas.n_abortos_espontaneos, 
   csctbembarazadas.cesarias,
-  csctbembarazadas.tipo_aborto,
+  csctbembarazadas.n_abortos_inducidos,
   csctbembarazadas.csctbfamiliaid
 FROM 
   public.csctbembarazadas, 
@@ -1087,9 +1112,9 @@ export async function updateFamiliaEmbarazadaById(formData, id_familia) {
         semanas_gestacion=$6, 
         gestas=$7, 
         partos=$8, 
-        abortos=$9,
+        n_abortos_espontaneos=$9,
         cesarias=$10,
-        tipo_aborto=$11
+        n_abortos_inducidos=$11
     WHERE csctbfamiliaid = $12;`,
       [
         formData.fechaUltimaMenstruacion,
@@ -1100,9 +1125,9 @@ export async function updateFamiliaEmbarazadaById(formData, id_familia) {
         formData.semanasGestacion,
         formData.gestas,
         formData.partos,
-        formData.aborto,
+        formData.abortosEspontaneos,
         formData.cesarias,
-        formData.tipoAborto,
+        formData.abortosInducidos,
         id_familia,
       ]
     );
@@ -1556,8 +1581,9 @@ export async function updateTipoFamilia(data, id_familia) {
       hijo_edad_escolar=$5, 
       hijo_edad_adolescente=$6, 
       hijo_edad_adulta=$7, 
-      apgar_familiar=$8
-      WHERE idjefe_hogar_familia = $9;`,
+      apgar_familiar=$8,
+      observacion = $9
+      WHERE idjefe_hogar_familia = $10;`,
       [
         data.tipoFamilia,
         data.cicloVital,
@@ -1567,6 +1593,7 @@ export async function updateTipoFamilia(data, id_familia) {
         data.hijoEdadAdolescente,
         data.hijoEdadAdulta,
         data.apgarFamiliar,
+        data.observacion,
 
         id_familia,
       ]
@@ -1588,7 +1615,8 @@ export async function getTipoFamilia(id_familia) {
         hijo_edad_adolescente,
          hijo_edad_adulta,
           apgar_familiar,
-           idjefe_hogar_familia
+           idjefe_hogar_familia,
+           observacion
     FROM csctbtipofamilia
     WHERE idjefe_hogar_familia = $1;`,
     [id_familia]

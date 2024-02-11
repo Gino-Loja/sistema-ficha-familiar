@@ -27,7 +27,6 @@ export default function InfoPersonal(props) {
     datosFamiliar.control_bucal
   );
   const [isembarazada, setisembarazada] = useState(data.embarazo);
-
   const onSubmit = handleSubmit(async (data) => {
     const resul = await updateFamiliaById(data, params.id);
     console.log(resul);
@@ -53,14 +52,21 @@ export default function InfoPersonal(props) {
     }
   });
 
+
   useEffect(() => {
-    setValue("embarazada", "true");
-    controlEmbarazada(watch("embarazada"));
-  }, [watch("embarazada")]);
+    //setValue("embarazada", "true");
+    if(watch("embarazada") == undefined){
+        controlEmbarazada(isembarazada)
+    }else{
+
+      controlEmbarazada(watch("embarazada"));
+    }
+    
+  }, [watch("embarazada"), isembarazada]);
 
   const controlEmbarazada = (control) => {
     const embarazadaTab = document.getElementById("pills-embarazada-tab");
-
+    //console.log("yaaaaaaaa")
     document.querySelectorAll(".nav-link").forEach(function (tab, index) {
       tab.addEventListener("shown.bs.tab", function (event) {
         // Obtener el id del tab activo
@@ -68,7 +74,10 @@ export default function InfoPersonal(props) {
         console.log("Estás en la pestaña con índice:", activeTabIndex);
       });
     });
-    if (control == "true") {
+    //console.log(control)
+    if (control == true || control == "true") {
+      console.log("ya")
+      //console.log(embarazadaTab)
       //embarazadaTab.classList.remove('active', "show");;
       embarazadaTab.style.display = "";
     } else {
@@ -145,6 +154,18 @@ export default function InfoPersonal(props) {
                     value: new Date(datosFamiliar.fecha_na_fam)
                       .toISOString()
                       .split("T")[0],
+                    validate: (value) => {
+                      const fechaNacimiento = new Date(value);
+                      const fechaActual = new Date();
+                      // Verificar si la fecha de nacimiento es en el futuro
+                      if (fechaNacimiento > fechaActual) {
+                        return false;
+                      }
+
+                      // Resto de la lógica de validación aquí (si es necesario)
+
+                      return true; // Si la fecha de nacimiento es válida
+                    },
                     onChange: () => {
                       var fechaNacimientoStr = watch("fechaNacimiento");
                       var fechaNacimiento = new Date(fechaNacimientoStr);
@@ -494,6 +515,36 @@ export default function InfoPersonal(props) {
                   type="radio"
                   value={false}
                   defaultChecked={datosFamiliar.fallecido == false}
+                />
+                <label className="form-check-label">No</label>
+              </div>
+            </div>
+          </div>
+          <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+            {" "}
+            <label className="form-label">
+              <h5>Informante</h5>
+            </label>
+            <div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("informante", {})}
+                  className="form-check-input"
+                  type="radio"
+                  value="true"
+                  defaultChecked={datosFamiliar.informante == true}
+
+                />
+                <label className="form-check-label">Si</label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("informante")}
+                  className="form-check-input"
+                  type="radio"
+                  value="false"
+                  defaultChecked={datosFamiliar.informante == false}
+
                 />
                 <label className="form-check-label">No</label>
               </div>

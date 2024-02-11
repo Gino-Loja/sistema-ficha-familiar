@@ -107,12 +107,12 @@ function mapearDatosGenograma(datos) {
     estado_civil,
     anios,
     fallecido,
-    aborto,
-    tipo_aborto
+    abortosEspontaneos,
+    abortosInducidos
   ) {
     let nodo = genoData.find((n) => n.key === id);
     if (!nodo) {
-      if (tipo_aborto !== undefined && aborto !== undefined) {
+      if (abortosEspontaneos !== undefined && abortosInducidos !== undefined) {
         nodo = {
           key: id,
           n: nombre,
@@ -124,8 +124,8 @@ function mapearDatosGenograma(datos) {
           anios: anios,
           s: genero == "FEMENINO" ? "F" : "M",
           codigo: codigo,
-          aborto: aborto,
-          tipo_aborto: tipo_aborto,
+          abortosEspontaneos,
+          abortosInducidos,
         };
       } else {
         nodo = {
@@ -147,6 +147,9 @@ function mapearDatosGenograma(datos) {
   }
 
   // Mapear datos a genograma
+  var father;
+  var mother;
+  var nodo_embarazada
   datos.forEach((dato, index) => {
     const {
       csctbfamiliaid,
@@ -156,9 +159,10 @@ function mapearDatosGenograma(datos) {
       estado_civil,
       anios,
       fallecido,
-      aborto,
-      tipo_aborto,
+      abortosEspontaneos,
+      abortosInducidos,
     } = dato;
+
     const nodo = obtenerCrearNodo(
       csctbfamiliaid,
       nom_fam,
@@ -167,8 +171,8 @@ function mapearDatosGenograma(datos) {
       estado_civil,
       anios,
       fallecido,
-      aborto,
-      tipo_aborto
+      abortosEspontaneos,
+      abortosInducidos
     );
 
     //padre
@@ -242,7 +246,6 @@ function mapearDatosGenograma(datos) {
         nodo.f = hijos[hijos.length - 1].csctbfamiliaid;
         nodo.m = hijos[hijos.length - 2].csctbfamiliaid;
         nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
-
         nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
       } else if (
         hijos[hijos.length - 1]?.nom_parentesco === relacionesFamiliares[10]
@@ -262,6 +265,8 @@ function mapearDatosGenograma(datos) {
         nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
 
         nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
+
+        hijos.push(dato);
       }
     }
 
@@ -294,60 +299,137 @@ function mapearDatosGenograma(datos) {
         nodo.s = dato.genero == "MASCULINO" ? "M" : "F";
 
         nodo.t = "d";
+        hijos.push(dato);
       }
     }
 
-    if (dato.aborto !== undefined && dato.tipo_aborto !== undefined) {
-      //abortos
-      if (hijos[hijos.length - 1]?.nom_parentesco === relacionesFamiliares[9]) {
-        for (let index = 0; index < aborto; index++) {
+    //console.log(dato.abortosEspontaneos)
+    if (dato.abortosEspontaneos !== undefined) {
+   
+      if (dato.nom_parentesco == relacionesFamiliares[4]) {
+       
+        for (let index = 0; index < dato.abortosEspontaneos; index++) {
           var nodo_aborto = {
             key: index,
-            f: hijos[hijos.length - 1].csctbfamiliaid,
-            m: hijos[hijos.length - 2].csctbfamiliaid,
-            s: dato.tipo_aborto,
+            f: dato.csctbfamiliaid + 1,
+            m: dato.csctbfamiliaid,
+            s: "ESPONTÁNEO",
           };
           genoDataMap.push(nodo_aborto);
         }
-        nodo.s = "embarazada";
+
+        father = dato.csctbfamiliaid + 1
+        mother =  dato.csctbfamiliaid
+        //nodo.s = "embarazada";
         //nodo.h = nodo.s == "M" ? "M" : "F";
-      } else if (
-        hijos[hijos.length - 1]?.nom_parentesco === relacionesFamiliares[10]
-      ) {
-        for (let index = 0; index < aborto; index++) {
+      } else if (dato.nom_parentesco === relacionesFamiliares[10]) {
+        //console.log(dato)
+
+        for (let index = 0; index < dato.abortosEspontaneos; index++) {
           var nodo_aborto = {
             key: index,
             m: hijos[hijos.length - 1].csctbfamiliaid,
             f: hijos[hijos.length - 2].csctbfamiliaid,
-            s: dato.tipo_aborto,
+            s: "ESPONTÁNEO",
           };
           genoDataMap.push(nodo_aborto);
         }
-        nodo.s = "embarazada";
+
+        father = hijos[hijos.length - 2].csctbfamiliaid
+        mother =  hijos[hijos.length - 1].csctbfamiliaid
+        //nodo.s = "embarazada";
 
         //nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
       } else {
-        for (let index = 0; index < aborto; index++) {
+        //console.log("hijo")
+
+        for (let index = 0; index < dato.abortosEspontaneos; index++) {
           var nodo_aborto = {
             key: index,
             m: nodo.key,
             f: datos.find(
               (persona) => persona.nom_parentesco == relacionesFamiliares[6]
             )?.csctbfamiliaid,
-            s: dato.tipo_aborto,
+            s: "ESPONTÁNEO",
           };
           genoDataMap.push(nodo_aborto);
         }
-        nodo.s = "embarazada";
+        father = datos.find(
+          (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+        )?.csctbfamiliaid,
+        mother =  nodo.key
+        
+
+        //nodo.s = "embarazada";
       }
+
+      nodo_embarazada = {
+        key: Math.floor(Math.random() * 10),
+        m: mother,
+        f: father,
+        s: "embarazada",
+      };
+      genoDataMap.push(nodo_embarazada);
     }
 
-    // if (datos.length ) {
+    if (dato.abortosInducidos !== undefined) {
 
-    //hijastro en nietos
+      if (dato.nom_parentesco == relacionesFamiliares[4]) {
+       
+        for (let index = 0; index < dato.abortosInducidos; index++) {
+          var nodo_aborto = {
+            key: index,
+            f: dato.csctbfamiliaid + 1,
+            m: dato.csctbfamiliaid,
+            s: "INDUCIDO",
+          };
+          genoDataMap.push(nodo_aborto);
+        }
 
-    // }
-    if (datos.length === index + 1) {
+        father = dato.csctbfamiliaid + 1
+        mother =  dato.csctbfamiliaid
+
+        //nodo.s = "embarazada";
+        //nodo.h = nodo.s == "M" ? "M" : "F";
+      } else if (dato.nom_parentesco === relacionesFamiliares[10]) {
+        //console.log("nuera")
+
+        for (let index = 0; index < dato.abortosInducidos; index++) {
+          var nodo_aborto = {
+            key: index,
+            m: hijos[hijos.length - 1].csctbfamiliaid,
+            f: hijos[hijos.length - 2].csctbfamiliaid,
+            s: "INDUCIDO",
+          };
+          genoDataMap.push(nodo_aborto);
+        }
+        father = hijos[hijos.length - 2].csctbfamiliaid
+        mother =  hijos[hijos.length - 1].csctbfamiliaid
+      } else {
+        //console.log("hijo")
+
+        for (let index = 0; index < dato.abortosEspontaneos; index++) {
+          var nodo_aborto = {
+            key: index,
+            m: nodo.key,
+            f: datos.find(
+              (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+            )?.csctbfamiliaid,
+            s: "INDUCIDO",
+          };
+          genoDataMap.push(nodo_aborto);
+        }
+
+        father = nodo.key
+        mother =  datos.find(
+          (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+        )?.csctbfamiliaid
+        //nodo.s = "embarazada";
+      }
+ 
+    }
+
+    if (dato.informante) {
       nodo.a.push("AP");
     }
     genoDataMap.push(nodo);
@@ -357,6 +439,8 @@ function mapearDatosGenograma(datos) {
 }
 
 const MostrarGenograma = ({ familiares, idFamilia }) => {
+  //console.log(familiares)
+
   const [familiarEtiquetado, setfamiliiarEtiquetado] = useState([]);
   useEffect(() => {
     const getEnfermedades = async () => {
@@ -369,11 +453,12 @@ const MostrarGenograma = ({ familiares, idFamilia }) => {
           );
 
           if (isEmbarazada.length > 0) {
+            //console.log(isEmbarazada);
             return {
               ...familiar,
               codigo: etiquetas,
-              aborto: isEmbarazada[0].abortos,
-              tipo_aborto: isEmbarazada[0].tipo_aborto,
+              abortosEspontaneos: isEmbarazada[0].n_abortos_espontaneos,
+              abortosInducidos: isEmbarazada[0].n_abortos_inducidos,
             };
           } else {
             return { ...familiar, codigo: etiquetas };
@@ -429,9 +514,6 @@ const MostrarGenograma = ({ familiares, idFamilia }) => {
   // ]);
   return (
     <div>
-
-      
-
       {familiarEtiquetado.length > 0 ? (
         <Genogram idFamilia={idFamilia} Genogram={familiarEtiquetado} />
       ) : (

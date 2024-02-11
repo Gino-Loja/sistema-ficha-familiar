@@ -185,15 +185,15 @@ export default function Embarazada({
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           {" "}
           <label className="form-label">
-            <h5>abortos</h5>{" "}
+            <h5>N abortos Inducidos</h5>{" "}
           </label>
           <input
-            {...register("aborto", {
+            {...register("abortosInducidos", {
               required: {
                 value: true,
                 message: "Ingrese",
               },
-              maxLength: 10,
+              maxLength: 2,
             })}
             type="number"
             className="form-control"
@@ -274,24 +274,19 @@ export default function Embarazada({
 
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
           <label className="form-label">
-            <h5>Tipo aborto</h5>
+            <h5>N abortos espontaneos</h5>
           </label>
-          <select
-            {...register("tipoAborto", {
+          <input
+            {...register("abortosEspontaneos", {
               required: {
                 value: true,
-                message: "Seleccione",
+                message: "Ingrese",
               },
-              validate: (value) => value !== "",
+              maxLength: 2,
             })}
-            className="form-select"
-            aria-label="Default select example"
-          >
-            <option value="">Seleccione la opcion</option>
-            <option value="ESPONTÁNEO">ESPONTÁNEO</option>
-            <option value="INDUCIDO">INDUCIDO</option>
-            <option value="NINGUNO">NINGUNO</option>
-          </select>
+            type="number"
+            className="form-control"
+          />
         </div>
       </div>
       <div className=" h-25 d-flex justify-content-end mt-2 align-items-center">

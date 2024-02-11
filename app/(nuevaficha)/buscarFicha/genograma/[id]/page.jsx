@@ -26,6 +26,7 @@ export default function GenogramaPage({ params, searchParams }) {
     getValues,
     formState: { errors },
   } = useForm();
+
   const router = useRouter();
   useEffect(() => {
     const getFamilia = async () => {
@@ -74,6 +75,7 @@ export default function GenogramaPage({ params, searchParams }) {
           hijoEdadAdolescente: watch("hijoEdadAdolescente"),
           hijoEdadAdulta: watch("hijoEdadAdulta"),
           apgarFamiliar: watch("apgarFamiliar"),
+          observacion: watch("observacion"),
         },
         params.id
       );
@@ -85,10 +87,10 @@ export default function GenogramaPage({ params, searchParams }) {
       updateTipoFamaliaUse();
     }
     //console.log("ya nooo", i);
-    if (i == 2) {
-      //console.log("ya siiiii", i);
-      setFirstLoad(false);
-    }
+    //if (i == 2) {
+    //console.log("ya siiiii", i);
+    setFirstLoad(false);
+    //}
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formValues, firstLoad, params.id]);
@@ -107,7 +109,7 @@ export default function GenogramaPage({ params, searchParams }) {
     setValue("hijoEdadAdulta", false);
   };
 
-  return listaFamilia.length > 0 ? (
+  return listaFamilia.length > 0 && listaTipoFamilia != null ? (
     <>
       <div className="row container-fluid bg-body-tertiary">
         <div className=" d-flex justify-content-end">
@@ -135,6 +137,23 @@ export default function GenogramaPage({ params, searchParams }) {
         </div>
       </div>
       <div style={{ height: "30vh" }} className="row p-2 container-fluid">
+        <div className="col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3">
+          <label className="form-label">
+            <h5>Observaciones</h5>
+          </label>
+          <textarea
+            className="form-control"
+            id="exampleFormControlTextarea1"
+            rows="2"
+            {...register("observacion", {
+              required: {
+                value: false,
+              },
+              value:listaTipoFamilia.observacion,
+              validate: (value) => value !== "",
+            })}
+          ></textarea>
+        </div>
         <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3 border border-dark-subtle">
           <label className="form-label">
             <h5>TIPO DE FAMILIA (HOGAR)</h5>
@@ -216,7 +235,10 @@ export default function GenogramaPage({ params, searchParams }) {
         </div>
         <div
           style={
-            !(watch("tipoFamilia") == "Personas sin familia")
+            !(
+              watch("tipoFamilia") == "Personas sin familia" ||
+              listaTipoFamilia.tipo_familia == "Personas sin familia"
+            )
               ? { pointerEvents: "none", opacity: "0.4" }
               : { pointerEvents: "auto", opacity: "1" }
           }
@@ -303,7 +325,10 @@ export default function GenogramaPage({ params, searchParams }) {
         </div>
         <div
           style={
-            !(watch("cicloVital") == "FAMILIA EN EXPANSIÓN")
+            !(
+              watch("cicloVital") == "FAMILIA EN EXPANSIÓN" ||
+              listaTipoFamilia.ciclo_vital == "FAMILIA EN EXPANSIÓN"
+            )
               ? { pointerEvents: "none", opacity: "0.4" }
               : { pointerEvents: "auto", opacity: "1" }
           }
@@ -387,7 +412,10 @@ export default function GenogramaPage({ params, searchParams }) {
             !(
               watch("cicloVital") == "FAMILIA EN FORMACIÓN" ||
               watch("cicloVital") == "FAMILIA EN DISPERSIÓN" ||
-              watch("cicloVital") == "FAMILIA EN CONTRACCIÓN"
+              watch("cicloVital") == "FAMILIA EN CONTRACCIÓN" ||
+              listaTipoFamilia.ciclo_vital == "FAMILIA EN FORMACIÓN" ||
+              listaTipoFamilia.ciclo_vital == "FAMILIA EN DISPERSIÓN" ||
+              listaTipoFamilia.ciclo_vital == "FAMILIA EN CONTRACCIÓN"
             )
               ? { pointerEvents: "none", opacity: "0.4" }
               : { pointerEvents: "auto", opacity: "1" }

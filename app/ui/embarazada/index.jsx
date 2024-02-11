@@ -2,18 +2,17 @@ import {
   getFamiliaEmbarazadaById,
   getRiesgosObstetricos,
   insertEmbarazadaAndRiesgoObstetricos,
-  getFamiliaEmbarazadaRiesgoById
+  getFamiliaEmbarazadaRiesgoById,
 } from "@/app/action";
 import Embarazada from "./embarazada";
 
 async function IndexEmbarazada({ data, id_familia }) {
+  //console.log(data);
   // const result = await getVacunas(16);
-  const [embarazadaById] = data.embarazo
-    ? await getFamiliaEmbarazadaById(id_familia)
-    : [];
-  const riesgosEmbarazo = data.embarazo
-  ? await getFamiliaEmbarazadaRiesgoById(embarazadaById.csctbembarazadasid)
-  : [];
+  const [embarazadaById] = await getFamiliaEmbarazadaById(id_familia);
+
+  const riesgosEmbarazo = await  getFamiliaEmbarazadaRiesgoById(embarazadaById.csctbembarazadasid)
+   
   return (
     <div className="container-fluid">
       <Embarazada

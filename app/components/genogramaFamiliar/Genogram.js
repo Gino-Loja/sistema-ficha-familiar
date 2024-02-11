@@ -84,7 +84,9 @@ function initDiagram() {
   var trsq = go.Geometry.parse("F M20 1 l19 0 0 19 -19 0z");
   var brsq = go.Geometry.parse("F M20 20 l19 0 0 19 -19 0z");
   var blsq = go.Geometry.parse("F M1 20 l19 0 0 19 -19 0z");
-  var slash = go.Geometry.parse("F M38 0 L40 0 40 2 2 40 0 40 0 38z"); //aqui
+  var slash = go.Geometry.parse(
+    "F M38 0 L40 0 40 2 2 40 0 40 0 38z" + "F M40 38 L40 40 38 40 0 2 0 0 2 0z"
+  ); //aqui
   var plus = go.Geometry.parse(
     "F M0 0 L80 0 B-90 90 80 20 20 20 L100 100 20 100 B90 90 20 80 20 20z"
   );
@@ -907,8 +909,8 @@ function initDiagram() {
         { name: "ICON" },
 
         $(go.Shape, "Circle", {
-          width: 50,
-          height: 50,
+          width: 35,
+          height: 35,
           strokeWidth: 1.5,
           fill: "black",
 
@@ -1108,6 +1110,50 @@ function initDiagram() {
       )
     )
   );
+
+  //separacion libre
+  diagram.linkTemplateMap.add(
+    "SOLTERO/A", // for marriage relationships
+    $(
+      go.Link,
+
+      { selectable: false },
+
+      //tipo_union,
+
+      $(
+        go.Shape, // the link's path shape
+        { isPanelMain: true, stroke: "transparent", strokeWidth: 3 },
+        new go.Binding("pathPattern", () =>
+          $(go.Shape, {
+            geometryString: "M0 0 M4 0 L4.1 0",
+
+            fill: "transparent",
+            stroke: "#000000",
+            strokeWidth: 1.3,
+            strokeCap: "round",
+          })
+        )
+      ),
+
+      $(go.Shape, {
+        fill: "black",
+        stroke: "black",
+        strokeWidth: 2,
+        segmentIndex: 0.1,
+        segmentFraction: 0.7,
+
+        // geometry:go.Geometry.parse(
+        //   "F M20 0 l13 10"+"F M20 0 l13 10"
+        // )
+        //strokeDashArray: [4, 2] , lienas entrecortadas
+        // This SVG-style path creates a thick "+" figure:,
+
+        geometry: go.Geometry.parse("F M0 10 l13 -10"),
+      })
+    )
+  );
+
   // union consaquinea
   diagram.linkTemplateMap.add(
     "UNIÓN CONSANGUÍNEA", // for marriage relationships
@@ -1205,6 +1251,8 @@ function findMarriage(diagram, a, b) {
         return link;
       if (link.data !== null && link.data.category === "UNIÓN CONSANGUÍNEA")
         return link;
+
+      if (link.data !== null && link.data.category === "SOLTERO/A") return link;
     }
   }
   return null;
@@ -1615,9 +1663,6 @@ const Genogram = (props) => {
 
   return (
     <div className="w-100">
-
-      
-
       <ReactDiagram
         initDiagram={initDiagram}
         divClassName="w-100"

@@ -31,7 +31,6 @@ export default function InfoPersonal(props) {
     } else {
       const { anios, meses, dias } = data;
       if (session.user.email?.id == null) {
-        
         update({
           email: {
             anios,
@@ -47,11 +46,10 @@ export default function InfoPersonal(props) {
             embarazada: watch("embarazada"),
           },
         });
-        console.log(resul[0].csctbfamiliaid)
+        console.log(resul[0].csctbfamiliaid);
         const insert = await insertTipoFamilia(resul[0].csctbfamiliaid);
         insert?.error ? console.log(insert.error) : null;
       } else {
-       
         update({
           email: {
             anios,
@@ -176,6 +174,19 @@ export default function InfoPersonal(props) {
                     required: {
                       value: true,
                       message: "Seleccione su fecha de nacimiento",
+                    },
+                    validate: (value) => {
+                      const fechaNacimiento = new Date(value);
+                      const fechaActual = new Date();
+
+                      // Verificar si la fecha de nacimiento es en el futuro
+                      if (fechaNacimiento > fechaActual) {
+                        return false;
+                      }
+
+                      // Resto de la lógica de validación aquí (si es necesario)
+
+                      return true; // Si la fecha de nacimiento es válida
                     },
                     onChange: () => {
                       var fechaNacimientoStr = watch("fechaNacimiento");
@@ -508,6 +519,32 @@ export default function InfoPersonal(props) {
               <div className="form-check form-check-inline">
                 <input
                   {...register("fallecido")}
+                  className="form-check-input"
+                  type="radio"
+                  value="false"
+                />
+                <label className="form-check-label">No</label>
+              </div>
+            </div>
+          </div>
+          <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+            {" "}
+            <label className="form-label">
+              <h5>Informante</h5>
+            </label>
+            <div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("informante", {})}
+                  className="form-check-input"
+                  type="radio"
+                  value="true"
+                />
+                <label className="form-check-label">Si</label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("informante")}
                   className="form-check-input"
                   type="radio"
                   value="false"
