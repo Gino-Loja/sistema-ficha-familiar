@@ -52,16 +52,13 @@ export default function InfoPersonal(props) {
     }
   });
 
-
   useEffect(() => {
     //setValue("embarazada", "true");
-    if(watch("embarazada") == undefined){
-        controlEmbarazada(isembarazada)
-    }else{
-
+    if (watch("embarazada") == undefined) {
+      controlEmbarazada(isembarazada);
+    } else {
       controlEmbarazada(watch("embarazada"));
     }
-    
   }, [watch("embarazada"), isembarazada]);
 
   const controlEmbarazada = (control) => {
@@ -76,7 +73,7 @@ export default function InfoPersonal(props) {
     });
     //console.log(control)
     if (control == true || control == "true") {
-      console.log("ya")
+      console.log("ya");
       //console.log(embarazadaTab)
       //embarazadaTab.classList.remove('active', "show");;
       embarazadaTab.style.display = "";
@@ -338,7 +335,10 @@ export default function InfoPersonal(props) {
             >
               <option value="">Seleccione la opcion</option>
               <option value="CASADO/A">Casado/a</option>
-              <option value="UNION LIBRE SEPARADADOS"> UNION LIBRE SEPARADADOS</option>
+              <option value="UNION LIBRE SEPARADADOS">
+                {" "}
+                UNION LIBRE SEPARADADOS
+              </option>
               <option value="VIUDO/A">Viudo/a</option>
               <option value={"UNIÓN LIBRE"}>Union Libre</option>
               <option value={"SEPARACIÓN"}>Separacion</option>
@@ -533,7 +533,6 @@ export default function InfoPersonal(props) {
                   type="radio"
                   value="true"
                   defaultChecked={datosFamiliar.informante == true}
-
                 />
                 <label className="form-check-label">Si</label>
               </div>
@@ -544,6 +543,69 @@ export default function InfoPersonal(props) {
                   type="radio"
                   value="false"
                   defaultChecked={datosFamiliar.informante == false}
+                />
+                <label className="form-check-label">No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb-3">
+          <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+            <div className="d-flex justify-content-between">
+              <div className="w-50" style={{ marginRight: "3px" }}>
+                <label className="form-label">
+                  <h5>Fecha de Union</h5>
+                </label>
+                <input
+                  {...register("fechaUnion", {
+                    required: {
+                      message: "Seleccione su fecha de nacimiento",
+                    },
+                    value: datosFamiliar.fecha_union,
+                    validate: (value) => {
+                      const fechaNacimiento = new Date(value);
+                      const fechaActual = new Date();
+
+                      // Verificar si la fecha de nacimiento es en el futuro
+                      if (fechaNacimiento > fechaActual) {
+                        return false;
+                      }
+
+                      // Resto de la lógica de validación aquí (si es necesario)
+
+                      return true; // Si la fecha de nacimiento es válida
+                    },
+                  })}
+                  type="date"
+                  className="form-control"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+            {" "}
+            <label className="form-label">
+              <h5>Pertence al nucleo familiar</h5>
+            </label>
+            <div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("nucleoFamiliar", {})}
+                  className="form-check-input"
+                  type="radio"
+                  value="true"
+                  defaultChecked={datosFamiliar.nucleo_familiar == true}
+                />
+                <label className="form-check-label">Si</label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("nucleoFamiliar")}
+                  className="form-check-input"
+                  type="radio"
+                  value="false"
+                  defaultChecked={datosFamiliar.nucleo_familiar == false}
 
                 />
                 <label className="form-check-label">No</label>
@@ -551,6 +613,7 @@ export default function InfoPersonal(props) {
             </div>
           </div>
         </div>
+
         {props.children}
       </form>
     </div>

@@ -344,12 +344,13 @@ export default function InfoPersonal(props) {
               <option value="CASADO/A">Casado/a</option>
               <option value="UNION LIBRE SEPARADADOS">
                 {" "}
-                UNION LIBRE SEPARADADOS
+                Union Libre Separados
               </option>
               <option value="VIUDO/A">Viudo/a</option>
               <option value={"UNIÓN LIBRE"}>Union Libre</option>
               <option value={"SEPARACIÓN"}>Separacion</option>
               <option value={"DIVORCIO"}>Divorcio</option>
+              <option value={"SOLTERO"}>Soltero</option>
 
               <option value={"UNIÓN CONSANGUÍNEA"}>Union Consaguinea</option>
             </select>
@@ -567,10 +568,15 @@ export default function InfoPersonal(props) {
                 </label>
                 <input
                   {...register("fechaUnion", {
-                    required: {
-                      message: "Seleccione su fecha de nacimiento",
-                    },
+                    
                     validate: (value) => {
+                      //console.log(value)
+
+                      if (value === ""){
+                        //console.log(value)
+                        return true
+                      }
+
                       const fechaNacimiento = new Date(value);
                       const fechaActual = new Date();
 
@@ -578,9 +584,10 @@ export default function InfoPersonal(props) {
                       if (fechaNacimiento > fechaActual) {
                         return false;
                       }
+                      
 
                       // Resto de la lógica de validación aquí (si es necesario)
-
+                      //console.log(value)
                       return true; // Si la fecha de nacimiento es válida
                     },
                     

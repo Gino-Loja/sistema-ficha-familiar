@@ -62,7 +62,7 @@ export async function saveFamilia(formData, id) {
       formData.fallecido,
       formData.informante,
       formData.fechaUnion,
-      formData.nucleoFamiliar
+      formData.nucleoFamiliar,
     ];
 
     const res = await conn.query(text, values);
@@ -540,8 +540,9 @@ export async function getFamiliarById(id) {
     csctbnacionalidadetnica.nom_nacionalidadetnica, 
     csctbpueblos.csctbpueblosid,
     csctbfamilia.fallecido,
-    csctbfamilia.informante
-
+    csctbfamilia.informante,
+    csctbfamilia.nucleo_familiar,
+    csctbfamilia.fecha_union
   FROM 
     public.csctbfamilia
     LEFT JOIN public.csctbparentesco ON csctbparentesco.csctbparentescoid = csctbfamilia.csctbparentescoid
@@ -582,7 +583,9 @@ export async function updateFamiliaById(formData, id) {
       csctbetniaid = $16,
       csctbpueblosid = $17,
       fallecido = $18,
-      informante = $19
+      informante = $19,
+      nucleo_familiar = $20,
+      fecha_union = $21
     WHERE csctbfamiliaid = ${id}`;
 
     const values = [
@@ -605,6 +608,8 @@ export async function updateFamiliaById(formData, id) {
       formData.pueblos,
       formData.fallecido,
       formData.informante,
+      formData.nucleoFamiliar,
+      formData.fechaUnion,
     ];
     const res = await conn.query(text, values);
 

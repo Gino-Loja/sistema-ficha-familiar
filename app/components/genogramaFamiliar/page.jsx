@@ -112,6 +112,7 @@ function mapearDatosGenograma(datos) {
   ) {
     let nodo = genoData.find((n) => n.key === id);
     if (!nodo) {
+      //var deaht =
       if (abortosEspontaneos !== undefined && abortosInducidos !== undefined) {
         nodo = {
           key: id,
@@ -433,11 +434,10 @@ function mapearDatosGenograma(datos) {
       nodo.a.push("NF");
     }
 
-  
     if (dato.fecha_union != null) {
       const fecha = new Date(dato.fecha_union); // Convertir la cadena de texto a un objeto Date
       const anio = fecha.getFullYear();
-      nodo.fu = anio
+      nodo.fu = anio;
     }
 
     //console.log(nodo)

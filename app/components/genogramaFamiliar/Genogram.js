@@ -217,7 +217,6 @@ function initDiagram() {
         },
         new go.Binding("itemArray", "a")
       ),
-      new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
@@ -235,12 +234,16 @@ function initDiagram() {
             stroke: "#919191",
             portId: "",
           },
-          new go.Binding("fill", "", (e) => {
-            if (e == "NF") {
+          new go.Binding("fill", "a", (e) => {
+            //console.log(e);
+            if (e.includes("NF")) {
               return "#0B9BFE";
+            } else {
+              return "white";
             }
           })
         ),
+        //new go.Binding("itemArray", "a"),
 
         $(
           go.Panel,
@@ -296,7 +299,7 @@ function initDiagram() {
         locationObjectName: "ICON",
         selectionObjectName: "ICON",
       },
-      new go.Binding("itemArray", "a"),
+      //new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
@@ -345,9 +348,12 @@ function initDiagram() {
             stroke: "#a1a1a1",
             portId: "",
           },
-          new go.Binding("fill", "", (e) => {
-            if (e == "NF") {
+          new go.Binding("fill", "a", (e) => {
+            console.log(e);
+            if (e.includes("NF")) {
               return "#0B9BFE";
+            } else {
+              return "white";
             }
           })
         ),
@@ -533,7 +539,7 @@ function initDiagram() {
         },
         new go.Binding("itemArray", "a")
       ),
-      new go.Binding("itemArray", "a"),
+      //new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
@@ -558,9 +564,12 @@ function initDiagram() {
           M353.20314 254.806l-17.98763 -0.40951
           M332.84689 134.31563l20.6875 -0.21875`,
           },
-          new go.Binding("fill", "", (e) => {
-            if (e == "NF") {
+          new go.Binding("fill", "a", (e) => {
+            console.log(e);
+            if (e.includes("S")) {
               return "#0B9BFE";
+            } else {
+              return "white";
             }
           })
         ),
@@ -648,7 +657,7 @@ function initDiagram() {
         new go.Binding("itemArray", "a")
       ),
       //aqui
-      new go.Binding("itemArray", "a"),
+      ///new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
@@ -673,9 +682,12 @@ function initDiagram() {
           M332.84689 134.31563l20.6875 -0.21875
           M280 146.77868a48.83721 48.83721 0 1 0 0 97.67442a48.83721 48.83721 0 1 0 0 -97.67442`,
           },
-          new go.Binding("fill", "", (e) => {
-            if (e == "NF") {
+          new go.Binding("fill", "a", (e) => {
+            console.log(e);
+            if (e.includes("S")) {
               return "#0B9BFE";
+            } else {
+              return "white";
             }
           })
         ),
@@ -760,7 +772,7 @@ function initDiagram() {
         },
         new go.Binding("itemArray", "a")
       ),
-      new go.Binding("itemArray", "a"),
+      // new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
@@ -788,9 +800,12 @@ function initDiagram() {
           h-186.42883
           v-171.42881`,
           },
-          new go.Binding("fill", "", (e) => {
-            if (e == "NF") {
+          new go.Binding("fill", "a", (e) => {
+            console.log(e);
+            if (e.includes("S")) {
               return "#0B9BFE";
+            } else {
+              return "white";
             }
           })
         ),
@@ -876,7 +891,7 @@ function initDiagram() {
         },
         new go.Binding("itemArray", "a")
       ),
-      new go.Binding("itemArray", "a"),
+      //new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
@@ -903,9 +918,12 @@ function initDiagram() {
           l-83 95.50001
           l-83 -95.50001`,
           },
-          new go.Binding("fill", "", (e) => {
-            if (e == "NF") {
+          new go.Binding("fill", "a", (e) => {
+            console.log(e);
+            if (e.includes("S")) {
               return "#0B9BFE";
+            } else {
+              return "white";
             }
           })
         ),
@@ -1060,7 +1078,28 @@ function initDiagram() {
 
       { selectable: false },
       $(
+        go.Panel,
+        "Vertical", // this whole Panel is a link label
+        //$(go.Shape, "Circle", { fill: "yellow", stroke: "gray" }),
+        $(
+          go.TextBlock,
+          {
+            //margin: 3 ,
+
+            alignment: go.Spot.Left,
+            // segmentOrientation: go.Link.Auto,
+          },
+          new go.Binding("text", "fu")
+        ),
+        {
+          height: 30,
+        }
+      ),
+
+      $(
         go.Shape,
+        { isPanelMain: true, stroke: "transparent", strokeWidth: 3 },
+
         {
           strokeWidth: 2.5,
           stroke: "#000000",
@@ -1068,15 +1107,6 @@ function initDiagram() {
         }
 
         //new go.Binding("pathPattern", "patt", "M0 0 L1 0 M0 3 L1 3"),
-      ),
-      $(
-        go.TextBlock,
-        {
-          segmentOffset: new go.Point(0, -10),
-          font: "16px serif",
-          segmentOrientation: go.Link.OrientUpright,
-        },
-        new go.Binding("text", "fu")
       )
     )
   );
@@ -1088,13 +1118,22 @@ function initDiagram() {
 
       { selectable: false },
       $(
-        go.TextBlock,
+        go.Panel,
+        "Vertical", // this whole Panel is a link label
+        //$(go.Shape, "Circle", { fill: "yellow", stroke: "gray" }),
+        $(
+          go.TextBlock,
+          {
+            //margin: 3 ,
+
+            alignment: go.Spot.Left,
+            // segmentOrientation: go.Link.Auto,
+          },
+          new go.Binding("text", "fu")
+        ),
         {
-          segmentOffset: new go.Point(0, -10),
-          font: "16px serif",
-          segmentOrientation: go.Link.OrientUpright,
-        },
-        new go.Binding("text", "fu")
+          height: 30,
+        }
       ),
       $(
         go.Shape,
@@ -1142,13 +1181,22 @@ function initDiagram() {
 
       { selectable: false },
       $(
-        go.TextBlock,
+        go.Panel,
+        "Vertical", // this whole Panel is a link label
+        //$(go.Shape, "Circle", { fill: "yellow", stroke: "gray" }),
+        $(
+          go.TextBlock,
+          {
+            //margin: 3 ,
+
+            alignment: go.Spot.Left,
+            // segmentOrientation: go.Link.Auto,
+          },
+          new go.Binding("text", "fu")
+        ),
         {
-          segmentOffset: new go.Point(0, -10),
-          font: "16px serif",
-          segmentOrientation: go.Link.OrientUpright,
-        },
-        new go.Binding("text", "fu")
+          height: 30,
+        }
       ),
       $(
         go.Shape,
@@ -1189,16 +1237,39 @@ function initDiagram() {
 
       //tipo_union,
       //$(go.TextBlock, "left", { segmentOffset: new go.Point(0, -10) }),
+      //$(go.Shape, { stroke: "transparent", fill: "transparent" }),
 
       $(
-        go.TextBlock,
+        go.Panel,
+        "Vertical", // this whole Panel is a link label
+        //$(go.Shape, "Circle", { fill: "yellow", stroke: "gray" }),
+        $(
+          go.TextBlock,
+          {
+            //margin: 3 ,
+
+            alignment: go.Spot.Left,
+            // segmentOrientation: go.Link.Auto,
+          },
+          new go.Binding("text", "fu")
+        ),
         {
-          segmentOffset: new go.Point(0, -10),
-          font: "16px serif",
-          segmentOrientation: go.Link.OrientUpright,
-        },
-        new go.Binding("text", "fu")
+          height: 30,
+        }
       ),
+
+      // $(
+      //   go.TextBlock,
+      //   {
+      //     segmentOffset: new go.Point(0, -10),
+      //     //font: "16px serif",
+      //     //segmentOrientation: go.Link.OrientUpright,
+      //     //margin:20
+      //   },
+      //   new go.Binding("text", "fu"),
+      //   new go.Binding("segmentOffset", new go.Point(0, -10)),
+      //   new go.Binding("segmentOrientation", go.Link.OrientUpright)
+      // ),
 
       $(
         go.Shape, // the link's path shape
@@ -1228,13 +1299,22 @@ function initDiagram() {
 
       //tipo_union,
       $(
-        go.TextBlock,
+        go.Panel,
+        "Vertical", // this whole Panel is a link label
+        //$(go.Shape, "Circle", { fill: "yellow", stroke: "gray" }),
+        $(
+          go.TextBlock,
+          {
+            //margin: 3 ,
+
+            alignment: go.Spot.Left,
+            // segmentOrientation: go.Link.Auto,
+          },
+          new go.Binding("text", "fu")
+        ),
         {
-          segmentOffset: new go.Point(0, -10),
-          font: "16px serif",
-          segmentOrientation: go.Link.OrientUpright,
-        },
-        new go.Binding("text", "fu")
+          height: 30,
+        }
       ),
       $(
         go.Shape, // the link's path shape
@@ -1288,13 +1368,22 @@ function initDiagram() {
 
       //tipo_union,
       $(
-        go.TextBlock,
+        go.Panel,
+        "Vertical", // this whole Panel is a link label
+        //$(go.Shape, "Circle", { fill: "yellow", stroke: "gray" }),
+        $(
+          go.TextBlock,
+          {
+            //margin: 3 ,
+
+            alignment: go.Spot.Left,
+            // segmentOrientation: go.Link.Auto,
+          },
+          new go.Binding("text", "fu")
+        ),
         {
-          segmentOffset: new go.Point(0, -10),
-          font: "16px serif",
-          segmentOrientation: go.Link.OrientUpright,
-        },
-        new go.Binding("text", "fu")
+          height: 30,
+        }
       ),
       $(
         go.Shape, // the link's path shape
@@ -1796,7 +1885,7 @@ function handleModelChange(e) {
 const Genogram = (props) => {
   genoData = props.Genogram;
 
-  console.log(genoData);
+  //console.log(genoData);
   const idFamilia = props.idFamilia;
   //console.log(genoData);
   const [show, setShow] = useState(false);
