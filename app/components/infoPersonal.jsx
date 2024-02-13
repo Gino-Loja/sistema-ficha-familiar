@@ -342,7 +342,10 @@ export default function InfoPersonal(props) {
             >
               <option value="">Seleccione la opcion</option>
               <option value="CASADO/A">Casado/a</option>
-              <option value="SOLTERO/A">Soltero/a</option>
+              <option value="UNION LIBRE SEPARADADOS">
+                {" "}
+                UNION LIBRE SEPARADADOS
+              </option>
               <option value="VIUDO/A">Viudo/a</option>
               <option value={"UNIÓN LIBRE"}>Union Libre</option>
               <option value={"SEPARACIÓN"}>Separacion</option>
@@ -554,6 +557,70 @@ export default function InfoPersonal(props) {
             </div>
           </div>
         </div>
+
+        <div className="row mb-3">
+          <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+            <div className="d-flex justify-content-between">
+              <div className="w-50" style={{ marginRight: "3px" }}>
+                <label className="form-label">
+                  <h5>Fecha de Union</h5>
+                </label>
+                <input
+                  {...register("fechaUnion", {
+                    required: {
+                      message: "Seleccione su fecha de nacimiento",
+                    },
+                    validate: (value) => {
+                      const fechaNacimiento = new Date(value);
+                      const fechaActual = new Date();
+
+                      // Verificar si la fecha de nacimiento es en el futuro
+                      if (fechaNacimiento > fechaActual) {
+                        return false;
+                      }
+
+                      // Resto de la lógica de validación aquí (si es necesario)
+
+                      return true; // Si la fecha de nacimiento es válida
+                    },
+                    
+                  })}
+                  type="date"
+                  className="form-control"
+                />
+              </div>
+         
+            </div>
+          </div>
+          <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+            {" "}
+            <label className="form-label">
+              <h5>Pertence al nucleo familiar</h5>
+            </label>
+            <div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("nucleoFamiliar", {})}
+                  className="form-check-input"
+                  type="radio"
+                  value="true"
+                />
+                <label className="form-check-label">Si</label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input
+                  {...register("nucleoFamiliar")}
+                  className="form-check-input"
+                  type="radio"
+                  value="false"
+                />
+                <label className="form-check-label">No</label>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
         {props.children}
       </form>
     </div>

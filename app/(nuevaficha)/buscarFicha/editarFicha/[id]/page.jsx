@@ -22,7 +22,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
   const parentescos = await getParentesco();
   const [datosFamiliar] = await getFamiliarById(params.id);
   const familiaEmbarazo = await getFamiliaEmbarazo(params.id);
-  console.log(familiaEmbarazo)
+  //console.log(familiaEmbarazo)
 
   return (
     <>
@@ -53,10 +53,10 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
               aria-controls="pills-profile"
               aria-selected="false"
             >
-              Vacunas
+              Enfermedades
             </button>
           </li>
-          <li className="nav-item" role="presentation">
+          {/* <li className="nav-item" role="presentation">
             <button
               className="nav-link"
               id="pills-contact-tab"
@@ -97,7 +97,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
             >
               Riesgos Biologicos
             </button>
-          </li>
+          </li> */}
 
           <li
             //style={{ display: familiaEmbarazo.length == 0 ? "none" : "" }}
@@ -165,70 +165,8 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
               id_familia={params.id}
             ></Vacuna>
           </div>
-          <div
-            className="tab-pane fade"
-            id="pills-contact"
-            role="tabpanel"
-            aria-labelledby="pills-contact-tab"
-            tabIndex="0"
-          >
-            {/* <IndexRiesgos
-              data={{
-                anios: datosFamiliar.anios,
-                meses: datosFamiliar.meses,
-                dias: datosFamiliar.dias,
-              }}
-            ></IndexRiesgos> */}
-            <IndexRiesgos
-              data={{
-                nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
-                embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
-              }}
-              id_familia={params.id}
-            ></IndexRiesgos>
-          </div>
-          <div
-            className="tab-pane fade"
-            id="pills-prioritario"
-            role="tabpanel"
-            aria-labelledby="pills-prioritario-tab"
-            tabIndex="0"
-          >
-            <IndexPrioritarios
-              data={{
-                nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
-                embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
-              }}
-              id_familia={params.id}
-            ></IndexPrioritarios>
-          </div>
-          <div
-            className="tab-pane fade"
-            id="pills-biologicos"
-            role="tabpanel"
-            aria-labelledby="pills-biologicos-tab"
-            tabIndex="0"
-          >
-            {/* <IndexBiologicos
-              data={{
-                anios: datosFamiliar.anios,
-                meses: datosFamiliar.meses,
-                dias: datosFamiliar.dias,
-              }}
-              id_familia={params.id}
-            ></IndexBiologicos> */}
-            <IndexBiologicos
-              data={{
-                anios: datosFamiliar.anios,
-                meses: datosFamiliar.meses,
-                dias: datosFamiliar.dias,
-                nombre: datosFamiliar.nom_fam + " " + datosFamiliar.ape_fam,
-                parentesco: datosFamiliar.nom_parentesco,
-                embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
-              }}
-              id_familia={params.id}
-            ></IndexBiologicos>
-          </div>
+
+          
           <div
             className="tab-pane fade"
             id="pills-embarazada"

@@ -217,19 +217,30 @@ function initDiagram() {
         },
         new go.Binding("itemArray", "a")
       ),
+      new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
         "Auto",
         { name: "ICON" },
-        $(go.Shape, "Square", {
-          width: 40,
-          height: 40,
-          strokeWidth: 2,
-          fill: "white",
-          stroke: "#919191",
-          portId: "",
-        }),
+        $(
+          go.Shape,
+          "Square",
+          {
+            width: 40,
+            height: 40,
+            strokeWidth: 2,
+            //background:"red",
+            fill: "white",
+            stroke: "#919191",
+            portId: "",
+          },
+          new go.Binding("fill", "", (e) => {
+            if (e == "NF") {
+              return "#0B9BFE";
+            }
+          })
+        ),
 
         $(
           go.Panel,
@@ -260,6 +271,7 @@ function initDiagram() {
           new go.Binding("text", "anios")
         )
       ),
+
       $(
         go.TextBlock,
         { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
@@ -284,6 +296,7 @@ function initDiagram() {
         locationObjectName: "ICON",
         selectionObjectName: "ICON",
       },
+      new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
@@ -321,14 +334,23 @@ function initDiagram() {
         go.Panel,
         "Auto",
         { name: "ICON" },
-        $(go.Shape, "Circle", {
-          width: 40,
-          height: 40,
-          strokeWidth: 2,
-          fill: "white",
-          stroke: "#a1a1a1",
-          portId: "",
-        }),
+        $(
+          go.Shape,
+          "Circle",
+          {
+            width: 40,
+            height: 40,
+            strokeWidth: 2,
+            fill: "white",
+            stroke: "#a1a1a1",
+            portId: "",
+          },
+          new go.Binding("fill", "", (e) => {
+            if (e == "NF") {
+              return "#0B9BFE";
+            }
+          })
+        ),
         $(
           go.Panel,
           {
@@ -511,28 +533,37 @@ function initDiagram() {
         },
         new go.Binding("itemArray", "a")
       ),
+      new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
         "Auto",
         { name: "ICON" },
 
-        $(go.Shape, {
-          width: 50,
-          height: 50,
-          strokeWidth: 1.5,
-          fill: "white",
-          background: "white",
-          portId: "",
-          stroke: "#a1a1a1",
-          geometryString: `M228.79999 154.8 h106 v78 h-106 Z 
+        $(
+          go.Shape,
+          {
+            width: 50,
+            height: 50,
+            strokeWidth: 1.5,
+            fill: "white",
+            background: "white",
+            portId: "",
+            stroke: "#a1a1a1",
+            geometryString: `M228.79999 154.8 h106 v78 h-106 Z 
           M210.79999 131.8 v121.99999
           M353.79999 133.33124 v121.46876
           M211.36188 132.79072l24.24744 -0.54752
           M210.36144 253.85543h16.26506
           M353.20314 254.806l-17.98763 -0.40951
           M332.84689 134.31563l20.6875 -0.21875`,
-        }),
+          },
+          new go.Binding("fill", "", (e) => {
+            if (e == "NF") {
+              return "#0B9BFE";
+            }
+          })
+        ),
 
         $(
           go.Panel,
@@ -616,28 +647,38 @@ function initDiagram() {
         },
         new go.Binding("itemArray", "a")
       ),
+      //aqui
+      new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
         "Auto",
         { name: "ICON" },
 
-        $(go.Shape, {
-          width: 50,
-          height: 50,
-          strokeWidth: 1.5,
-          fill: "white",
-          background: "white",
-          stroke: "#a1a1a1",
+        $(
+          go.Shape,
+          {
+            width: 50,
+            height: 50,
+            strokeWidth: 1.5,
+            fill: "white",
+            background: "white",
+            stroke: "#a1a1a1",
 
-          geometryString: `M210.79999 137.0356 v116.76439
+            geometryString: `M210.79999 137.0356 v116.76439
           M353.79999 133.33124 v121.46876
           M210.66501 136.97191l24.24744 -0.54752
           M210.36144 253.85543h16.26506
           M353.20314 254.806l-17.98763 -0.40951
           M332.84689 134.31563l20.6875 -0.21875
           M280 146.77868a48.83721 48.83721 0 1 0 0 97.67442a48.83721 48.83721 0 1 0 0 -97.67442`,
-        }),
+          },
+          new go.Binding("fill", "", (e) => {
+            if (e == "NF") {
+              return "#0B9BFE";
+            }
+          })
+        ),
         $(
           go.Panel,
           {
@@ -719,21 +760,24 @@ function initDiagram() {
         },
         new go.Binding("itemArray", "a")
       ),
+      new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
         "Auto",
         { name: "ICON" },
 
-        $(go.Shape, {
-          width: 50,
-          height: 50,
-          strokeWidth: 1.5,
-          fill: "white",
+        $(
+          go.Shape,
+          {
+            width: 50,
+            height: 50,
+            strokeWidth: 1.5,
+            fill: "white",
 
-          stroke: "#a1a1a1",
+            stroke: "#a1a1a1",
 
-          geometryString: `M213.64101 146.38252
+            geometryString: `M213.64101 146.38252
           l64.61785 -71.9508
           l64.61785 71.9508
           l-64.61785 71.9508
@@ -743,7 +787,13 @@ function initDiagram() {
           v171.42881
           h-186.42883
           v-171.42881`,
-        }),
+          },
+          new go.Binding("fill", "", (e) => {
+            if (e == "NF") {
+              return "#0B9BFE";
+            }
+          })
+        ),
         $(
           go.Panel,
           {
@@ -826,21 +876,24 @@ function initDiagram() {
         },
         new go.Binding("itemArray", "a")
       ),
+      new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
         "Auto",
         { name: "ICON" },
 
-        $(go.Shape, {
-          width: 50,
-          height: 50,
-          strokeWidth: 1.5,
-          fill: "white",
+        $(
+          go.Shape,
+          {
+            width: 50,
+            height: 50,
+            strokeWidth: 1.5,
+            fill: "white",
 
-          stroke: "#a1a1a1",
+            stroke: "#a1a1a1",
 
-          geometryString: `M230.79999 322.29999
+            geometryString: `M230.79999 322.29999
           m-109 0
           a109 106.5 0 1 0 218 0
           a109 106.5 0 1 0 -218 0
@@ -849,7 +902,13 @@ function initDiagram() {
           l83 95.50001
           l-83 95.50001
           l-83 -95.50001`,
-        }),
+          },
+          new go.Binding("fill", "", (e) => {
+            if (e == "NF") {
+              return "#0B9BFE";
+            }
+          })
+        ),
 
         $(
           go.Panel,
@@ -1009,6 +1068,15 @@ function initDiagram() {
         }
 
         //new go.Binding("pathPattern", "patt", "M0 0 L1 0 M0 3 L1 3"),
+      ),
+      $(
+        go.TextBlock,
+        {
+          segmentOffset: new go.Point(0, -10),
+          font: "16px serif",
+          segmentOrientation: go.Link.OrientUpright,
+        },
+        new go.Binding("text", "fu")
       )
     )
   );
@@ -1019,6 +1087,15 @@ function initDiagram() {
       go.Link,
 
       { selectable: false },
+      $(
+        go.TextBlock,
+        {
+          segmentOffset: new go.Point(0, -10),
+          font: "16px serif",
+          segmentOrientation: go.Link.OrientUpright,
+        },
+        new go.Binding("text", "fu")
+      ),
       $(
         go.Shape,
         {
@@ -1045,7 +1122,16 @@ function initDiagram() {
         // This SVG-style path creates a thick "+" figure:,
 
         geometry: go.Geometry.parse("F M0 10 l13 -10"),
-      })
+      }),
+      $(
+        go.TextBlock,
+        {
+          segmentOffset: new go.Point(0, -10),
+          font: "16px serif",
+          segmentOrientation: go.Link.OrientUpright,
+        },
+        new go.Binding("text", "fu")
+      )
     )
   );
   // divorcio
@@ -1055,6 +1141,15 @@ function initDiagram() {
       go.Link,
 
       { selectable: false },
+      $(
+        go.TextBlock,
+        {
+          segmentOffset: new go.Point(0, -10),
+          font: "16px serif",
+          segmentOrientation: go.Link.OrientUpright,
+        },
+        new go.Binding("text", "fu")
+      ),
       $(
         go.Shape,
         {
@@ -1093,10 +1188,22 @@ function initDiagram() {
       { selectable: false },
 
       //tipo_union,
+      //$(go.TextBlock, "left", { segmentOffset: new go.Point(0, -10) }),
+
+      $(
+        go.TextBlock,
+        {
+          segmentOffset: new go.Point(0, -10),
+          font: "16px serif",
+          segmentOrientation: go.Link.OrientUpright,
+        },
+        new go.Binding("text", "fu")
+      ),
 
       $(
         go.Shape, // the link's path shape
         { isPanelMain: true, stroke: "transparent", strokeWidth: 3 },
+
         new go.Binding("pathPattern", () =>
           $(go.Shape, {
             geometryString: "M0 0 M4 0 L4.1 0",
@@ -1113,14 +1220,22 @@ function initDiagram() {
 
   //separacion libre
   diagram.linkTemplateMap.add(
-    "SOLTERO/A", // for marriage relationships
+    "UNION LIBRE SEPARADADOS", // for marriage relationships
     $(
       go.Link,
 
       { selectable: false },
 
       //tipo_union,
-
+      $(
+        go.TextBlock,
+        {
+          segmentOffset: new go.Point(0, -10),
+          font: "16px serif",
+          segmentOrientation: go.Link.OrientUpright,
+        },
+        new go.Binding("text", "fu")
+      ),
       $(
         go.Shape, // the link's path shape
         { isPanelMain: true, stroke: "transparent", strokeWidth: 3 },
@@ -1150,7 +1265,16 @@ function initDiagram() {
         // This SVG-style path creates a thick "+" figure:,
 
         geometry: go.Geometry.parse("F M0 10 l13 -10"),
-      })
+      }),
+      $(
+        go.TextBlock,
+        {
+          segmentOffset: new go.Point(0, -10),
+          font: "16px serif",
+          segmentOrientation: go.Link.OrientUpright,
+        },
+        new go.Binding("text", "ec")
+      )
     )
   );
 
@@ -1163,7 +1287,15 @@ function initDiagram() {
       { selectable: false },
 
       //tipo_union,
-
+      $(
+        go.TextBlock,
+        {
+          segmentOffset: new go.Point(0, -10),
+          font: "16px serif",
+          segmentOrientation: go.Link.OrientUpright,
+        },
+        new go.Binding("text", "fu")
+      ),
       $(
         go.Shape, // the link's path shape
         { isPanelMain: true, stroke: "transparent", strokeWidth: 3 },
@@ -1252,7 +1384,11 @@ function findMarriage(diagram, a, b) {
       if (link.data !== null && link.data.category === "UNIÓN CONSANGUÍNEA")
         return link;
 
-      if (link.data !== null && link.data.category === "SOLTERO/A") return link;
+      if (
+        link.data !== null &&
+        link.data.category === "UNION LIBRE SEPARADADOS"
+      )
+        return link;
     }
   }
   return null;
@@ -1274,22 +1410,22 @@ function setupMarriages(diagram) {
       data.s = h;
     }
 
-    if (
-      data.s == "M" &&
-      category_data == "SOLTERO/A" &&
-      data.f === undefined &&
-      data.m === undefined
-    ) {
-      data.s = "padreSoltero";
-    }
-    if (
-      data.s == "F" &&
-      category_data == "SOLTERO/A" &&
-      data.f === undefined &&
-      data.m === undefined
-    ) {
-      data.s = "madreSoltera";
-    }
+    // if (
+    //   data.s == "M" &&
+    //   category_data == "SOLTERO/A" &&
+    //   data.f === undefined &&
+    //   data.m === undefined
+    // ) {
+    //   data.s = "padreSoltero";
+    // }
+    // if (
+    //   data.s == "F" &&
+    //   category_data == "SOLTERO/A" &&
+    //   data.f === undefined &&
+    //   data.m === undefined
+    // ) {
+    //   data.s = "madreSoltera";
+    // }
 
     if (uxs !== undefined && uxs !== null) {
       // if (category_data == "SOLTERO/A") {
@@ -1308,12 +1444,13 @@ function setupMarriages(diagram) {
           var mlab = { s: "LinkLabel" };
           model.addNodeData(mlab);
           // add the marriage link itself, also referring to the label node
-
+          //console.log(data)
           var mdata = {
             from: key,
             to: wife,
             labelKeys: [mlab.key],
             category: category_data,
+            fu: data.fu,
           };
           model.addLinkData(mdata);
         }
@@ -1344,6 +1481,7 @@ function setupMarriages(diagram) {
             to: husband,
             labelKeys: [mlab.key],
             category: category_data,
+            fu: data.fu,
           };
           model.addLinkData(mdata);
         }
@@ -1657,6 +1795,8 @@ function handleModelChange(e) {
 
 const Genogram = (props) => {
   genoData = props.Genogram;
+
+  console.log(genoData);
   const idFamilia = props.idFamilia;
   //console.log(genoData);
   const [show, setShow] = useState(false);

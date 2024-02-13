@@ -10,6 +10,7 @@ async function IndexEmbarazada({ data, id_familia }) {
   //console.log(data);
   // const result = await getVacunas(16);
   const [embarazadaById] = await getFamiliaEmbarazadaById(id_familia);
+  //console.log(embarazadaById)
 
   const riesgosEmbarazo = await  getFamiliaEmbarazadaRiesgoById(embarazadaById.csctbembarazadasid)
    

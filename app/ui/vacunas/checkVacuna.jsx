@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import ModalGenerico from "@/app/components/modal/modalGenerico";
+import ModalFinalizar from "@/app/components/modal/modalFinalizar";
 
 export default function CheckVacuna({
   enfermedades,
@@ -22,7 +23,10 @@ export default function CheckVacuna({
   data,
   familiarEnfermedad,
 }) {
+  const router = useRouter();
+
   const { data: session, status } = useSession();
+  const [modalShowFinalizar, setModalShowFinalizar] = useState(false);
 
   const [modalShow, setModalShow] = useState(false);
   const [enfer, setEnferme] = useState({});
@@ -57,8 +61,7 @@ export default function CheckVacuna({
       refresh();
       setListaEnfermdades((prevEnfermedades) =>
         prevEnfermedades.filter(
-          (enfermedad) =>
-            enfermedad.csctbenfermedadid !== params.id_enfermedad
+          (enfermedad) => enfermedad.csctbenfermedadid !== params.id_enfermedad
         )
       );
     });
@@ -76,16 +79,24 @@ export default function CheckVacuna({
     const modal = document.getElementById("modalGuardar");
 
     var indexTab = 0;
-    const activeTabIndex = tabs.forEach((tab, index) => {
-      if (tab.classList.contains("active")) {
-        indexTab = index;
-      }
-    });
 
-    tabs[indexTab].classList.remove("active");
-    tabs[indexTab + 1].classList.add("active");
-    content[indexTab].classList.remove("active", "show");
-    content[indexTab + 1].classList.add("active", "show");
+    //const tabs = document.querySelectorAll(".nav-link");
+
+    var indexTab = 0;
+    if (session.user.email.embarazada == "true") {
+      tabs.forEach((tab, index) => {
+        if (tab.classList.contains("active")) {
+          indexTab = index;
+        }
+      });
+      console.log(indexTab);
+      tabs[indexTab].classList.remove("active");
+      tabs[indexTab + 1].classList.add("active");
+      content[indexTab].classList.remove("active", "show");
+      content[indexTab + 1].classList.add("active", "show");
+    } else {
+      setModalShowFinalizar(true);
+    }
   });
   const seachParams = useSearchParams();
   const pathname = usePathname();
@@ -104,6 +115,22 @@ export default function CheckVacuna({
 
   return (
     <form onSubmit={onSubmit}>
+      <ModalFinalizar
+        show={modalShowFinalizar}
+        tittle={`Se actualizado el registro de: ${session?.user?.email?.nombre} como ${session?.user?.email?.parentesco}`}
+      >
+        <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
+          <button
+            onClick={() => {
+              setModalShowFinalizar(false);
+              router.push("/buscarFicha/");
+            }}
+            className="btn btn-primary mx-2"
+          >
+            Continuar
+          </button>
+        </div>
+      </ModalFinalizar>
       <ModalGenerico
         show={modalShow}
         tittle={
@@ -126,8 +153,8 @@ export default function CheckVacuna({
                 accion: true,
                 id_enfermedad: enfer.csctbenfermedadid,
                 id_familia: params.id,
-              }).then(()=>{
-                refresh()
+              }).then(() => {
+                refresh();
               });
               setListaEnfermdades([...listaEnfermedades, enfer]);
             }}
@@ -257,7 +284,7 @@ export default function CheckVacuna({
                 {enfermedad.nom_enfermedad + " " + enfermedad.cog_enfermedad}{" "}
                 <span>
                   <button
-                    onClick={() =>{
+                    onClick={() => {
                       handleUpdateEnfermedad({
                         accion: false,
                         id_enfermedad: enfermedad.csctbenfermedadid,
@@ -266,10 +293,8 @@ export default function CheckVacuna({
                           (a) =>
                             a.csctbenfermedadid == enfermedad.csctbenfermedadid
                         )?.csctbenfermeriesgoid,
-                      })
-                  
-                    }
-                    }
+                      });
+                    }}
                     type="button"
                     className="btn btn-danger mx-1"
                   >

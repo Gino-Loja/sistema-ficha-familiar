@@ -149,7 +149,7 @@ function mapearDatosGenograma(datos) {
   // Mapear datos a genograma
   var father;
   var mother;
-  var nodo_embarazada
+  var nodo_embarazada;
   datos.forEach((dato, index) => {
     const {
       csctbfamiliaid,
@@ -161,6 +161,8 @@ function mapearDatosGenograma(datos) {
       fallecido,
       abortosEspontaneos,
       abortosInducidos,
+      nucleo_familiar,
+      fecha_union,
     } = dato;
 
     const nodo = obtenerCrearNodo(
@@ -305,9 +307,7 @@ function mapearDatosGenograma(datos) {
 
     //console.log(dato.abortosEspontaneos)
     if (dato.abortosEspontaneos !== undefined) {
-   
       if (dato.nom_parentesco == relacionesFamiliares[4]) {
-       
         for (let index = 0; index < dato.abortosEspontaneos; index++) {
           var nodo_aborto = {
             key: index,
@@ -318,8 +318,8 @@ function mapearDatosGenograma(datos) {
           genoDataMap.push(nodo_aborto);
         }
 
-        father = dato.csctbfamiliaid + 1
-        mother =  dato.csctbfamiliaid
+        father = dato.csctbfamiliaid + 1;
+        mother = dato.csctbfamiliaid;
         //nodo.s = "embarazada";
         //nodo.h = nodo.s == "M" ? "M" : "F";
       } else if (dato.nom_parentesco === relacionesFamiliares[10]) {
@@ -335,8 +335,8 @@ function mapearDatosGenograma(datos) {
           genoDataMap.push(nodo_aborto);
         }
 
-        father = hijos[hijos.length - 2].csctbfamiliaid
-        mother =  hijos[hijos.length - 1].csctbfamiliaid
+        father = hijos[hijos.length - 2].csctbfamiliaid;
+        mother = hijos[hijos.length - 1].csctbfamiliaid;
         //nodo.s = "embarazada";
 
         //nodo.h = nodo.s == "M" ? "hijastro" : "hijastra";
@@ -354,11 +354,10 @@ function mapearDatosGenograma(datos) {
           };
           genoDataMap.push(nodo_aborto);
         }
-        father = datos.find(
+        (father = datos.find(
           (persona) => persona.nom_parentesco == relacionesFamiliares[6]
-        )?.csctbfamiliaid,
-        mother =  nodo.key
-        
+        )?.csctbfamiliaid),
+          (mother = nodo.key);
 
         //nodo.s = "embarazada";
       }
@@ -373,9 +372,7 @@ function mapearDatosGenograma(datos) {
     }
 
     if (dato.abortosInducidos !== undefined) {
-
       if (dato.nom_parentesco == relacionesFamiliares[4]) {
-       
         for (let index = 0; index < dato.abortosInducidos; index++) {
           var nodo_aborto = {
             key: index,
@@ -386,8 +383,8 @@ function mapearDatosGenograma(datos) {
           genoDataMap.push(nodo_aborto);
         }
 
-        father = dato.csctbfamiliaid + 1
-        mother =  dato.csctbfamiliaid
+        father = dato.csctbfamiliaid + 1;
+        mother = dato.csctbfamiliaid;
 
         //nodo.s = "embarazada";
         //nodo.h = nodo.s == "M" ? "M" : "F";
@@ -403,8 +400,8 @@ function mapearDatosGenograma(datos) {
           };
           genoDataMap.push(nodo_aborto);
         }
-        father = hijos[hijos.length - 2].csctbfamiliaid
-        mother =  hijos[hijos.length - 1].csctbfamiliaid
+        father = hijos[hijos.length - 2].csctbfamiliaid;
+        mother = hijos[hijos.length - 1].csctbfamiliaid;
       } else {
         //console.log("hijo")
 
@@ -420,18 +417,30 @@ function mapearDatosGenograma(datos) {
           genoDataMap.push(nodo_aborto);
         }
 
-        father = nodo.key
-        mother =  datos.find(
+        father = nodo.key;
+        mother = datos.find(
           (persona) => persona.nom_parentesco == relacionesFamiliares[6]
-        )?.csctbfamiliaid
+        )?.csctbfamiliaid;
         //nodo.s = "embarazada";
       }
- 
     }
 
     if (dato.informante) {
       nodo.a.push("AP");
     }
+
+    if (dato.nucleo_familiar) {
+      nodo.a.push("NF");
+    }
+
+  
+    if (dato.fecha_union != null) {
+      const fecha = new Date(dato.fecha_union); // Convertir la cadena de texto a un objeto Date
+      const anio = fecha.getFullYear();
+      nodo.fu = anio
+    }
+
+    //console.log(nodo)
     genoDataMap.push(nodo);
   });
 
@@ -451,8 +460,8 @@ const MostrarGenograma = ({ familiares, idFamilia }) => {
           const isEmbarazada = await getFamiliaEmbarazadaById(
             familiar.csctbfamiliaid
           );
-
-          if (isEmbarazada.length > 0) {
+          // console.log(isEmbarazada[0])
+          if (isEmbarazada[0]?.n_abortos_espontaneos != null) {
             //console.log(isEmbarazada);
             return {
               ...familiar,

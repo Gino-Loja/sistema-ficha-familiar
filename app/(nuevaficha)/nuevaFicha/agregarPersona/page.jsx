@@ -15,7 +15,6 @@ import IndexRiesgos from "@/app/components/riesgos";
 import Vacuna from "@/app/components/vacunas/vacuna";
 
 export default async function AgregarPersona({ params, searchParams }) {
-
   const etnias = await getEtnia();
   const ocupaciones = await getOcupacion();
   const instrucciones = await getInstruccion();
@@ -66,7 +65,7 @@ export default async function AgregarPersona({ params, searchParams }) {
               Vacunas
             </button>
           </li>
-          <li className="nav-item" role="presentation">
+          {/* <li className="nav-item" role="presentation">
             <button
               className="nav-link"
               id="pills-contact-tab"
@@ -107,7 +106,7 @@ export default async function AgregarPersona({ params, searchParams }) {
             >
               Riesgos Biologicos
             </button>
-          </li>
+          </li> */}
           <li className="nav-item" role="presentation">
             <button
               className="nav-link"
@@ -138,7 +137,6 @@ export default async function AgregarPersona({ params, searchParams }) {
               pueblos={pueblos}
               parentescos={parentescos}
               saveFamilia={saveFamilia}
-           
             >
               <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
                 <button className="btn btn-danger">Cerrar</button>
@@ -157,7 +155,7 @@ export default async function AgregarPersona({ params, searchParams }) {
           >
             <Vacuna params={searchParams}></Vacuna>
           </div>
-          <div
+          {/* <div
             className="tab-pane fade"
             id="pills-contact"
             role="tabpanel"
@@ -185,7 +183,7 @@ export default async function AgregarPersona({ params, searchParams }) {
             tabIndex="0"
           >
             <IndexBiologicos></IndexBiologicos>
-          </div>
+          </div> */}
           <div
             className="tab-pane fade"
             id="pills-embarazada"

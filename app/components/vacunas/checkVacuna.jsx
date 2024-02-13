@@ -5,13 +5,18 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ModalGenerico from "../modal/modalGenerico";
 import { useSession } from "next-auth/react";
+import ModalFinalizar from "../modal/modalFinalizar";
 
 export default function CheckVacuna({ enfermedades, vacunas }) {
+
+  const router =useRouter()
   const { data: session, status } = useSession();
   const [modalShow, setModalShow] = useState(false);
   const [enfer, setEnferme] = useState({});
   const [listaEnfermedades, setListaEnfermdades] = useState([]);
   const [listaVacunas, setListaVacunas] = useState([]);
+  const [modalShowFinalizar, setModalShowFinalizar] = useState(false);
+
   useEffect(() => {
     if (status == "authenticated") {
       if (session.user.email?.id) {
@@ -45,18 +50,21 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
       const tabs = document.querySelectorAll(".nav-link");
       const content = document.querySelectorAll(".tab-pane");
       const modal = document.getElementById("modalGuardar");
-
       var indexTab = 0;
-      const activeTabIndex = tabs.forEach((tab, index) => {
-        if (tab.classList.contains("active")) {
-          indexTab = index;
-        }
-      });
-
-      tabs[indexTab].classList.remove("active");
-      tabs[indexTab + 1].classList.add("active");
-      content[indexTab].classList.remove("active", "show");
-      content[indexTab + 1].classList.add("active", "show");
+      if (session.user.email.embarazada == "true") {
+        tabs.forEach((tab, index) => {
+          if (tab.classList.contains("active")) {
+            indexTab = index;
+          }
+        });
+        console.log(indexTab);
+        tabs[indexTab].classList.remove("active");
+        tabs[indexTab + 1].classList.add("active");
+        content[indexTab].classList.remove("active", "show");
+        content[indexTab + 1].classList.add("active", "show");
+      } else {
+        setModalShowFinalizar(true);
+      }
     }
   });
   const seachParams = useSearchParams();
@@ -75,6 +83,23 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
 
   return (
     <form onSubmit={onSubmit}>
+      <ModalFinalizar
+        show={modalShowFinalizar}
+        tittle={`A Finalizado el registro de: ${session?.user?.email?.nombre} como ${session?.user?.email?.parentesco}`}
+      >
+        <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
+          <button
+            onClick={() => {
+              setModalShowFinalizar(false);
+              router.push("/buscarFicha/");
+            }}
+            className="btn btn-primary mx-2"
+          >
+            Continuar
+          </button>
+        </div>
+      </ModalFinalizar>
+
       <ModalGenerico
         show={modalShow}
         tittle={
@@ -168,9 +193,9 @@ export default function CheckVacuna({ enfermedades, vacunas }) {
       </div>
       <div className="row mb-3">
         <div className="col-sm-12 col-xl-6">
-        <label className="form-label">
-              <h5>Busqueda por nombre o codigo de la enfermedad</h5>
-            </label>
+          <label className="form-label">
+            <h5>Busqueda por nombre o codigo de la enfermedad</h5>
+          </label>
           <input
             className="form-control"
             defaultValue={""}

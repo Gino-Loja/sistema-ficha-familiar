@@ -32,9 +32,13 @@ export async function saveFamilia(formData, id) {
       estado_fam, 
       fecreacion_fam,
         id_jefe_hogar,
-      estado_civil, csctbetniaid, csctbpueblosid, fallecido, informante)
+      estado_civil, csctbetniaid, csctbpueblosid, fallecido, informante,
+      fecha_union,
+      nucleo_familiar
+      
+      )
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
-       $9, $10, $11, $12, $13, $14, current_timestamp,${id_jefe},$15, $16, $17,$18, $19)
+       $9, $10, $11, $12, $13, $14, current_timestamp,${id_jefe},$15, $16, $17,$18, $19, $20, $21)
         RETURNING csctbfamiliaid,nom_fam, ape_fam,genero,csctbparentescoid`;
 
     const values = [
@@ -57,6 +61,8 @@ export async function saveFamilia(formData, id) {
       formData.pueblos,
       formData.fallecido,
       formData.informante,
+      formData.fechaUnion,
+      formData.nucleoFamiliar
     ];
 
     const res = await conn.query(text, values);
@@ -358,15 +364,21 @@ export async function insertEmbarazadaAndRiesgoObstetricos(
 ) {
   try {
     var result = await conn.query(
-      `INSERT INTO 
-      public.csctbembarazadas(csctbfamiliaid,
-        fecha_menstruacion, 
-        fecha_parto, control_menos20, control_mas20, semanas_gestacion, 
-        gestas, partos, n_abortos_inducidos, cesarias, ante_patologicos, n_abortos_espontaneos)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,$12); 
-      `,
+      `UPDATE public.csctbembarazadas
+    SET 
+      fecha_menstruacion=$1,
+      fecha_parto=$2,
+      control_menos20=$3,
+        control_mas20=$4,
+        ante_patologicos=$5, 
+        semanas_gestacion=$6, 
+        gestas=$7, 
+        partos=$8, 
+        n_abortos_espontaneos=$9,
+        cesarias=$10,
+        n_abortos_inducidos=$11
+    WHERE csctbfamiliaid = $12;`,
       [
-        id_familia,
         formData.fechaUltimaMenstruacion,
         formData.fechaProbableDeParto,
         formData.controlMenos20,
@@ -374,10 +386,11 @@ export async function insertEmbarazadaAndRiesgoObstetricos(
         formData.semanasGestacion,
         formData.gestas,
         formData.partos,
-        formData.abortosInducidos,
+        formData.abortosEspontaneos,
         formData.cesarias,
         formData.antecedentesPatologicos,
-        formData.abortosEspontaneos,
+        formData.abortosInducidos,
+        id_familia,
       ]
     );
 
@@ -409,7 +422,9 @@ export async function getFamiliares(accion, termino) {
     csctbfamilia.estado_civil,
     csctbfamilia.anios,
     csctbfamilia.fallecido,
-    csctbfamilia.informante
+    csctbfamilia.informante,
+    csctbfamilia.nucleo_familiar,
+    csctbfamilia.fecha_union
 
 
   FROM 
