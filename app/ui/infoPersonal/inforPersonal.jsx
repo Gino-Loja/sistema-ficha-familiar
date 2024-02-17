@@ -5,7 +5,7 @@ import { updateFamiliaById } from "@/app/action";
 import { useParams, usePathname, useRouter } from "next/navigation";
 
 export default function InfoPersonal(props) {
-  const { refresh } = useRouter();
+  const { refresh, push } = useRouter();
   const params = useParams();
   const {
     register,
@@ -343,6 +343,7 @@ export default function InfoPersonal(props) {
               <option value={"UNIÓN LIBRE"}>Union Libre</option>
               <option value={"SEPARACIÓN"}>Separacion</option>
               <option value={"DIVORCIO"}>Divorcio</option>
+              <option value={"SOLTERO/A"}>Soltero/a</option>
 
               <option value={"UNIÓN CONSANGUÍNEA"}>Union Consaguinea</option>
             </select>
@@ -557,12 +558,12 @@ export default function InfoPersonal(props) {
                 <label className="form-label">
                   <h5>Fecha de Union</h5>
                 </label>
+
                 <input
                   {...register("fechaUnion", {
-                    required: {
-                      message: "Seleccione su fecha de nacimiento",
-                    },
-                    value: datosFamiliar.fecha_union,
+                    value: new Date(datosFamiliar.fecha_union)
+                      .toISOString()
+                      .split("T")[0],
                     validate: (value) => {
                       const fechaNacimiento = new Date(value);
                       const fechaActual = new Date();
@@ -606,7 +607,6 @@ export default function InfoPersonal(props) {
                   type="radio"
                   value="false"
                   defaultChecked={datosFamiliar.nucleo_familiar == false}
-
                 />
                 <label className="form-check-label">No</label>
               </div>
@@ -614,7 +614,18 @@ export default function InfoPersonal(props) {
           </div>
         </div>
 
-        {props.children}
+        <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
+          <button
+            type="button"
+            onClick={() => push("/buscarFicha/")}
+            className="btn btn-danger"
+          >
+            Cerrar
+          </button>
+          <button type="submit" className="btn btn-primary">
+            Actulizar y continuar
+          </button>
+        </div>
       </form>
     </div>
   );

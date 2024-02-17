@@ -117,7 +117,7 @@ export default function CheckVacuna({
     <form onSubmit={onSubmit}>
       <ModalFinalizar
         show={modalShowFinalizar}
-        tittle={`Se actualizado el registro de: ${session?.user?.email?.nombre} como ${session?.user?.email?.parentesco}`}
+        tittle={`A Finalizado la Actualizacion de: ${data.nombre} como ${data.parentesco}`}
       >
         <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
           <button

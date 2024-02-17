@@ -137,12 +137,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
                 embarazo: familiaEmbarazo[0]?.gestas == null ? false : true,
               }}
             >
-              <div className=" h-25 d-flex justify-content-between mt-2 align-items-center">
-                <button className="btn btn-danger">Cerrar</button>
-                <button type="submit" className="btn btn-primary">
-                  Actulizar y continuar
-                </button>
-              </div>
+              
             </InfoPersonal>
           </div>
           <div

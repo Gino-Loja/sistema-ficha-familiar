@@ -56,6 +56,7 @@ export default function Embarazada({
   });
   return (
     <form onSubmit={onSubmit}>
+     
       <ModalFinalizar
         show={modalShowFinalizar}
         tittle={`A Finalizado la Actualizacion de: ${data.nombre} como ${data.parentesco}`}

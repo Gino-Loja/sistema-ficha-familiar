@@ -349,7 +349,7 @@ function initDiagram() {
             portId: "",
           },
           new go.Binding("fill", "a", (e) => {
-            console.log(e);
+            //console.log(e);
             if (e.includes("NF")) {
               return "#0B9BFE";
             } else {
@@ -565,8 +565,8 @@ function initDiagram() {
           M332.84689 134.31563l20.6875 -0.21875`,
           },
           new go.Binding("fill", "a", (e) => {
-            console.log(e);
-            if (e.includes("S")) {
+            //console.log(e);
+            if (e.includes("NF")) {
               return "#0B9BFE";
             } else {
               return "white";
@@ -615,7 +615,7 @@ function initDiagram() {
       )
     )
   );
-  //hijastra
+
   diagram.nodeTemplateMap.add(
     "hijastra", // Miscarriage
     $(
@@ -639,7 +639,8 @@ function initDiagram() {
                 height: 40,
                 width: 30,
                 margin: 2,
-                angle: 25,
+                angle: -25,
+                //alignment: go.Spot.TopLeft
               },
               new go.Binding("stroke", "", colorApuntador),
               new go.Binding("fill", "", colorApuntador),
@@ -651,13 +652,13 @@ function initDiagram() {
                 }
               })
             ),
-            { alignment: new go.Spot(0, 1, 50, 0) }
+            { alignment: new go.Spot(0, 1, -40, 0) }
           ),
+          alignment: go.Spot.TopLeft,
         },
         new go.Binding("itemArray", "a")
       ),
-      //aqui
-      ///new go.Binding("itemArray", "a"),
+      //new go.Binding("itemArray", "a"),
 
       $(
         go.Panel,
@@ -672,25 +673,26 @@ function initDiagram() {
             strokeWidth: 1.5,
             fill: "white",
             background: "white",
+            portId: "",
             stroke: "#a1a1a1",
-
             geometryString: `M210.79999 137.0356 v116.76439
-          M353.79999 133.33124 v121.46876
-          M210.66501 136.97191l24.24744 -0.54752
-          M210.36144 253.85543h16.26506
-          M353.20314 254.806l-17.98763 -0.40951
-          M332.84689 134.31563l20.6875 -0.21875
-          M280 146.77868a48.83721 48.83721 0 1 0 0 97.67442a48.83721 48.83721 0 1 0 0 -97.67442`,
+            M353.79999 133.33124 v121.46876
+            M210.66501 136.97191l24.24744 -0.54752
+            M210.36144 253.85543h16.26506
+            M353.20314 254.806l-17.98763 -0.40951
+            M332.84689 134.31563l20.6875 -0.21875
+            M280 146.77868a48.83721 48.83721 0 1 0 0 97.67442a48.83721 48.83721 0 1 0 0 -97.67442`,
           },
           new go.Binding("fill", "a", (e) => {
-            console.log(e);
-            if (e.includes("S")) {
+            //console.log(e);
+            if (e.includes("NF")) {
               return "#0B9BFE";
             } else {
               return "white";
             }
           })
         ),
+
         $(
           go.Panel,
           {
@@ -706,6 +708,7 @@ function initDiagram() {
           },
           new go.Binding("itemArray", "a")
         ),
+
         $(
           go.TextBlock,
           {
@@ -731,6 +734,123 @@ function initDiagram() {
       )
     )
   );
+
+  //hijastra
+  // diagram.nodeTemplateMap.add(
+  //   "hijastras", // Miscarriage
+  //   $(
+  //     go.Node,
+  //     "Vertical",
+  //     {
+  //       locationSpot: go.Spot.Center,
+  //       locationObjectName: "ICON",
+  //       selectionObjectName: "ICON",
+  //     },
+  //     $(
+  //       go.Panel,
+  //       "Spot",
+  //       {
+  //         itemTemplate: $(
+  //           go.Panel,
+  //           $(
+  //             go.Shape,
+  //             {
+  //               strokeWidth: 1,
+  //               height: 40,
+  //               width: 30,
+  //               margin: 2,
+  //               angle: 25,
+  //               background:"red"
+  //             },
+  //             new go.Binding("stroke", "", colorApuntador),
+  //             new go.Binding("fill", "", colorApuntador),
+  //             new go.Binding("geometry", "", (e) => {
+  //               if (e == "AP") {
+  //                 return flecha;
+  //               }
+  //             })
+  //           ),
+  //           { alignment: new go.Spot(0, 1, 50, 0) }
+  //         ),
+  //         alignment: go.Spot.TopRight,
+  //       },
+  //       new go.Binding("itemArray", "a")
+  //     ),
+  //     //aqui
+  //     ///new go.Binding("itemArray", "a"),
+
+  //     $(
+  //       go.Panel,
+  //       "Auto",
+  //       { name: "ICON" },
+
+  //       $(
+  //         go.Shape,
+  //         {
+  //           width: 50,
+  //           height: 50,
+  //           strokeWidth: 1.5,
+  //           fill: "white",
+  //           background: "white",
+  //           stroke: "#a1a1a1",
+
+  //           geometryString: `M210.79999 137.0356 v116.76439
+  //         M353.79999 133.33124 v121.46876
+  //         M210.66501 136.97191l24.24744 -0.54752
+  //         M210.36144 253.85543h16.26506
+  //         M353.20314 254.806l-17.98763 -0.40951
+  //         M332.84689 134.31563l20.6875 -0.21875
+  //         M280 146.77868a48.83721 48.83721 0 1 0 0 97.67442a48.83721 48.83721 0 1 0 0 -97.67442`,
+  //         },
+  //         new go.Binding("fill", "a", (e) => {
+  //           //console.log(e);
+  //           if (e.includes("NF")) {
+  //             return "#0B9BFE";
+  //           } else {
+  //             return "white";
+  //           }
+  //         })
+  //       ),
+  //       $(
+  //         go.Panel,
+  //         {
+  //           itemTemplate: $(
+  //             go.Panel,
+  //             $(
+  //               go.Shape,
+  //               { stroke: null, strokeWidth: 0 },
+  //               new go.Binding("fill", "", attrFill),
+  //               new go.Binding("geometry", "", maleGeometry)
+  //             )
+  //           ),
+  //         },
+  //         new go.Binding("itemArray", "a")
+  //       ),
+  //       $(
+  //         go.TextBlock,
+  //         {
+  //           textAlign: "center",
+  //           verticalAlignment: go.Spot.Center,
+  //           maxSize: new go.Size(80, NaN),
+  //           font: "16px serif",
+  //           editable: true,
+  //         },
+  //         new go.Binding("text", "anios")
+  //       )
+  //     ),
+
+  //     $(
+  //       go.TextBlock,
+  //       { textAlign: "center", maxSize: new go.Size(80, NaN), editable: true },
+  //       new go.Binding("text", "n")
+  //     ),
+  //     $(
+  //       go.TextBlock,
+  //       { textAlign: "center", maxSize: new go.Size(100, NaN), editable: true },
+  //       new go.Binding("text", "codigo")
+  //     )
+  //   )
+  // );
   // padre soltero
   diagram.nodeTemplateMap.add(
     "padreSoltero", // Miscarriage
@@ -1117,24 +1237,7 @@ function initDiagram() {
       go.Link,
 
       { selectable: false },
-      $(
-        go.Panel,
-        "Vertical", // this whole Panel is a link label
-        //$(go.Shape, "Circle", { fill: "yellow", stroke: "gray" }),
-        $(
-          go.TextBlock,
-          {
-            //margin: 3 ,
 
-            alignment: go.Spot.Left,
-            // segmentOrientation: go.Link.Auto,
-          },
-          new go.Binding("text", "fu")
-        ),
-        {
-          height: 30,
-        }
-      ),
       $(
         go.Shape,
         {
@@ -1162,24 +1265,7 @@ function initDiagram() {
 
         geometry: go.Geometry.parse("F M0 10 l13 -10"),
       }),
-      $(
-        go.TextBlock,
-        {
-          segmentOffset: new go.Point(0, -10),
-          font: "16px serif",
-          segmentOrientation: go.Link.OrientUpright,
-        },
-        new go.Binding("text", "fu")
-      )
-    )
-  );
-  // divorcio
-  diagram.linkTemplateMap.add(
-    "DIVORCIO", // for marriage relationships
-    $(
-      go.Link,
 
-      { selectable: false },
       $(
         go.Panel,
         "Vertical", // this whole Panel is a link label
@@ -1197,7 +1283,17 @@ function initDiagram() {
         {
           height: 30,
         }
-      ),
+      )
+    )
+  );
+  // divorcio
+  diagram.linkTemplateMap.add(
+    "DIVORCIO", // for marriage relationships
+    $(
+      go.Link,
+
+      { selectable: false },
+
       $(
         go.Shape,
         {
@@ -1224,7 +1320,26 @@ function initDiagram() {
         // This SVG-style path creates a thick "+" figure:,
 
         geometry: go.Geometry.parse("F M0 10 l13 -10 M9 10 l13 -10"),
-      })
+      }),
+
+      $(
+        go.Panel,
+        "Vertical", // this whole Panel is a link label
+        //$(go.Shape, "Circle", { fill: "yellow", stroke: "gray" }),
+        $(
+          go.TextBlock,
+          {
+            //margin: 3 ,
+
+            alignment: go.Spot.Left,
+            // segmentOrientation: go.Link.Auto,
+          },
+          new go.Binding("text", "fu")
+        ),
+        {
+          height: 30,
+        }
+      )
     )
   );
   //union libre
@@ -1492,7 +1607,7 @@ function setupMarriages(diagram) {
     var key = data.key;
     var uxs = data.ux;
     var category_data = data.ec;
-
+    //console.log(category_data)
     if (data.h !== undefined) {
       //nuevos cambios
       var h = data.h;

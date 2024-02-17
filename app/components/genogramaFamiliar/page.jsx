@@ -151,6 +151,7 @@ function mapearDatosGenograma(datos) {
   var father;
   var mother;
   var nodo_embarazada;
+  //console.log(datos)
   datos.forEach((dato, index) => {
     const {
       csctbfamiliaid,
@@ -307,7 +308,71 @@ function mapearDatosGenograma(datos) {
     }
 
     //console.log(dato.abortosEspontaneos)
+    
+    //console.log(dato.abortosInducidos)
+    if (dato.abortosInducidos !== undefined) {
+     // console.log(dato.abortosInducidos)
+      if (dato.nom_parentesco == relacionesFamiliares[4]) {
+        //.log(dato.abortosInducidos, dato.nom_parentesco);
+
+        for (let index = 0; index < dato.abortosInducidos; index++) {
+          var nodo_aborto = {
+            key: index,
+            f: dato.csctbfamiliaid + 1,
+            m: dato.csctbfamiliaid,
+            s: "INDUCIDO",
+          };
+          genoDataMap.push(nodo_aborto);
+        }
+
+        father = dato.csctbfamiliaid + 1;
+        mother = dato.csctbfamiliaid;
+
+        //nodo.s = "embarazada";
+        //nodo.h = nodo.s == "M" ? "M" : "F";
+      } else if (dato.nom_parentesco === relacionesFamiliares[10]) {
+        //console.log("nuera")
+        //console.log(dato.abortosInducidos, dato.nom_parentesco);
+
+        for (let index = 0; index < dato.abortosInducidos; index++) {
+          var nodo_aborto = {
+            key: index,
+            m: hijos[hijos.length - 1].csctbfamiliaid,
+            f: hijos[hijos.length - 2].csctbfamiliaid,
+            s: "INDUCIDO",
+          };
+          genoDataMap.push(nodo_aborto);
+        }
+        father = hijos[hijos.length - 2].csctbfamiliaid;
+        mother = hijos[hijos.length - 1].csctbfamiliaid;
+      } else {
+        //console.log("hijo")
+        //console.log(dato.abortosInducidos, dato.nom_parentesco);
+
+        for (let index = 0; index < dato.abortosInducidos; index++) {
+          console.log(index)
+          var nodo_aborto = {
+            key: index,
+            m: nodo.key,
+            f: datos.find(
+              (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+            )?.csctbfamiliaid,
+            s: "INDUCIDO",
+          };
+          genoDataMap.push(nodo_aborto);
+        }
+
+        father = nodo.key;
+        mother = datos.find(
+          (persona) => persona.nom_parentesco == relacionesFamiliares[6]
+        )?.csctbfamiliaid;
+        //nodo.s = "embarazada";
+      }
+    }
     if (dato.abortosEspontaneos !== undefined) {
+      console.log(dato.abortosEspontaneos)
+      //console.log(dato.abortosEspontaneos);
+
       if (dato.nom_parentesco == relacionesFamiliares[4]) {
         for (let index = 0; index < dato.abortosEspontaneos; index++) {
           var nodo_aborto = {
@@ -370,60 +435,6 @@ function mapearDatosGenograma(datos) {
         s: "embarazada",
       };
       genoDataMap.push(nodo_embarazada);
-    }
-
-    if (dato.abortosInducidos !== undefined) {
-      if (dato.nom_parentesco == relacionesFamiliares[4]) {
-        for (let index = 0; index < dato.abortosInducidos; index++) {
-          var nodo_aborto = {
-            key: index,
-            f: dato.csctbfamiliaid + 1,
-            m: dato.csctbfamiliaid,
-            s: "INDUCIDO",
-          };
-          genoDataMap.push(nodo_aborto);
-        }
-
-        father = dato.csctbfamiliaid + 1;
-        mother = dato.csctbfamiliaid;
-
-        //nodo.s = "embarazada";
-        //nodo.h = nodo.s == "M" ? "M" : "F";
-      } else if (dato.nom_parentesco === relacionesFamiliares[10]) {
-        //console.log("nuera")
-
-        for (let index = 0; index < dato.abortosInducidos; index++) {
-          var nodo_aborto = {
-            key: index,
-            m: hijos[hijos.length - 1].csctbfamiliaid,
-            f: hijos[hijos.length - 2].csctbfamiliaid,
-            s: "INDUCIDO",
-          };
-          genoDataMap.push(nodo_aborto);
-        }
-        father = hijos[hijos.length - 2].csctbfamiliaid;
-        mother = hijos[hijos.length - 1].csctbfamiliaid;
-      } else {
-        //console.log("hijo")
-
-        for (let index = 0; index < dato.abortosEspontaneos; index++) {
-          var nodo_aborto = {
-            key: index,
-            m: nodo.key,
-            f: datos.find(
-              (persona) => persona.nom_parentesco == relacionesFamiliares[6]
-            )?.csctbfamiliaid,
-            s: "INDUCIDO",
-          };
-          genoDataMap.push(nodo_aborto);
-        }
-
-        father = nodo.key;
-        mother = datos.find(
-          (persona) => persona.nom_parentesco == relacionesFamiliares[6]
-        )?.csctbfamiliaid;
-        //nodo.s = "embarazada";
-      }
     }
 
     if (dato.informante) {

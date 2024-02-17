@@ -350,7 +350,7 @@ export default function InfoPersonal(props) {
               <option value={"UNIÓN LIBRE"}>Union Libre</option>
               <option value={"SEPARACIÓN"}>Separacion</option>
               <option value={"DIVORCIO"}>Divorcio</option>
-              <option value={"SOLTERO"}>Soltero</option>
+              <option value={"SOLTERO/A"}>Soltero/a</option>
 
               <option value={"UNIÓN CONSANGUÍNEA"}>Union Consaguinea</option>
             </select>
@@ -568,11 +568,13 @@ export default function InfoPersonal(props) {
                 </label>
                 <input
                   {...register("fechaUnion", {
-                    
+                   
+                    required: {
+                      value: false
+                    },
                     validate: (value) => {
                       //console.log(value)
-
-                      if (value === ""){
+                      if (value === ''){
                         //console.log(value)
                         return true
                       }
