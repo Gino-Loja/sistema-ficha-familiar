@@ -1,4 +1,7 @@
-import { getRiesgosObstetricos,insertEmbarazadaAndRiesgoObstetricos } from "@/app/action";
+import {
+  getRiesgosObstetricos,
+  insertEmbarazadaAndRiesgoObstetricos,
+} from "@/app/action";
 import Embarazada from "./embarazada";
 
 async function IndexEmbarazada({ params }) {
@@ -6,7 +9,12 @@ async function IndexEmbarazada({ params }) {
 
   return (
     <div className="container-fluid">
-      <Embarazada riesgoObstetrico={getRiesgosObstetricos} insertEmbarazadaAndRiesgoObstetricos={insertEmbarazadaAndRiesgoObstetricos}></Embarazada>
+      <Embarazada
+        riesgoObstetrico={getRiesgosObstetricos}
+        insertEmbarazadaAndRiesgoObstetricos={
+          insertEmbarazadaAndRiesgoObstetricos
+        }
+      ></Embarazada>
     </div>
   );
 }

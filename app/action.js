@@ -383,12 +383,13 @@ export async function insertEmbarazadaAndRiesgoObstetricos(
         formData.fechaProbableDeParto,
         formData.controlMenos20,
         formData.controlMas20,
+        formData.antecedentesPatologicos,
         formData.semanasGestacion,
         formData.gestas,
         formData.partos,
         formData.abortosEspontaneos,
         formData.cesarias,
-        formData.antecedentesPatologicos,
+       
         formData.abortosInducidos,
         id_familia,
       ]

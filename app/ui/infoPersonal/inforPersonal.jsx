@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { updateFamiliaById } from "@/app/action";
+import { updateFamiliaById, updateFamiliaEmbarazadaById } from "@/app/action";
 import { useParams, usePathname, useRouter } from "next/navigation";
 
 export default function InfoPersonal(props) {
@@ -29,7 +29,7 @@ export default function InfoPersonal(props) {
   const [isembarazada, setisembarazada] = useState(data.embarazo);
   const onSubmit = handleSubmit(async (data) => {
     const resul = await updateFamiliaById(data, params.id);
-    console.log(resul);
+    // console.log(resul);
     if (resul.error) {
       console.log(resul.error);
     } else {
@@ -52,12 +52,44 @@ export default function InfoPersonal(props) {
     }
   });
 
+  const embarazoNull = async () => {
+    if (watch("genero") == "FEMENINO") {
+      await updateFamiliaEmbarazadaById(
+        {
+          fechaUltimaMenstruacion: null,
+          fechaUltimaMenstruacion: null,
+          fechaProbableDeParto: null,
+          controlMenos20: null,
+          controlMas20: null,
+          antecedentesPatologicos: null,
+          semanasGestacion: null,
+          gestas: null,
+          partos: null,
+          abortosEspontaneos: null,
+          cesarias: null,
+          abortosInducidos: null,
+        },
+        params.id
+      );
+      refresh()
+
+    }
+  };
+
   useEffect(() => {
     //setValue("embarazada", "true");
     if (watch("embarazada") == undefined) {
       controlEmbarazada(isembarazada);
     } else {
       controlEmbarazada(watch("embarazada"));
+    }
+    //console.log(watch("embarazada"))
+
+    if (watch("embarazada") == "false") {
+      // console.log("nada")
+      embarazoNull().then(() => {
+        //console.log("listo")
+      });
     }
   }, [watch("embarazada"), isembarazada]);
 
@@ -73,12 +105,14 @@ export default function InfoPersonal(props) {
     });
     //console.log(control)
     if (control == true || control == "true") {
-      console.log("ya");
+      //console.log("ya");
       //console.log(embarazadaTab)
       //embarazadaTab.classList.remove('active', "show");;
       embarazadaTab.style.display = "";
     } else {
       embarazadaTab.style.display = "none";
+
+      // embarazoNull();
     }
   };
 

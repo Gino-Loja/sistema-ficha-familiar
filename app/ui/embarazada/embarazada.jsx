@@ -26,6 +26,11 @@ export default function Embarazada({
     setValue,
     formState: { errors },
   } = useForm();
+
+
+  
+
+
   useEffect(() => {
     const riesgos = async () => await riesgoObstetrico(watch("tipoRiesgo"));
     if (watch("tipoRiesgo") != "") {
@@ -65,6 +70,8 @@ export default function Embarazada({
           <button
             onClick={() => {
               setModalShowFinalizar(false);
+              router.refresh()
+
               router.push("/buscarFicha/");
             }}
             className="btn btn-primary mx-2"

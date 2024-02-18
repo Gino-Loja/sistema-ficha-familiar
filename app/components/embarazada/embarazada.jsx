@@ -54,7 +54,9 @@ export default function Embarazada({
           <button
             onClick={() => {
               setModalShowFinalizar(false);
+              router.refresh()
               router.push("/buscarFicha/");
+
             }}
             className="btn btn-primary mx-2"
           >
