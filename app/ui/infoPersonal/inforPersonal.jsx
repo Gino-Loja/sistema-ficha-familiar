@@ -598,6 +598,11 @@ export default function InfoPersonal(props) {
                       .toISOString()
                       .split("T")[0],
                     validate: (value) => {
+
+                      console.log(value)
+                      if (value == "") {
+                        return true
+                      }
                       const fechaNacimiento = new Date(value);
                       const fechaActual = new Date();
 

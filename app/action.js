@@ -10,6 +10,8 @@ import { Cookie } from "next/font/google";
 import { writeFile } from "fs/promises";
 import path, { format } from "path";
 export async function saveFamilia(formData, id) {
+
+  const fechaUnion = formData.fechaUnion == "" ? null : formData.fechaUnion
   const id_jefe =
     id == null
       ? `CURRVAL('public.csctbfamilia_csctbfamiliaid_seq')`
@@ -61,7 +63,7 @@ export async function saveFamilia(formData, id) {
       formData.pueblos,
       formData.fallecido,
       formData.informante,
-      formData.fechaUnion,
+      fechaUnion,
       formData.nucleoFamiliar,
     ];
 

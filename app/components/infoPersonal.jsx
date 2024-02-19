@@ -569,13 +569,11 @@ export default function InfoPersonal(props) {
                 <input
                   {...register("fechaUnion", {
                    
-                    required: {
-                      value: false
-                    },
+                   
                     validate: (value) => {
                       //console.log(value)
-                      if (value === ''){
-                        //console.log(value)
+                      if (value == ''){
+                        console.log(value)
                         return true
                       }
 
