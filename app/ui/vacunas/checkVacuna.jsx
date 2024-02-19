@@ -82,8 +82,17 @@ export default function CheckVacuna({
 
     //const tabs = document.querySelectorAll(".nav-link");
 
-    var indexTab = 0;
-    if (session.user.email.embarazada == "true") {
+    // var indexTab = 0;
+
+    tabs.forEach((tab, index) => {
+      if (tab.classList.contains("active")) {
+        indexTab = index;
+        //console.log(indexTab);
+      }
+    });
+
+    //console.log(activeTabIndex)
+    if (tabs[tabs.length - 1].style.display != "none") {
       tabs.forEach((tab, index) => {
         if (tab.classList.contains("active")) {
           indexTab = index;

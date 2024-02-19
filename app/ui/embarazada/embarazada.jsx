@@ -26,12 +26,21 @@ export default function Embarazada({
     setValue,
     formState: { errors },
   } = useForm();
+  //console.log(embarazadaById)
+  //console.log(embarazadaById.gestas)
 
 
-  
-
-
+  useEffect(()=>{
+    //router.back()
+    //console.log(embarazadaById.gestas)
+    router.refresh()
+    //router.refresh()
+  },[embarazadaById.gestas])
   useEffect(() => {
+   // console.log(tabs[tabs.length - 1].style.display)
+   //window.location.reload()
+   //router.refresh()
+   //console.log("nada")
     const riesgos = async () => await riesgoObstetrico(watch("tipoRiesgo"));
     if (watch("tipoRiesgo") != "") {
       riesgos().then((data) => {
@@ -53,6 +62,7 @@ export default function Embarazada({
     if (result.error) {
       console.log(result.error);
     } else {
+      router.refresh();
       const tabs = document.querySelectorAll(".nav-link");
       const content = document.querySelectorAll(".tab-pane");
 
@@ -61,7 +71,6 @@ export default function Embarazada({
   });
   return (
     <form onSubmit={onSubmit}>
-     
       <ModalFinalizar
         show={modalShowFinalizar}
         tittle={`A Finalizado la Actualizacion de: ${data.nombre} como ${data.parentesco}`}
@@ -70,7 +79,7 @@ export default function Embarazada({
           <button
             onClick={() => {
               setModalShowFinalizar(false);
-              router.refresh()
+              //router.refresh()
 
               router.push("/buscarFicha/");
             }}

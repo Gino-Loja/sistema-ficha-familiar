@@ -33,7 +33,7 @@ export default function InfoPersonal(props) {
     if (resul.error) {
       console.log(resul.error);
     } else {
-      refresh();
+      //refresh();
       const tabs = document.querySelectorAll(".nav-link");
       const content = document.querySelectorAll(".tab-pane");
       const modal = document.getElementById("modalGuardar");
@@ -71,7 +71,6 @@ export default function InfoPersonal(props) {
         },
         params.id
       );
-      refresh()
 
     }
   };
@@ -89,6 +88,7 @@ export default function InfoPersonal(props) {
       // console.log("nada")
       embarazoNull().then(() => {
         //console.log("listo")
+        refresh()
       });
     }
   }, [watch("embarazada"), isembarazada]);
@@ -100,7 +100,7 @@ export default function InfoPersonal(props) {
       tab.addEventListener("shown.bs.tab", function (event) {
         // Obtener el id del tab activo
         var activeTabIndex = index;
-        console.log("Estás en la pestaña con índice:", activeTabIndex);
+        //console.log("Estás en la pestaña con índice:", activeTabIndex);
       });
     });
     //console.log(control)
@@ -531,7 +531,6 @@ export default function InfoPersonal(props) {
             {" "}
             <label className="form-label">Fallecido</label>
             <div>
-              {console.log(datosFamiliar.fallecido)}
               <div className="form-check form-check-inline">
                 <input
                   {...register("fallecido", {})}

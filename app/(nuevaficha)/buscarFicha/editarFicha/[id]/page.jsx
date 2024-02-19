@@ -22,7 +22,7 @@ export default async function AgregarPersonaEdit({ params, searchParams }) {
   const parentescos = await getParentesco();
   const [datosFamiliar] = await getFamiliarById(params.id);
   const familiaEmbarazo = await getFamiliaEmbarazo(params.id);
-console.log(familiaEmbarazo)
+//console.log(familiaEmbarazo)
 
   return (
     <>

@@ -553,9 +553,9 @@ function initDiagram() {
             height: 50,
             strokeWidth: 1.5,
             fill: "white",
-            background: "white",
+            //background: "white",
             portId: "",
-            stroke: "#a1a1a1",
+            stroke: "#636363",
             geometryString: `M228.79999 154.8 h106 v78 h-106 Z 
           M210.79999 131.8 v121.99999
           M353.79999 133.33124 v121.46876
@@ -564,8 +564,9 @@ function initDiagram() {
           M353.20314 254.806l-17.98763 -0.40951
           M332.84689 134.31563l20.6875 -0.21875`,
           },
-          new go.Binding("fill", "a", (e) => {
-            //console.log(e);
+
+          new go.Binding("background", "a", (e) => {
+            //console.log(e.includes("NF"));
             if (e.includes("NF")) {
               return "#0B9BFE";
             } else {
@@ -573,6 +574,7 @@ function initDiagram() {
             }
           })
         ),
+        //{background},
 
         $(
           go.Panel,
@@ -672,9 +674,10 @@ function initDiagram() {
             height: 50,
             strokeWidth: 1.5,
             fill: "white",
-            background: "white",
+            //background: "white",
             portId: "",
-            stroke: "#a1a1a1",
+            stroke: "#636363",
+            
             geometryString: `M210.79999 137.0356 v116.76439
             M353.79999 133.33124 v121.46876
             M210.66501 136.97191l24.24744 -0.54752
@@ -683,7 +686,7 @@ function initDiagram() {
             M332.84689 134.31563l20.6875 -0.21875
             M280 146.77868a48.83721 48.83721 0 1 0 0 97.67442a48.83721 48.83721 0 1 0 0 -97.67442`,
           },
-          new go.Binding("fill", "a", (e) => {
+          new go.Binding("background", "a", (e) => {
             //console.log(e);
             if (e.includes("NF")) {
               return "#0B9BFE";
